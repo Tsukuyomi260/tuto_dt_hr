@@ -24,11 +24,11 @@ export default function Confidentialite() {
 
   return (
     <main className="flex h-full flex-col overflow-y-auto px-6 py-8">
-      <h1 className="text-[22px] leading-tight font-semibold tracking-[-0.02em]">
+      <h1 className="t-display text-balance">
         Tes données
       </h1>
 
-      <div className="mt-5 flex flex-col gap-4 text-[14.5px] leading-relaxed text-ink-2">
+      <div className="mt-5 flex flex-col gap-4 t-body text-ink-2">
         <p>
           <span className="font-semibold text-ink">Ce qui reste sur ton téléphone.</span>{" "}
           Tes conversations, tes flashcards et tes fiches sont enregistrées dans

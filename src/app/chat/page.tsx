@@ -2,18 +2,35 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useRef, useState } from "react";
+import { ActionCard } from "@/components/ActionCard";
 import { Bubble } from "@/components/Bubble";
-import { Button } from "@/components/Button";
 import { Composer } from "@/components/Composer";
 import { Thinking } from "@/components/Thinking";
 import { db, type Message } from "@/lib/db";
 import { useReglages } from "@/lib/store";
 
-const AMORCES = [
-  "C'est quoi la mise en place ?",
-  "Explique-moi la brigade de cuisine",
-  "Les trois services de base en salle ?",
-];
+const IcoQuestion = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z" />
+  </svg>
+);
+const IcoEpreuve = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" />
+  </svg>
+);
+const IcoReviser = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18M8 5v14" />
+  </svg>
+);
+
+function salutation() {
+  const h = new Date().getHours();
+  if (h < 12) return "Bonjour";
+  if (h < 18) return "Bon après-midi";
+  return "Bonsoir";
+}
 
 export default function Chat() {
   const messages = useLiveQuery(() => db.messages.orderBy("createdAt").toArray(), []);
@@ -22,7 +39,10 @@ export default function Chat() {
   const [enCours, setEnCours] = useState<string | null>(null);
   const [occupe, setOccupe] = useState(false);
   const [horsLigne, setHorsLigne] = useState(false);
-  const bas = useRef<HTMLDivElement>(null);
+  const fil = useRef<HTMLDivElement>(null);
+  const barre = useRef<HTMLElement>(null);
+  const colleAuBas = useRef(true);
+  const premierJeton = useRef(true);
 
   useEffect(() => {
     const maj = () => setHorsLigne(!navigator.onLine);
@@ -35,13 +55,25 @@ export default function Chat() {
     };
   }, []);
 
+  function surDefilement() {
+    const el = fil.current;
+    if (!el) return;
+    colleAuBas.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+    // Écrit dans une variable CSS via la ref : un état React re-rendrait tout
+    // le fil à chaque événement de défilement.
+    barre.current?.style.setProperty("--p", Math.min(1, el.scrollTop / 24).toFixed(3));
+  }
+
   useEffect(() => {
-    bas.current?.scrollIntoView({ block: "end" });
+    if (!colleAuBas.current) return;
+    const el = fil.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, enCours]);
 
   async function demander(historique: Message[]) {
     setOccupe(true);
     setEnCours("");
+    premierJeton.current = true;
     try {
       const reponse = await fetch("/api/chat", {
         method: "POST",
@@ -51,10 +83,7 @@ export default function Chat() {
           niveau,
         }),
       });
-
-      if (!reponse.ok || !reponse.body) {
-        throw new Error(await reponse.text());
-      }
+      if (!reponse.ok || !reponse.body) throw new Error(await reponse.text());
 
       const lecteur = reponse.body.getReader();
       const decodeur = new TextDecoder();
@@ -65,7 +94,6 @@ export default function Chat() {
         accumule += decodeur.decode(value, { stream: true });
         setEnCours(accumule);
       }
-
       if (accumule.trim()) {
         await db.messages.add({
           role: "assistant",
@@ -74,8 +102,6 @@ export default function Chat() {
         });
       }
     } catch {
-      // Le dernier message du candidat n'a pas abouti : on le marque plutôt
-      // que de laisser croire qu'il est parti.
       const dernier = historique.at(-1);
       if (dernier?.id) await db.messages.update(dernier.id, { echec: true });
     } finally {
@@ -85,94 +111,137 @@ export default function Chat() {
   }
 
   async function envoyer(texte: string) {
-    const id = await db.messages.add({
-      role: "user",
-      content: texte,
-      createdAt: Date.now(),
-    });
-    const historique = await db.messages.orderBy("createdAt").toArray();
-    await demander(historique.map((m) => (m.id === id ? { ...m, echec: false } : m)));
+    await db.messages.add({ role: "user", content: texte, createdAt: Date.now() });
+    await demander(await db.messages.orderBy("createdAt").toArray());
   }
 
   async function reessayer(msg: Message) {
     if (!msg.id) return;
     await db.messages.update(msg.id, { echec: false });
-    const historique = await db.messages.orderBy("createdAt").toArray();
-    await demander(historique);
+    await demander(await db.messages.orderBy("createdAt").toArray());
   }
 
-  const vide = messages !== undefined && messages.length === 0;
+  const vide = messages !== undefined && messages.length === 0 && enCours === null;
 
   return (
-    <main className="flex h-full flex-col">
-      <header className="flex shrink-0 items-center gap-3 border-b border-line px-4 py-2.5">
-        <div className="grid size-8 shrink-0 place-items-center rounded-[10px] bg-primary text-[13px] font-semibold text-primary-ink">
+    <main className="relative flex h-full flex-col">
+      <header
+        ref={barre}
+        style={{ ["--p" as string]: 0 }}
+        className="material absolute inset-x-0 top-0 z-10 flex h-[56px] items-center gap-2.5 px-4"
+      >
+        <div className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-[11px] font-semibold text-primary-ink">
           TH
         </div>
-        <div>
-          <div className="text-[14.5px] leading-tight font-semibold">Tuteur DT HR</div>
-          <div className="text-[11.5px] leading-snug text-ink-2">
+        <div className="min-w-0 flex-1">
+          <div className="truncate t-caption leading-tight font-semibold">
+            Tuteur DT&nbsp;HR
+          </div>
+          <div className="truncate text-[11px] leading-tight text-ink-2">
             Technologie Hôtelière
           </div>
         </div>
+        <span className="absolute inset-x-0 bottom-0 h-px bg-line opacity-[var(--p)]" aria-hidden />
       </header>
 
-      <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-3.5 py-4">
+      <div
+        ref={fil}
+        onScroll={surDefilement}
+        className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 pt-[68px] pb-[96px]"
+      >
         {horsLigne && (
-          <div className="flex items-center gap-2 rounded-[10px] bg-stop-soft px-3 py-2 text-[12.5px] text-stop">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          <div className="animate-emerge flex items-center gap-2 self-center rounded-full bg-stop-soft px-3.5 py-1.5 t-caption text-stop">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M2 3l20 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 3.5-2.3M19 13a10 10 0 0 0-6-2.9" />
               <circle cx="12" cy="20" r=".6" fill="currentColor" />
             </svg>
-            Hors ligne — tes réponses partiront dès le retour du réseau
+            Hors ligne — l&apos;envoi reprendra tout seul
           </div>
         )}
 
         {vide && (
-          <>
-            <Bubble role="assistant">
-              Bonsoir&nbsp;! Sur quoi veux-tu travailler aujourd&apos;hui&nbsp;?
-            </Bubble>
-            {/* Un état vide est une barrière sur un clavier de téléphone
-                d'entrée de gamme : on propose des amorces tapables. */}
-            <div className="mt-1 flex flex-col items-start gap-2">
-              {AMORCES.map((a) => (
-                <Button key={a} variante="sec" taille="sm" onClick={() => envoyer(a)}>
-                  {a}
-                </Button>
-              ))}
+          <div className="flex flex-1 flex-col justify-end gap-6 pb-1">
+            {/* L'accueil est un moment, pas un vide. Le tuteur se présente,
+                puis les trois usages du brief sont là, à portée de pouce. */}
+            <div className="animate-materialize flex flex-col items-start">
+              <div className="jeton mb-4 grid size-14 place-items-center rounded-[18px] text-[17px] font-semibold text-primary-ink">
+                TH
+              </div>
+              <h1 className="t-display text-balance">{salutation()}.</h1>
+              <p className="mt-2.5 max-w-[26ch] t-body text-ink-2">
+                Pose ta question comme elle te vient — même mal formulée, on la
+                démêlera ensemble.
+              </p>
             </div>
-          </>
+
+            <div className="flex flex-col gap-2.5">
+              <ActionCard
+                icone={IcoQuestion}
+                titre="Poser une question"
+                detail="Je te guide, tentative par tentative"
+                delai={90}
+                onClick={() => document.querySelector("textarea")?.focus()}
+              />
+              <ActionCard
+                icone={IcoEpreuve}
+                titre="Obtenir une épreuve"
+                detail="Annales réelles, sans le corrigé"
+                delai={145}
+                onClick={() =>
+                  envoyer("Donne-moi une ancienne épreuve de Technologie Hôtelière.")
+                }
+              />
+              <ActionCard
+                icone={IcoReviser}
+                titre="Réviser"
+                detail="Flashcards, fiches et emploi du temps"
+                teinte="accent"
+                delai={200}
+                onClick={() => envoyer("Prépare-moi des flashcards pour réviser.")}
+              />
+            </div>
+          </div>
         )}
 
         {messages?.map((m) => (
           <div key={m.id} className="contents">
-            <Bubble role={m.role} horodatage={m.createdAt}>
+            <Bubble
+              role={m.role}
+              horodatage={m.createdAt}
+              anime={m.role === "user" ? "rise" : false}
+            >
               {m.content}
             </Bubble>
             {m.echec && (
-              <div className="flex items-center justify-end gap-2 text-[11.5px] text-stop">
+              <div className="flex items-center justify-end gap-2 t-caption text-stop">
                 <span>Non délivré</span>
-                <Button
-                  variante="ghost"
-                  taille="sm"
-                  className="text-stop"
+                <button
+                  type="button"
                   onClick={() => reessayer(m)}
+                  className="font-semibold underline underline-offset-2"
                 >
                   Réessayer
-                </Button>
+                </button>
               </div>
             )}
           </div>
         ))}
 
         {enCours !== null &&
-          (enCours === "" ? <Thinking /> : <Bubble role="assistant">{enCours}</Bubble>)}
-
-        <div ref={bas} />
+          (enCours === "" ? (
+            <Thinking />
+          ) : (
+            // Le flou de `emerge` masque le remplacement de l'indicateur par
+            // le texte : sans lui, on voit les deux objets se croiser.
+            <Bubble role="assistant" anime="emerge">
+              {enCours}
+            </Bubble>
+          ))}
       </div>
 
-      <Composer onEnvoi={envoyer} occupe={occupe} />
+      <div className="material absolute inset-x-0 bottom-0 z-10 border-t border-line">
+        <Composer onEnvoi={envoyer} occupe={occupe} />
+      </div>
     </main>
   );
 }

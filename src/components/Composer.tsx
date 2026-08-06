@@ -75,7 +75,8 @@ export function Composer({ onEnvoi, occupe }: Props) {
   }
 
   return (
-    <div className="flex shrink-0 items-end gap-2 border-t border-line bg-surface px-3 py-2.5">
+    /* Pas de fond propre : la barre repose sur la couche translucide parente. */
+    <div className="flex shrink-0 items-end gap-2 px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))]">
       {/* Photo et micro sont à gauche, au même rang que le texte — le brief en
           fait trois entrées égales, l'interface doit le dire. */}
       <button
@@ -122,7 +123,7 @@ export function Composer({ onEnvoi, occupe }: Props) {
           }
         }}
         placeholder={dicte ? "Je t'écoute…" : "Écris ta question…"}
-        className="max-h-32 min-w-0 flex-1 resize-none rounded-[var(--radius-field)] border border-line bg-paper px-3.5 py-2.5 text-[14px] text-ink placeholder:text-ink-3 focus:outline-none"
+        className="max-h-32 min-w-0 flex-1 resize-none rounded-[22px] border border-line bg-[var(--raised)] px-4 py-2.5 t-sub text-ink shadow-[var(--shadow-1)] transition-colors duration-200 placeholder:text-ink-3 focus:border-line-2 focus:outline-none"
       />
 
       <button
@@ -130,7 +131,7 @@ export function Composer({ onEnvoi, occupe }: Props) {
         onClick={envoyer}
         disabled={!texte.trim() || occupe}
         aria-label="Envoyer"
-        className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-ink transition-transform duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.94] disabled:opacity-40 disabled:active:scale-100"
+        className="jeton grid size-10 shrink-0 place-items-center rounded-full text-primary-ink transition-[transform,opacity] duration-[160ms] ease-[var(--ease-out)] active:scale-[0.92] disabled:opacity-35 disabled:shadow-none disabled:active:scale-100"
       >
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 12h15M13 6l6 6-6 6" />

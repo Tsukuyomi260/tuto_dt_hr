@@ -16,14 +16,14 @@ const bouton = cva(
   {
     variants: {
       variante: {
-        pri: "bg-primary text-primary-ink",
-        sec: "border border-line-2 text-ink",
-        ghost: "text-ink-2 hover:text-ink",
+        pri: "bg-[linear-gradient(160deg,var(--primary)_0%,var(--primary-deep)_100%)] text-primary-ink shadow-[var(--shadow-2)] active:shadow-[var(--shadow-1)]",
+        sec: "border border-line bg-[var(--raised)] text-ink shadow-[var(--shadow-1)]",
+        ghost: "text-ink-2",
       },
       taille: {
-        sm: "text-[12.5px] px-3 py-[7px] rounded-[var(--radius-btn)]",
-        base: "text-[13.5px] px-4 py-[9px] rounded-[var(--radius-btn)]",
-        lg: "text-[15px] px-5 py-[14px] w-full rounded-[var(--radius-btn)]",
+        sm: "t-caption px-3.5 py-2 rounded-[var(--radius-btn)]",
+        base: "t-sub px-4 py-2.5 rounded-[var(--radius-btn)]",
+        lg: "t-body px-5 py-4 w-full rounded-[var(--radius-btn)]",
       },
     },
     defaultVariants: { variante: "pri", taille: "base" },

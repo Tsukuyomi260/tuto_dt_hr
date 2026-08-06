@@ -16,6 +16,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   // L'app occupe la hauteur réelle du téléphone, clavier compris.
   viewportFit: "cover",
+  // Le clavier redimensionne la zone visible : la barre de saisie flottante
+  // reste au-dessus de lui au lieu de passer dessous.
+  interactiveWidget: "resizes-content",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
     { media: "(prefers-color-scheme: dark)", color: "#0E1516" },
