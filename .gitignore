@@ -81,3 +81,11 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 *.swp
+
+# --- Annales et corpus dérivé ---
+# Œuvre d'un tiers (DAASSI S. H. Romaric, édition 2025) : ni le PDF ni son
+# texte extrait ne sont versionnés. Le corpus se régénère avec `npm run corpus`.
+# À revoir au moment du déploiement : la production a besoin du corpus.
+data/annales/*
+data/corpus/*
+!data/**/.gitkeep

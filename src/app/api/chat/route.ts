@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
+import { CORPUS, CORPUS_DISPONIBLE } from "@/lib/corpus";
 import { SYSTEM_PROMPT, consigneNiveau, type Niveau } from "@/lib/prompt";
 
 export const runtime = "nodejs";
@@ -73,14 +74,22 @@ export async function POST(req: NextRequest) {
     const flux = getClient().messages.stream({
       model: MODEL,
       max_tokens: 6000,
-      // Le prompt maïeutique est stable : on le met en cache. Les lectures
-      // coûtent ~0,1× — c'est le principal levier de coût du projet.
+      // Prompt maïeutique + annale entière. Le point de cache est sur le
+      // dernier bloc : il couvre les deux. Le préfixe est identique pour tous
+      // les candidats, donc le cache est partagé — on l'écrit une fois, tout
+      // le monde le lit. TTL 1 h : le trafic d'une app de révision est
+      // irrégulier, 5 minutes manqueraient la plupart des lectures.
       system: [
-        {
-          type: "text",
-          text: SYSTEM_PROMPT,
-          cache_control: { type: "ephemeral" },
-        },
+        { type: "text", text: SYSTEM_PROMPT },
+        ...(CORPUS_DISPONIBLE
+          ? [
+              {
+                type: "text" as const,
+                text: `Voici l'intégralité de l'annale de référence. Appuie-toi dessus en priorité : c'est le programme réellement enseigné et évalué au Bénin. Si une question sort de ce document, dis-le plutôt que d'extrapoler.\n\n${CORPUS}`,
+                cache_control: { type: "ephemeral" as const, ttl: "1h" as const },
+              },
+            ]
+          : []),
       ],
       // La réflexion est active par défaut sur Opus 5 ; `medium` garde la
       // latence acceptable sur un réseau lent sans perdre en qualité.
