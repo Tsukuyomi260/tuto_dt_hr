@@ -28,7 +28,11 @@ const BRUIT = [
 
 function extraire(pdf) {
   try {
-    return execFileSync("pdftotext", ["-enc", "UTF-8", "-nopgbrk", pdf, "-"], {
+    // `-layout` préserve la disposition en colonnes. Sans lui, les tableaux
+    // (room rate, plannings d'occupation) sont aplatis en une suite de valeurs
+    // dont on ne peut plus déduire la ligne ni la colonne — or des questions
+    // d'épreuve demandent de calculer à partir de ces tableaux.
+    return execFileSync("pdftotext", ["-layout", "-enc", "UTF-8", "-nopgbrk", pdf, "-"], {
       encoding: "utf8",
       maxBuffer: 64 * 1024 * 1024,
     });
@@ -54,9 +58,23 @@ function nettoyer(brut) {
   const sortie = [];
   for (const ligne of lignes) {
     const t = ligne.trim();
+    // En mode `-layout`, les colonnes d'un tableau sont séparées par des
+    // blancs internes. C'est le seul marqueur fiable : les titres du document
+    // sont souvent centrés, donc indentés eux aussi — l'indentation seule ne
+    // permet pas de les distinguer.
+    const colonnes = /\S {2,}\S/.test(ligne);
+    const indentee = /^ {2,}\S/.test(ligne);
+    const lettres = (t.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) ?? []).length;
+
     // Un titre est une ligne courte tout en majuscules : on la promeut en
     // titre markdown pour que le modèle voie la structure du cours.
+    // `colonnes` écarte les lignes de tableau (« PDJ 1 000F 850F ») et le
+    // seuil de lettres les cellules de montants (« 15 000F ») : toutes deux
+    // sont invariantes par passage en majuscules et étaient promues à tort.
+    // Ne pas filtrer sur les chiffres : « EPREUVE 1 : DT HR 2012 » en a cinq.
     const estTitre =
+      !colonnes &&
+      lettres >= 4 &&
       t.length > 6 &&
       t.length < 90 &&
       t === t.toUpperCase() &&
@@ -71,7 +89,10 @@ function nettoyer(brut) {
     }
     // Une seule ligne vide consécutive.
     if (t === "" && sortie.at(-1) === "") continue;
-    sortie.push(t);
+    // L'alignement des tableaux est porteur de sens : on le conserve, ainsi
+    // que celui des lignes indentées qui les accompagnent (en-têtes sur deux
+    // niveaux). Le reste est cadré à gauche.
+    sortie.push(colonnes || indentee ? ligne : t);
   }
   return sortie.join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }

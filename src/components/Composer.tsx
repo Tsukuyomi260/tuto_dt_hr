@@ -66,6 +66,15 @@ export function Composer({ onEnvoi, occupe }: Props) {
     }
   }
 
+  // Le champ occupe toute la largeur : il doit grandir avec le texte, sinon
+  // une question de trois lignes se lit par une fenêtre d'une seule ligne.
+  useEffect(() => {
+    const el = champ.current;
+    if (!el) return;
+    el.style.height = "0px";
+    el.style.height = `${Math.min(el.scrollHeight, 132)}px`;
+  }, [texte]);
+
   function envoyer() {
     const t = texte.trim();
     if (!t || occupe) return;
@@ -74,69 +83,97 @@ export function Composer({ onEnvoi, occupe }: Props) {
     champ.current?.focus();
   }
 
-  return (
-    /* Pas de fond propre : la barre repose sur la couche translucide parente. */
-    <div className="flex shrink-0 items-end gap-2 px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))]">
-      {/* Photo et micro sont à gauche, au même rang que le texte — le brief en
-          fait trois entrées égales, l'interface doit le dire. */}
-      <button
-        type="button"
-        aria-label="Prendre une photo (bientôt)"
-        title="Entrée par photo — bientôt"
-        disabled
-        className="grid size-9 shrink-0 place-items-center rounded-[11px] text-ink-2 opacity-40"
-      >
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <circle cx="12" cy="12.5" r="3.3" />
-        </svg>
-      </button>
+  const peutEnvoyer = texte.trim() !== "" && !occupe;
 
-      <button
-        type="button"
-        onClick={basculerDictee}
-        disabled={!dictaDispo || occupe}
-        aria-label={dicte ? "Arrêter la dictée" : "Dicter"}
-        title={dictaDispo ? "Dicter" : "Dictée indisponible sur ce navigateur"}
+  return (
+    /* La carte flotte sur la couche translucide parente : c'est elle qui porte
+       le fond et le relief, pas la barre. */
+    <div className="shrink-0 px-3 pt-2 pb-[max(10px,env(safe-area-inset-bottom))]">
+      <div
         className={cn(
-          "grid size-9 shrink-0 place-items-center rounded-[11px]",
-          "transition-transform duration-[160ms] ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.94]",
-          dicte ? "bg-accent-soft text-accent-ink" : "text-ink-2",
-          !dictaDispo && "opacity-40",
+          "rounded-[26px] border border-line bg-[var(--raised)] shadow-[var(--shadow-2)]",
+          "transition-colors duration-200 focus-within:border-line-2",
         )}
       >
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="9" y="2.5" width="6" height="11.5" rx="3" />
-          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5" />
-        </svg>
-      </button>
+        {/* Le champ occupe sa propre ligne, en pleine largeur : une question
+            longue reste lisible d'un coup d'œil au lieu de défiler dans une
+            fente entre deux icônes. */}
+        <textarea
+          ref={champ}
+          rows={1}
+          value={texte}
+          onChange={(e) => setTexte(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              envoyer();
+            }
+          }}
+          aria-label="Ta question"
+          placeholder={dicte ? "Je t'écoute…" : "Écris ta question…"}
+          className="block max-h-[132px] w-full resize-none bg-transparent px-4 pt-3.5 pb-1 t-sub text-ink placeholder:text-ink-3 focus:outline-none"
+        />
 
-      <textarea
-        ref={champ}
-        rows={1}
-        value={texte}
-        onChange={(e) => setTexte(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            envoyer();
-          }
-        }}
-        placeholder={dicte ? "Je t'écoute…" : "Écris ta question…"}
-        className="max-h-32 min-w-0 flex-1 resize-none rounded-[22px] border border-line bg-[var(--raised)] px-4 py-2.5 t-sub text-ink shadow-[var(--shadow-1)] transition-colors duration-200 placeholder:text-ink-3 focus:border-line-2 focus:outline-none"
-      />
+        {/* Photo et micro restent visibles côte à côte, au même rang que le
+            texte — le brief en fait trois entrées égales et interdit de les
+            replier derrière un « + ». */}
+        <div className="flex items-center gap-1 px-2 pt-0.5 pb-2">
+          <button
+            type="button"
+            aria-label="Prendre une photo (bientôt)"
+            title="Entrée par photo — bientôt"
+            disabled
+            className="grid size-9 shrink-0 place-items-center rounded-full text-ink-2 opacity-40"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <circle cx="12" cy="12.5" r="3.3" />
+            </svg>
+          </button>
 
-      <button
-        type="button"
-        onClick={envoyer}
-        disabled={!texte.trim() || occupe}
-        aria-label="Envoyer"
-        className="jeton grid size-10 shrink-0 place-items-center rounded-full text-primary-ink transition-[transform,opacity] duration-[160ms] ease-[var(--ease-out)] active:scale-[0.92] disabled:opacity-35 disabled:shadow-none disabled:active:scale-100"
-      >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M4 12h15M13 6l6 6-6 6" />
-        </svg>
-      </button>
+          <button
+            type="button"
+            onClick={basculerDictee}
+            disabled={!dictaDispo || occupe}
+            aria-label={dicte ? "Arrêter la dictée" : "Dicter"}
+            aria-pressed={dicte}
+            title={dictaDispo ? "Dicter" : "Dictée indisponible sur ce navigateur"}
+            className={cn(
+              "grid size-9 shrink-0 place-items-center rounded-full",
+              "transition-[transform,background-color] duration-[160ms] ease-[var(--ease-out)] active:scale-[0.94]",
+              dicte ? "bg-accent-soft text-accent-ink" : "text-ink-2",
+              !dictaDispo && "opacity-40",
+            )}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="2.5" width="6" height="11.5" rx="3" />
+              <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5" />
+            </svg>
+          </button>
+
+          <div className="flex-1" />
+
+          <button
+            type="button"
+            onClick={envoyer}
+            disabled={!peutEnvoyer}
+            aria-label="Envoyer"
+            className={cn(
+              "grid size-10 shrink-0 place-items-center rounded-full",
+              "transition-[transform,opacity,background-color] duration-[180ms] ease-[var(--ease-out)]",
+              peutEnvoyer
+                ? "jeton text-primary-ink active:scale-[0.92]"
+                : // Inactif, le bouton reste lisible mais cesse d'appeler :
+                  // un aplat plein sans texte à envoyer serait une promesse.
+                  "bg-[var(--line)] text-ink-3",
+            )}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 19V5M6 11l6-6 6 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

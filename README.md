@@ -23,7 +23,7 @@ répond « Configuration du serveur incomplète ».
 | `npm run build` | Build de production |
 | `npm start` | Sert le build |
 | `npm run typecheck` | `tsc --noEmit` |
-| `npm run corpus` | Régénère l'annale depuis `data/annales/*.pdf` |
+| `npm run corpus` | Régénère l'annale depuis `data/annales/*.pdf` — **redémarre le serveur ensuite** : le corpus est lu une seule fois au démarrage |
 | `npm run verif:api` | Appel réel : latence, cache, et surtout — le tuteur relance-t-il ? |
 
 ## Structure

@@ -4,9 +4,11 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useRef, useState } from "react";
 import { ActionCard } from "@/components/ActionCard";
 import { Bubble } from "@/components/Bubble";
+import { CarteEpreuve } from "@/components/CarteEpreuve";
 import { Composer } from "@/components/Composer";
 import { Thinking } from "@/components/Thinking";
-import { db, type Message } from "@/lib/db";
+import { db, type EpreuveJointe, type Message } from "@/lib/db";
+import type { Trame } from "@/lib/flux";
 import { useReglages } from "@/lib/store";
 
 const IcoQuestion = (
@@ -37,10 +39,20 @@ export default function Chat() {
   const niveau = useReglages((e) => e.niveau);
 
   const [enCours, setEnCours] = useState<string | null>(null);
+  /** Épreuve reçue pendant le flux, avant son enregistrement local. */
+  const [epreuveEnCours, setEpreuveEnCours] = useState<EpreuveJointe | null>(null);
   const [occupe, setOccupe] = useState(false);
   const [horsLigne, setHorsLigne] = useState(false);
   const fil = useRef<HTMLDivElement>(null);
   const barre = useRef<HTMLElement>(null);
+  const barreBasse = useRef<HTMLDivElement>(null);
+  /**
+   * Hauteur réelle du composer. Elle varie : le champ grandit avec le texte,
+   * et la zone sûre diffère d'un téléphone à l'autre. Une réserve fixe est
+   * donc soit trop courte — le dernier message passe sous la barre — soit
+   * trop grande. On la mesure.
+   */
+  const [hauteurBasse, setHauteurBasse] = useState(112);
   const colleAuBas = useRef(true);
   const premierJeton = useRef(true);
 
@@ -53,6 +65,16 @@ export default function Chat() {
       window.removeEventListener("online", maj);
       window.removeEventListener("offline", maj);
     };
+  }, []);
+
+  useEffect(() => {
+    const el = barreBasse.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() =>
+      setHauteurBasse(el.getBoundingClientRect().height),
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   function surDefilement() {
@@ -68,11 +90,14 @@ export default function Chat() {
     if (!colleAuBas.current) return;
     const el = fil.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, enCours]);
+    // `hauteurBasse` est dans les dépendances : quand le composer grandit, le
+    // fil doit se recoller au bas, sinon le dernier message remonte hors vue.
+  }, [messages, enCours, epreuveEnCours, hauteurBasse]);
 
   async function demander(historique: Message[]) {
     setOccupe(true);
     setEnCours("");
+    setEpreuveEnCours(null);
     premierJeton.current = true;
     try {
       const reponse = await fetch("/api/chat", {
@@ -87,18 +112,47 @@ export default function Chat() {
 
       const lecteur = reponse.body.getReader();
       const decodeur = new TextDecoder();
+      let tampon = "";
       let accumule = "";
+      let epreuve: EpreuveJointe | undefined;
+
+      // Flux NDJSON : une trame par ligne. Le texte du tuteur et l'énoncé
+      // d'une épreuve arrivent par des canaux distincts — l'énoncé n'est
+      // jamais reconstruit à partir du texte du modèle.
+      const traiter = (ligne: string) => {
+        if (!ligne.trim()) return;
+        let trame: Trame;
+        try {
+          trame = JSON.parse(ligne);
+        } catch {
+          return; // trame tronquée par une coupure réseau : on l'ignore
+        }
+        if (trame.t === "txt") {
+          accumule += trame.v;
+          setEnCours(accumule);
+        } else if (trame.t === "epr") {
+          epreuve = trame.v;
+          setEpreuveEnCours(trame.v);
+        }
+      };
+
       for (;;) {
         const { done, value } = await lecteur.read();
         if (done) break;
-        accumule += decodeur.decode(value, { stream: true });
-        setEnCours(accumule);
+        tampon += decodeur.decode(value, { stream: true });
+        const lignes = tampon.split("\n");
+        // La dernière tranche est peut-être incomplète : elle attend la suite.
+        tampon = lignes.pop() ?? "";
+        for (const ligne of lignes) traiter(ligne);
       }
-      if (accumule.trim()) {
+      traiter(tampon);
+
+      if (accumule.trim() || epreuve) {
         await db.messages.add({
           role: "assistant",
           content: accumule,
           createdAt: Date.now(),
+          ...(epreuve ? { epreuve } : {}),
         });
       }
     } catch {
@@ -106,6 +160,8 @@ export default function Chat() {
       if (dernier?.id) await db.messages.update(dernier.id, { echec: true });
     } finally {
       setEnCours(null);
+      // L'épreuve est désormais lue depuis le stockage local, avec son message.
+      setEpreuveEnCours(null);
       setOccupe(false);
     }
   }
@@ -147,7 +203,10 @@ export default function Chat() {
       <div
         ref={fil}
         onScroll={surDefilement}
-        className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 pt-[68px] pb-[96px]"
+        // La réserve basse suit la hauteur mesurée du composer, plus une
+        // respiration : sinon le dernier message se glisse dessous.
+        style={{ paddingBottom: hauteurBasse + 12 }}
+        className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 pt-[68px]"
       >
         {horsLigne && (
           <div className="animate-emerge flex items-center gap-2 self-center rounded-full bg-stop-soft px-3.5 py-1.5 t-caption text-stop">
@@ -205,13 +264,18 @@ export default function Chat() {
 
         {messages?.map((m) => (
           <div key={m.id} className="contents">
-            <Bubble
-              role={m.role}
-              horodatage={m.createdAt}
-              anime={m.role === "user" ? "rise" : false}
-            >
-              {m.content}
-            </Bubble>
+            {/* L'épreuve précède le message : le candidat lit le sujet avant
+                que le tuteur ne lui pose sa première question. */}
+            {m.epreuve && <CarteEpreuve epreuve={m.epreuve} />}
+            {m.content.trim() !== "" && (
+              <Bubble
+                role={m.role}
+                horodatage={m.createdAt}
+                anime={m.role === "user" ? "rise" : false}
+              >
+                {m.content}
+              </Bubble>
+            )}
             {m.echec && (
               <div className="flex items-center justify-end gap-2 t-caption text-stop">
                 <span>Non délivré</span>
@@ -227,6 +291,8 @@ export default function Chat() {
           </div>
         ))}
 
+        {epreuveEnCours && <CarteEpreuve epreuve={epreuveEnCours} />}
+
         {enCours !== null &&
           (enCours === "" ? (
             <Thinking />
@@ -239,7 +305,9 @@ export default function Chat() {
           ))}
       </div>
 
-      <div className="material absolute inset-x-0 bottom-0 z-10 border-t border-line">
+      {/* Plus de filet supérieur : la carte du composer porte elle-même son
+          contour, un second trait pleine largeur la doublerait. */}
+      <div ref={barreBasse} className="material absolute inset-x-0 bottom-0 z-10">
         <Composer onEnvoi={envoyer} occupe={occupe} />
       </div>
     </main>

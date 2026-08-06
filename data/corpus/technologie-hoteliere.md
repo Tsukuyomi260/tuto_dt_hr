@@ -5,7 +5,9 @@
 
 ## ANNALES DE REVISION
 
-## DIPLÔME DE TECHNICIEN HÔTELLERIE RESTAURATION
+## DIPLÔME DE TECHNICIEN HÔTELLERIE -
+
+## RESTAURATION
 
 ## MATIERE : TECHNOLOGIE HÔTELIERE
 
@@ -126,7 +128,8 @@ prix bas un hébergement et un repas.
 Dans l’hôtellerie, il existe différentes formes d’exploitations ou de gestion.
 L’exploitation d’un établissement hôtelier varie avec l’importance de l’entreprise,
 le luxe et la qualité des prestations. Nous distinguons comme formes
-d’exploitations hôtelières : -les exploitants indépendants -les chaînes hôtelières les groupes hôteliers - la franchise - le mandat de gestion- la gérance libre ou la
+d’exploitations hôtelières : -les exploitants indépendants -les chaînes hôtelières -
+les groupes hôteliers - la franchise - le mandat de gestion- la gérance libre ou la
 location gérance.
 1-Les exploitants indépendants
 Ils sont propriétaires de leurs établissements qu’ils gèrent eux-mêmes, parfois en
@@ -372,18 +375,22 @@ chambre d’hôtel ou différents services hôteliers.
 - Un produit touristique est tout ce dont le touriste a besoin depuis son lieu
 d’origine jusqu’à destination. Il comprend le transport international, le transport
 interne, les produits hôteliers et les loisirs.
+
 - Le produit hôtelier est l’ensemble d’hébergement, de restauration et des loisirs.
+
 - Un forfait touristique est un prix qui englobe un certain nombre de prestations
 à savoir le billet d’avion, le voyage à l’intérieur du pays de destination, le prix de
 la chambre, le prix de restauration et la visite des sites touristiques.
+
 •Importance/Intérêt de la réservation à l’hôtel
 La fonction réservation dans les hôtels à une importance capitale quelle que soit
 leur capacité ou leur catégorie. Pour l’hôtelier et son client, la réservation répond
 à un besoin de sécurité :
-❖ Pour le client, l’assurance de pouvoir se loger ;
-❖ Pour l’hôtelier, la certitude d’une occupation maximale de ses
-chambres.
-•Les Intermédiaires dans la réservation à l’hôtel
+
+   ❖ Pour le client, l’assurance de pouvoir se loger ;
+   ❖ Pour l’hôtelier, la certitude d’une occupation maximale de ses
+       chambres.
+       •Les Intermédiaires dans la réservation à l’hôtel
 Ils sont aussi appelés réservataires ou prescripteurs. Ce sont des entreprises qui
 mettent en relation l’hôtelier et le client. Il s’agit :
 -le voyagiste ou tour-operator : c’est une entreprise commerciale qui conçoit des
@@ -392,32 +399,39 @@ produits touristiques incluant des prestations hôtelières, des produits hôtel
 touristiques.
 -les compagnies aériennes ;
 -les sociétés de service sur Internet
-
 -les centrales de réservation : ce sont des organismes qui gèrent les demandes et
 des offres de chambre grâce à de puissants réseaux informatisés.
+
 •Les Modes de Réservation ou Moyens de Réservation
+
 Pour effectuer une réservation à l’hôtel, le client la possibilité d’utiliser différents
 modes de réservation. Ceux les plus couramment utilisés sont :
-a- la visite :
+
+          a- la visite :
 Deux possibilités : le client arrive à l’hôtel ou un attaché commercial rend visite
 aux clients.
+
 Le contact direct permet de donner au client tous les renseignements qu’ils
 souhaitent et obtenir de lui une garantie écrite ou un versement d’arrhes.
-b- Le téléphone
+
+          b- Le téléphone
 C’est le moyen le plus rapide utilisé actuellement mais ne présente aucune
 garantie pour les deux parties. Une confirmation écrite avec versement d’arrhes
 est indispensable dans la mesure où les délais le permettent.
-c- La lettre
+
+          c- La lettre
 La lettre est un bon moyen de communication avec le client ; il présente les
 garanties nécessaires de réservation et permet de promouvoir les ventes en
 joignant des supports publicitaires.
-d- La télécopie ou fax
+
+          d- La télécopie ou fax
 Il permet de transmettre à distance, en quelques secondes, des documents écrits
 de toutes sortes à partir de terminaux simples sur le réseau téléphonique.
-e- Le courrier électronique
+
+          e- Le courrier électronique
 Il s’agit de l’envoi des documents par e-mail via Internet.
 
-f- L’Internet
+            f- L’Internet
 Ce moyen est de plus en plus utilisé par les particuliers, les entreprises et les
 agences de voyages. La réservation se fait soit directement auprès de l’hôtelier sur
 leur site web soit par l’intermédiaire d’une centrale de réservation ou d’une
@@ -427,9 +441,11 @@ société de service.
 
 Une réservation est ferme lorsque l’hôtelier reçoit du client une lettre, une
 télécopie, des arrhes ou son numéro de carte bancaire.
+
 L’hôtelier doit accuser réception de la réservation en rappelant au client les
 modalités de séjour et dans certains cas joindre des documents publicitaires sur
 l’hôtel.
+
 Un client attendu est un client qui a réservé une chambre d’hôtel et l’ayant
 confirmé en versant les arrhes.
 
@@ -445,50 +461,75 @@ planning prévisionnel de réservation par type de chambre.
 ## LA GESTION DES RESERVATIONS
 
 1-Le Contrat d’Hébergement
+
 1-1-Nature du contrat d’hébergement
+
 Un contrat est tout d’abord un acte de volonté par lequel deux parties souscrivent.
 La location de chambre étant une activité commerciale chaque réservation
 entraîne l’ouverture d’un contrat entre l’hôtelier et son client : le contrat
 d’hébergement.
+
 Le contrat d’hébergement est un contrat :
+
 -Synallagmatique : il fait appel à des obligations réciproques
+
 -Verbal : téléphone ou le client se présente à l’hôtel
+
 -Ecrit : lettre, fax, courriel
+
 -Précis : le client sait quand il vient et quand il doit partir
+
 -A titre onéreux : les prestations ont un prix, elles ne sont pas gratuites
+
 -A exécution successive : ses obligations s’étendent sur une durée déterminée ou
 indéterminée
+
 -Consensuel : il requiert le consentement des deux parties
+
 Ce sont les caractères ou les caractéristiques du contrat d’hébergement.
+
 Le contrat peut être verbal ou écrit ou tacite mais la forme écrite facilite
 l’administration de la preuve en cas de litige.
+
 1-2- Le respect du contrat d’hébergement par l’hôtelier
+
 L’hôtelier a l’obligation de mettre à la disposition du client les prestations
 convenues au contrat en respectant les normes de confort et de propreté ainsi que
 le prix convenu lors de la réservation.
 
 L’hôtelier ne peut pas refuser sans motif valable un client se présentant à la
 réception pour réserver une chambre sous peine de commettre un délit.
+
 En cas de non-paiement de la location, l’hôtelier a sur son client un droit de
 rétention c’est-à-dire qu’il peut garder les bagages si celui-ci ne paye pas. Il jouit
 aussi d’un privilège mobilier sur le prix de vente des bagages, qu’il soit ou non la
 propriété du client.
+
 1-3-Le respect du contrat par le client
+
 Le client doit user de la chambre avec soin et diligence ; il doit se conformer au
 règlement intérieur affiché dans la chambre. Le client répond des dégâts qui lui
 seraient imputables, causées par sa faute, son imprudence ou sa négligence.
+
 En contrepartie de l’usage de la chambre, le client s’engage à verser à l’hôtelier
 le prix de location et des prestations connexes.
+
 2-Les Arrhes
+
 2-1-Définition
+
 Les arrhes représentent une somme d’argent versée par le client à l’hôtelier pour
 garantir la réservation de sa chambre.
+
 2-2-La gestion des arrhes
+
 Les arrhes constituent un moyen de dédit et non un acompte (un acompte est une
 somme d’argent versée par le client à l’hôtelier qui viendra en déduction du
 montant de la facture). L’hôtelier a le devoir de le faire savoir à son client. Pour
 cela deux conditions essentielles doivent être remplies :
+
 -Avoir demandé avec précision le montant à verser
+
 -Formuler clairement par écrit que les arrhes constituent un moyen de dédit et non
 un acompte.
 
@@ -497,123 +538,156 @@ annule le séjour les arrhes deviennent la propriété de l’hôtelier. Par con
 l’hôtelier accepte une réservation ou lorsque le client vient au jour et heure indiqué
 et que l’hôtelier ne peut honorer ses obligations, il doit payer le double des arrhes
 reçues.
+
 2-3- Détermination des arrhes
+
 Aucun texte a priori ne règlemente le montant des arrhes à verser. Il est d’usage
 de réclamer au moins le montant d’une nuitée ; mais le montant des arrhes varie
 selon les saisons touristiques, la durée du séjour et l’arrangement ou le régime de
 séjour.
+
 Ce sont les trois éléments ou critères dont dépend la détermination des arrhes :
+
 •La saison touristique
+
 La saison touristique se subdivise en deux : la haute saison touristique et la basse
 saison touristique.
+
 Au Bénin la haute saison touristique s’étend du 15 décembre à mai de chaque
 année et la basse saison touristique s’étend de mi-juin à novembre de chaque
 année.
+
 La haute saison touristique (Pleine saison) est la période durant laquelle on reçoit
 beaucoup de touristes et la basse saison touristique (saison morte) est la période
 durant laquelle on reçoit moins de touristes.
+
 •La durée du séjour
+
 C’est le nombre de jour que client fera durant son séjour à l’hôtel.
 
 •L’arrangement
+
 Le mode d’arrangement à l’hôtel n’est rien d’autre que le régime de séjour ou la
 condition de séjour. Nous avons :
+
 -Régime sans pension ou hébergement simple : comprend uniquement
 l’hébergement.
+
 -Pension complète : est composée de l’hébergement et trois repas de la journée.
+
 •L’avantage de la pension complète pour l’hôtelier est la vente garantie des
 chambres et des repas pendant une durée donnée.
+
 •Pour le client il bénéficie d’une réduction.
+
 -Demi-pension : comprend l’hébergement et un repas de la journée (déjeuner ou
 diner).
--Bed and Breakfast : comprend l’hébergement et le petit déjeuner.
-Le versement du montant des arrhes tient compte des règles suivantes :
-• Réservation pour une période inférieure à 15 jours
-- Pleine saison
-Chambre sans pension : 2 nuitées
-Chambre en pension : 3 journées
-- Saison morte
-Chambre sans pension : 3 nuitées
-Chambre avec pension : 4 journées
 
-• Réservation pour une période de 15 jours à 1 mois
+-Bed and Breakfast : comprend l’hébergement et le petit déjeuner.
+
+Le versement du montant des arrhes tient compte des règles suivantes :
+
+      • Réservation pour une période inférieure à 15 jours
 - Pleine saison
-Chambre sans pension : 3 nuitées
-Chambre avec pension : 4 journées
+    Chambre sans pension : 2 nuitées
+
+    Chambre en pension : 3 journées
+
 - Saison morte
-Chambre sans pension : 4 nuitées
-Chambre avec pension : 5 journées
+    Chambre sans pension : 3 nuitées
+
+    Chambre avec pension : 4 journées
+
+      • Réservation pour une période de 15 jours à 1 mois
+- Pleine saison
+    Chambre sans pension : 3 nuitées
+
+    Chambre avec pension : 4 journées
+
+- Saison morte
+    Chambre sans pension : 4 nuitées
+
+    Chambre avec pension : 5 journées
 
 ## LA LUTTE CONTRE LES NO-SHOW
 
 Un No-Show est un client ayant réservé une chambre dans un hôtel mais qui ne
 se présente pas aux dates et heure convenues. L’hôtelier afin d’éviter ce genre de
 situation ou de comportement prend certaines dispositions à savoir :
+
 -Etablir une fiche de réservation complète : ceci permettra de contacter le client
 en cas de besoin et de formaliser certains aspects de la réservation.
+
 -Exiger une confirmation écrite : l’envoi d’un fax, d’une lettre par le client permet
 de responsabiliser un peu ce dernier
+
 -Demander les arrhes : la demande des arrhes doit être systématique surtout les
 réservations de long séjour.
+
 -Fixer une heure limite d’arrivée : l’heure d’arrivée est fixée généralement entre
 15h et 20h. Passé ce délai, l’hôtelier est dégagé de ses obligations envers le
 réservataire et peut louer la chambre a un autre client.
+
 -garantir la réservation par carte bancaire : au moment de la réservation, il
 convient de demander au client le numéro de sa carte bancaire ainsi que le délai
 d’expiration.
 
--donner un numéro d’annulation : pour éviter tout litige, l’hôtelier communique
-un numéro d’annulation au client. Les deux parties ont la preuve de l’appel
-téléphonique d’annulation.
--Contrôler les réservations : le contrôle des réservations non confirmées par la
-vérification rigoureuse des plannings des annulations et des confirmations permet
-de relancer le client en cas de dépassement des délais.
+  -donner un numéro d’annulation : pour éviter tout litige, l’hôtelier communique
+  un numéro d’annulation au client. Les deux parties ont la preuve de l’appel
+  téléphonique d’annulation.
+
+  -Contrôler les réservations : le contrôle des réservations non confirmées par la
+  vérification rigoureuse des plannings des annulations et des confirmations permet
+  de relancer le client en cas de dépassement des délais.
 
 ## LA SURLOCATION OU OVERBOOKING A L’HÔTEL
 
-La surlocation consiste à louer plus de chambres que l’hôtel n’en possède afin de
-pallier les défaillances des clients ‘’no-show’’ et essayer d’obtenir une vente
-optimale des chambres.
+  La surlocation consiste à louer plus de chambres que l’hôtel n’en possède afin de
+  pallier les défaillances des clients ‘’no-show’’ et essayer d’obtenir une vente
+  optimale des chambres.
 
 ## COMMENT EVALUER LES DISPONIBILITES A L’HÔTEL
 
-Pour évaluer les disponibilités il faut effectuer le calcul suivant :
+  Pour évaluer les disponibilités il faut effectuer le calcul suivant :
 
 Chambres disponibles = Chambres en état de location – chambres en recouches
 
 ## COMMENT CALCULER LE TAUX D’OCCUPATION A L’HÔTEL
 
-Nombre de chambres louées
+                            Nombre de chambres louées
 Taux d’Occupation =
-Nombre de chambre disponible
-
-× 100
+                         Nombre de chambre disponible            × 100
 
 ## COMMENT CALCULER LE NOMBRE DE CHAMBRES RESTANT A
 
-LOUER
+                                        LOUER
+
 Chambre restant à louer = Chambres disponibles – Chambres louées (Chambres
 occupées)
 
 ## LA FICHE CARDEX OU KARDEX
 
-La fiche cardex est un document qui permet de renseigner et de connaître les
-habitudes de consommation des clients, leurs goûts et leurs exigences. Elle est
-utilisée pour attribuer la chambre aux clients habituels. Un fichier cardex tenu
-à jour est très utile pour :
--Personnaliser l’accueil du client lors de son arrivée,
--Analyser la segmentation de la clientèle qui fréquente l’hôtel,
--Fidéliser la clientèle par l’envoi de mailing à l’occasion de promotion ou
-d’événement particulier pouvant intéresser ceux-ci.
+   La fiche cardex est un document qui permet de renseigner et de connaître les
+   habitudes de consommation des clients, leurs goûts et leurs exigences. Elle est
+   utilisée pour attribuer la chambre aux clients habituels. Un fichier cardex tenu
+   à jour est très utile pour :
+
+   -Personnaliser l’accueil du client lors de son arrivée,
+   -Analyser la segmentation de la clientèle qui fréquente l’hôtel,
+   -Fidéliser la clientèle par l’envoi de mailing à l’occasion de promotion ou
+   d’événement particulier pouvant intéresser ceux-ci.
 
 ## PLANNING D’OCCUPATION JOURNALIERE OU LE ROOM RACK
 
-Le Planning d’Occupation Journalière ou le Room Rack (terme anglais)
-permet de connaître à tout moment le nombre des chambres libres et occupées. Il
-existe plusieurs types de modèle de planning d’occupation journalière à savoir :
--Modèle manuscrit
--Modèle de type Whitney
--Planning géré par un logiciel informatique
+   Le Planning d’Occupation Journalière ou le Room Rack (terme anglais)
+   permet de connaître à tout moment le nombre des chambres libres et occupées. Il
+   existe plusieurs types de modèle de planning d’occupation journalière à savoir :
+
+   -Modèle manuscrit
+
+   -Modèle de type Whitney
+
+   -Planning géré par un logiciel informatique
 
 ## ROOM RATE
 
@@ -635,37 +709,53 @@ la facture du client.
 
 Il existe plusieurs moyens de paiement qui peuvent être utilisés pour régler la note
 d’hôtel.
+
 1-Espèces
+
 Le seul moyen libératoire immédiat pour s’acquitter d’une dette est le paiement
 en espèces.
+
 2- Chèque de voyage ou Traveller- chèque
+
 Le Traveller- chèque répond au principe de double signature car la première
 signature apposée devant le banquier doit être conforme à la deuxième signature
 apposée devant le caissier de l’hôtel. On parle ainsi du principe de la double
 signature.
 
 3-Le chèque bancaire
+
 Ce mode de paiement (qui n’est pas libératoire de la dette), nécessite certaines
 vérifications afin d’éviter les impayés, un chèque bancaire ou postal doit porter
 certaines mentions obligatoires. Il est recommandé de comparer la signature avec
 celle déposée sur la carte d’identité ou le passeport du client, et de relever au dos
 du chèque le Numéro de pièce d’identité.
+
 4- La Carte bancaire
+
 Pour accepter l’utilisation de la carte bancaire le caissier de l’hôtel doit vérifier
 si :
 - elle est bien établie au nom du débiteur,
+
 - la date d’expiration n’est pas dépassée,
+
 - le numéro ne figure pas sur la liste d’opposition qui indique les numéros des
 cartes à ne pas honorer,
+
 -elle est bien signée par le titulaire,
+
 -elle est valable dans le pays visité.
+
 Il existe deux types de cartes bancaires à savoir :
+
 -La carte de crédit : elle présente des avantages pour l’hôtelier et le client.
 L’utilisateur de la carte apprécie la simplification des règlements à l’hôtel et au
 restaurant puisqu’elle lui permet d’engager des frais importants et parfois
 imprévus.
+
 -La carte de débit
+
 5- Les bons d’agences ou Voucher
+
 Les bons d’agences sont émis par les agences de voyage pour concrétiser les
 relations qui existent entre elle et un hôtel.
 
@@ -674,106 +764,63 @@ client présente l’original du bon d’agence en paiement de sa note. L’orig
 être conforme à l’exemplaire (le double) ayant permis la réservation. A la fin de
 son séjour le caissier envoie un courrier à l’agence de voyage avec la facture et
 l’original du bon pour régularisation.
+
 Il existe plusieurs bons d’agences : Bon de simple recommandation ; Bon de dépôt
 ou de ‘’deposit’’ ; le Bon de forfait couvrant un séjour déterminé (Il est établi
 lorsqu’il s’agit d’un voyage organisé ou lorsque la durée du séjour et les services
 à fournir sont exactement connus et précis) et le Bon plein crédit (Il n’est remis
 qu’aux clients VIP ou qu’à une clientèle sélectionnée. Le client porteur d’un bon
 de plein de crédit n’a rien à payer à l’hôtel.)
+
 6-Le virement bancaire
+
 C’est une opération d’envoi (transfert) et de réception d’argent entre deux
 comptes bancaires.
+
 7-Monnaie électronique
+
 C’est un portefeuille électronique.
 
 ## LES PROCEDURES D’ENCAISSEMENTS A L’HÔTEL
 
-Nature du Condition d’acceptation Opérations de vérifications à Documents
-à
-paiement
-effectuer
-établir ou à éditer
-en fin de service
-Espèces
-Aucune
--Vérifier la concordance avec la Bordereau
-de
-note d’hôtel.
-remise d’espèces
--Recompter sur le comptoir avec le
-client.
--Vérifier l’état des billets et le
-graphisme
-Chèque
-Pièce d’identité
--Vérifier le nom à l’aide de la pièce Bordereau
-de
-bancaire ou
-d’identité.
-remise de chèque
-postal
--Vérifier le montant en chiffres et
-en lettres
--Vérifier s’il s’agit d’une banque
-connue et l’état du chèque
-Chèque de Pièce
-d’identité
-ou -Faire apposer la seconde signature Si
-devises
-voyage
-passeport
-par le client au moment du étrangères :
-Seconde
-signature paiement
-Bordereau
-de
-conforme à la première
--Vérifier la correspondance avec la remise de devise
-facture.
-Devises
-Passeport
-ou
-carte -Attention au change et à la Bordereau
-de
-d’identité
-monnaie.
-remise de devises
--Donner l’original du bordereau de
-change au client.
--Accepter uniquement les devises
-en billets.
-Carte
-de Vérifier : Date de validité, Système électronique :
-Bordereau
-de
-paiement
-signature, N° ne figurant Usage du Terminal de Paiement remise de cartes de
-(carte
-pas
-sur
-la
-liste Electronique (TPE).
-paiement
-bancaire)
-d’opposition
-Bon
-Original donné par le
--Vérifier la nature et la valeur du
-Courrier envoyé à
-d’Agence
-client à son arrivée
-bon.
-l’agence e voyage
--Encaisser soit les extras, soit le
-avec la facture et
-montant de sa facture moins la
-l’original du bon
-valeur du bon.
-pour
--Faire signer l’original de la
-régularisation.
-facture si c’est un bon de plein
-crédit
+Nature du Condition d’acceptation Opérations de vérifications à Documents                           à
+paiement                                   effectuer                             établir ou à éditer
+                                                                                 en fin de service
+Espèces      Aucune                        -Vérifier la concordance avec la Bordereau             de
+                                           note d’hôtel.                         remise d’espèces
+                                           -Recompter sur le comptoir avec le
+                                           client.
+                                           -Vérifier l’état des billets et le
+                                           graphisme
+Chèque       Pièce d’identité              -Vérifier le nom à l’aide de la pièce Bordereau        de
+bancaire ou                                d’identité.                           remise de chèque
+postal                                     -Vérifier le montant en chiffres et
+                                           en lettres
+                                           -Vérifier s’il s’agit d’une banque
+                                           connue et l’état du chèque
+Chèque de Pièce         d’identité     ou -Faire apposer la seconde signature Si             devises
+voyage       passeport                     par le client au moment du étrangères :
+             Seconde            signature paiement                               Bordereau        de
+             conforme à la première        -Vérifier la correspondance avec la remise de devise
+                                           facture.
+Devises      Passeport      ou      carte -Attention au change et à la Bordereau                  de
+             d’identité                    monnaie.                              remise de devises
+                                           -Donner l’original du bordereau de
+                                           change au client.
+                                           -Accepter uniquement les devises
+                                           en billets.
+Carte     de Vérifier : Date de validité, Système électronique :                 Bordereau        de
+paiement     signature, N° ne figurant Usage du Terminal de Paiement remise de cartes de
+(carte       pas      sur     la     liste Electronique (TPE).                   paiement
+bancaire)    d’opposition
+Bon          Original donné par le         -Vérifier la nature et la valeur du   Courrier envoyé à
+d’Agence     client à son arrivée          bon.                                  l’agence e voyage
+                                           -Encaisser soit les extras, soit le   avec la facture et
+                                           montant de sa facture moins la        l’original du bon
+                                           valeur du bon.                        pour
+                                           -Faire signer l’original de la        régularisation.
+                                           facture si c’est un bon de plein
+                                           crédit
 
 ## LA COMMUNICATION A L’HÔTEL
 
@@ -784,17 +831,13 @@ Le message à l’hôtel est rédigé par le ou la réceptionniste lorsqu’un c
 séjour à l’hôtel est manqué par une autre personne dans le cadre d’une visite ou
 par appel téléphonique.
 
-- Reçu le...................................................
-- Par....................................................
-- L’heure.........................
-- Pour (le client)
-- N° de chambre
-- de la part de ..................................
-Rappeler
-
-Rappellera
-
-Urgent
+    - Reçu le...................................................
+    - Par....................................................
+    - L’heure.........................
+    - Pour (le client)
+    - N° de chambre
+    - de la part de ..................................
+       Rappeler                                  Rappellera        Urgent
 
 NB : Une fois le message rédigé le réceptionniste glisse un exemplaire du message
 dans la caisse où il y a la clef du client (carte magnétique) ou sous sa porte.
@@ -844,49 +887,65 @@ Le deposit est un dépôt de valeur dans un coffre ou dépôt d’argent en gara
 
 ## LES EVENEMENTS A L’HÔTEL
 
-Certains évènements surviennent à l’hôtel. Nous avons la naissance - la maladie le décès - la violation de domicile - le vol - l’incendie.
+Certains évènements surviennent à l’hôtel. Nous avons la naissance - la maladie -
+le décès - la violation de domicile - le vol - l’incendie.
 
 ## VOCABULAIRE USUEL A L’HÔTEL
 
 -Acompte ou Avance : somme d’argent versée par le client à l’hôtelier qui
 viendra en déduction du montant de la facture.
+
 -Arrangement : condition de séjour choisi (Hébergement simple, Pension
 complète, Demi-pension, Bed and Breakfast).
-
 -Arrival time : heure limite d’arrivée prévue d’un client.
+
 -Checking list : liste type de contrôle ou de vérification.
+
 -Front desk : ensemble des services de l’hôtel qui traitent de toutes les opérations
 en contact direct avec la clientèle, comme par exemple la réception, la
 conciergerie.
+
 -Voyage à forfait : voyage tout compris. Ensemble des prestations de services
 (transport, hébergement, restauration, visites, distractions) proposé à prix fixe par
 un organisateur de voyage ou de séjour.
+
 -Nuitée : nuit passée dans un établissement d’hébergement.
+
 -Planning prévisionnel : document qui synthétise les réservations à venir.
+
 -Rooming list : liste nominative des clients d’un groupe qui indique les numéros
 de chambres correspondants.
+
 -Sleep out : chambre avec bagage mais dont le client passe la nuit ailleurs.
+
 -Tour leader : responsable d’un groupe de client.
+
 -Voucher : Bon d’agence. Titre de réservation émis par les agences de voyages.
+
 -Waiting list : liste d’attente pour les réservations.
 
 ## ABREVIATIONS UTILISEES COURAMMENT EN HÔTELLERIE
 
 -B&B : Bed and Breakfast
--1/2 P/P : Demi-pension/Pension
--H.S ou OOO : Chambre hors service.
--p.p.p.j : par personne et par jour
--tbc : to be confirmed (le client doit confirmer sa réservation)
 
+-1/2 P/P : Demi-pension/Pension
+
+-H.S ou OOO : Chambre hors service.
+
+-p.p.p.j : par personne et par jour
+
+-tbc : to be confirmed (le client doit confirmer sa réservation)
 -TO : Taux d’Occupation
+
 -VIP : Very Important Personality
+
 -VSA : Very Special Attention (Une attention particulière est apportée à ce client).
 
 RECUEIL D’ANCIENNES EPREUVES DT HR 2012 à 2025
 
 ## EPREUVE 1 : DT HR 2012
 
-SUJET
+                                       SUJET
 Mise en Situation Professionnelle : A la recherche d’un emploi, tu as déposé un
 dossier de candidature au poste de réceptionniste à l’hôtel ‘’Les Collines’’
 nouvellement construit dans ta localité.
@@ -916,7 +975,6 @@ non annulée par un client ?
 des réservations non honorées et non annulées par les clients et les réservations
 tardives ?
 4- Les acomptes ont-elles la même signification que les arrhes ? Justifie ta réponse
-
 C- Monsieur Zannou téléphone au client de la chambre 102, absent de l’hôtel et
 demande qu’il soit rappelé. Tu as reçu l’appel et le message le 06 juillet 2012 à
 09h 45 mn.
@@ -927,7 +985,7 @@ message au client ?
 
 ## EPREUVE 2 : DT HR 2014
 
-SUJET
+                                       SUJET
 Un hôtel de tourisme est un établissement commercial d’hébergement, classé et
 qui offre des chambres ou des appartements à une clientèle de passage qui effectue
 un séjour caractérisé par une location à la journée, à la semaine ou au mois, mais
@@ -958,7 +1016,7 @@ de chambre pour une salle de bain
 
 ## EPREUVE 3 : DT HR 2015
 
-SUJET
+                                       SUJET
 Coffi est un médecin béninois. Dans le cadre de ses congés professionnels, il
 décide de faire ‘’une croisière sur le Nil’’. ‘’La croisière sur le Nil’’ est un produit
 du voyagiste ‘’La Palme’’
@@ -984,7 +1042,7 @@ que le réceptionniste doit mettre à jour ?
 
 ## EPREUVE 4 : DT HR 2017
 
-SUJET
+                                       SUJET
 Texte
 Le couple David Rock, désireux de venir passer deux (02) semaines de vacances
 au bénin, a fait réserver une ‘’chambre double’’ à l’hôtel Mystica de Cotonou.
@@ -1014,7 +1072,8 @@ de crédit pour le règlement de la note
 
 ## EPREUVE 5 : DT HR 2018
 
-SUJET
+                                     SUJET
+
 Texte
 L’agent de réservation transmet au front office, le dossier de Monsieur Codjo
 Pamphile, togolais résidant en France. Ce monsieur sera en mission pour 8 jours
@@ -1023,22 +1082,10 @@ arrive et choisit comme arrangement la pension complète. Après trois nuitées,
 agents ont dû lui changer de chambre à cause d’une panne sur le climatiseur. A
 l’issue de son séjour, le client a réglé la note par traveller check. Les tarifs des
 prestations sont les suivants :
-a- tarifs affichés
-
-b- tarifs de pension
-
-ch : 20 000F/nuitée
-
-ch :15 000F
-
-Petit déj : 2 500F
-
-Petit déj : 1 500F
-
-Repas :5.000F
-
-Repas : 3.500F
-
+a- tarifs affichés                                          b- tarifs de pension
+ch : 20 000F/nuitée                                         ch :15 000F
+Petit déj : 2 500F                                          Petit déj : 1 500F
+Repas :5.000F                                                Repas : 3.500F
 Travail à faire
 1-Compréhension de texte
 a- Donnez la raison pour laquelle les réceptionnistes ont transféré le client et ses
@@ -1066,7 +1113,7 @@ de la chambre de Monsieur Codjo
 
 ## EPREUVE 6 : DT HR 2019
 
-SUJET
+                                         SUJET
 Texte :
 Un hôtel de tourisme est un établissement d’hébergement exploité en permanence
 pendant toute l’année ou seulement pendant une ou plusieurs saisons de l’année.
@@ -1096,7 +1143,7 @@ caractéristiques ?
 
 ## EPREUVE 7 : DT HR 2020
 
-SUJET
+                                     SUJET
 Texte :
 Ali est le chef de réception de l’hôtel ‘’L’international de Porto-Novo ‘’ qui
 dispose de cent (100) chambres. Le matin du lundi 17 mai 2020, il se prépare à
@@ -1121,31 +1168,25 @@ C) Citez les deux départements opérationnels d’un hôtel, puis les services 
 composent chacun de ces départements. Indiquez l'appellation des chefs de
 chacun de ces services et un personnel du service.
 Vous pouvez exploiter le tableau ci-dessous :
-Département
-
-Services
-
-Chef du service
-
-Personnel
+ Département          Services            Chef du service      Personnel
 
 2- Contrôle de vocabulaire
-a) Montrez la différence entre les termes suivants, couramment utilisés en
-hôtellerie : room-rack et room-rate ; motel et auberge ; résidence de
-tourisme et hôtel de tourisme ; service des étages et room service
-b) Expliquez les mots suivants : liftier, groom, voucher, huissier, concierge,
-voiturier, blanchisseur, linger
-c) Que signifie l’expression ‘’faire une chambre ‘’ ?
+  a) Montrez la différence entre les termes suivants, couramment utilisés en
+     hôtellerie : room-rack et room-rate ; motel et auberge ; résidence de
+     tourisme et hôtel de tourisme ; service des étages et room service
+  b) Expliquez les mots suivants : liftier, groom, voucher, huissier, concierge,
+     voiturier, blanchisseur, linger
+  c) Que signifie l’expression ‘’faire une chambre ‘’ ?
 3- Contrôle de connaissances techniques
-a) Dites comment on peut évaluer les disponibilités à la réception de l’hôtel
-b) Indiquez le document qui permet d’attribuer les chambres aux clients
-habituels
-c) Expliquez l’expression « bon de plein crédit »
-d) Montrez la différence entre un « deposit » et un « débours client »
+  a) Dites comment on peut évaluer les disponibilités à la réception de l’hôtel
+  b) Indiquez le document qui permet d’attribuer les chambres aux clients
+     habituels
+  c) Expliquez l’expression « bon de plein crédit »
+  d) Montrez la différence entre un « deposit » et un « débours client »
 
 ## EPREUVE 8 : DT HR 2021
 
-SUJET
+                                      SUJET
 TEXTE
 L’hôtel ‘’Inter’’ est situé au quartier Kanta Borifa dans la ville de Natitingou,
 département de l’Atacora. Il est caractérisé par son paysage pittoresque et son
@@ -1161,39 +1202,13 @@ Les couples ghanéens sont munis d’un voucher pre-paid, car ils sont venus par
 l’intermédiaire de l’agence de voyage «The First » avec qui l’hôtel ‘’Inter’’ a un
 contrat d’allotement.
 Voici le room rate de ‘’Inter Hôtel’’ de Natitingou
-Haute Saison Basse
-Saison
-Hébergement
-
-## 15 000F
-
-## 10 000F
-
-PDJ
-1 000F
-850F
-Repas
-4 000F
-3 500F
-Pension Complète 30 000F
-
-## 25 000F
-
-Demi-Pension
-
-## 28 000F
-
-## 20 000F
-
-Promotion Période des
-Fêtes
-8 000F
-700F
-2 000F
-
-## 20 000F
-
-## 18 000F
+                  Haute Saison Basse                  Promotion Période des
+                               Saison                 Fêtes
+ Hébergement      15 000F      10 000F                8 000F
+ PDJ              1 000F       850F                   700F
+ Repas            4 000F       3 500F                 2 000F
+ Pension Complète 30 000F      25 000F                20 000F
+ Demi-Pension     28 000F      20 000F                18 000F
 
 L’un des couples est en demi-pension, le second en pension complète tandis que
 Coffi est en régime sans pension.
@@ -1217,7 +1232,7 @@ c) Comment gère-t-on les arrhes dans un hôtel ?
 
 ## EPREUVE 9 : DT HR 2022
 
-SUJET
+                                      SUJET
 TEXTE
 Jean-Pierre Dansou, de nationalité béninoise résidant en France, a signé un contrat
 d’hébergement avec l’hôtel Haie-Vive de Cotonou pour des vacances de deux
@@ -1254,7 +1269,7 @@ par rapport à celles orales ou verbales.
 
 ## EPREUVE 10 : DT HR 2023
 
-SUJET
+                                             SUJET
 TEXTE
 Un hôtel est un établissement d’hébergement commercial qui accueille les clients pour
 des séjours à la journée et à la semaine pour diverses motivations. Un hôtel dispose donc
@@ -1286,150 +1301,44 @@ part.
 
 ## EPREUVE 11 : DT HR 2024
 
-SUJET
-Contexte
-Vous venez d’être embauché(e) à la réception de l’hôtel ‘’LE DON’S’’, un hôtel
-homologué d’une capacité de 15 chambres toutes climatisées. Il dispose d’un service
-navette pour le transfert de ses clients. Une piscine olympique avec son bar ‘’La
-Pergola’’ qui est un service plus, offert aux clients en séjour dans cet hôtel. A votre prise
-de service le 25/06/2023, plusieurs documents ont été mis à votre disposition pour
-accompagner vos tâches quotidiennes dont les documents suivants 1 et 2. Au cours de
-cette journée de travail, vous avez constaté que le client de la réservation 56 ne s’est pas
-présenté.
+                                                SUJET
+      Contexte
+              Vous venez d’être embauché(e) à la réception de l’hôtel ‘’LE DON’S’’, un hôtel
+      homologué d’une capacité de 15 chambres toutes climatisées. Il dispose d’un service
+      navette pour le transfert de ses clients. Une piscine olympique avec son bar ‘’La
+      Pergola’’ qui est un service plus, offert aux clients en séjour dans cet hôtel. A votre prise
+      de service le 25/06/2023, plusieurs documents ont été mis à votre disposition pour
+      accompagner vos tâches quotidiennes dont les documents suivants 1 et 2. Au cours de
+      cette journée de travail, vous avez constaté que le client de la réservation 56 ne s’est pas
+      présenté.
 Document 1
 Titre :
 Date : 25/06/2021
-N° Résa
-Arrivée
-000033
-25/06/2023
-000031
-25/06/2023
-000030
-25/06/2023
-000034
-25/06/2023
-000032
-25/06/2023
-000056
-25/06/2023
-000064
-25/06/2023
-Nombre de réservations : ?
-
-Départ
-30/06/2023
-29/06/2023
-03/07/2023
-12/07/2023
-28/06/2023
-28/06/2023
-27/06/2023
-
-Client
-Jean François
-Descampagnes
-Renier
-Dramane
-Salifou
-Bio Yara
-Orou Bio Yo
-
-Pax Statut
-Chambre
-Confirmé
-Confirmé
-Confirmé
-Confirmé
-Confirmé
-Confirmé
-Nombre de personnes : ?
+N° Résa             Arrivée          Départ         Client             Pax Statut            Chambre
+000033              25/06/2023       30/06/2023     Jean François      1   Confirmé          301
+000031              25/06/2023       29/06/2023     Descampagnes       2   Confirmé          304
+000030              25/06/2023       03/07/2023     Renier             3   Confirmé          304
+000034              25/06/2023       12/07/2023     Dramane            1   Confirmé          205
+000032              25/06/2023       28/06/2023     Salifou            4   Confirmé          201
+000056              25/06/2023       28/06/2023     Bio Yara           2                     202
+000064              25/06/2023       27/06/2023     Orou Bio Yo        2   Confirmé          108
+Nombre de réservations : ?                                                Nombre de personnes : ?
 
 Document 2
-Titre :
-N°♯
-
-Confort
-
-Vue
-
-XXBWC
-XXBWC
-XXDWC
-XXBWC
-OXDWC
-OXBWC
-OXBWC
-OXBDWC
-OBWC
-
-## HANDI OBWC
-
-Mer
-Mer
-Mer
-Jardin
-Jardin
-Jardin
-Rue
-Jardin
-Mer
-Jardin
-
-Nb
-Pers
-Jean François 1
-Descampagnes 2
-Renier
-Dramane
-Salifou
-Bio Yara
-Orou Bio Yo
-
-Nationalité
-
-Prix
-
-Date : 25/06/2023
-Dates départ
-
-France
-France
-Belge
-Belge
-Niger
-Bénin
-Bénin
-
-30.000
-45.000
-45.000
-35.000
-35.000
-35.000
-25.000
-
-30/06/2023
-29/06/2023
-29/06/2023
-30/06/2023
-30/06/2023
-29/06/2023
-14/07/2023
-
-Derlin
-Gilles
-
-France
-Allemagne
-
-45.000
-25.000
-
-11/07/2023
-30/06/2023
-
-Nom Client
+                                                  Titre :
+                                                                                        Date : 25/06/2023
+N°♯   Confort            Vue        Nom Client    Nb          Nationalité   Prix         Dates départ
+                                                  Pers
+101   XXBWC              Mer        Jean François 1           France        30.000        30/06/2023
+102   XXBWC              Mer        Descampagnes 2            France        45.000        29/06/2023
+105   XXDWC              Mer        Renier        2           Belge         45.000        29/06/2023
+107   XXBWC              Jardin     Dramane       2           Belge         35.000        30/06/2023
+108   OXDWC              Jardin     Salifou                   Niger         35.000        30/06/2023
+109   OXBWC              Jardin     Bio Yara      2           Bénin         35.000        29/06/2023
+110   OXBWC              Rue        Orou Bio Yo   1           Bénin         25.000        14/07/2023
+111   OXBDWC             Jardin
+112   OBWC               Mer        Derlin            2       France        45.000        11/07/2023
+115   HANDI OBWC         Jardin     Gilles            1       Allemagne     25.000        30/06/2023
 
 Tâche
 I- Compréhension du texte
@@ -1454,7 +1363,7 @@ le client.
 
 ## EPREUVE 12 : DT HR 2025
 
-SUJET
+                                      SUJET
 Contexte : La planification de l’occupation de chambres à l’hôtel.
 La fonction accueil-réception a un rôle essentiel dans la satisfaction du client
 parce qu’elle conditionne sa perception de l’hôtel et du séjour : elle détermine la
@@ -1485,7 +1394,6 @@ paiera sa note par chèque de voyage.
 I- Compréhension du texte
 1- Relevez dans le texte les chambres arrivées du jour, les chambres en recouche,
 les chambres clients attendus et les chambres en départs de cette journée.
-
 2- Identifiez dans le texte le client ou les clients qui ont effectué un séjour de
 douze (12) nuitées.
 3- Mettez en relief dans le texte le client ou les clients qui ont effectué un séjour
@@ -1506,7 +1414,8 @@ preuve de la perte de son objet dans sa chambre.
 
 ## EPREUVE 1 : DT HR 2012
 
-A1- Le terme professionnel anglais consacré pour désigner ce bon de réservation est
+A-
+1- Le terme professionnel anglais consacré pour désigner ce bon de réservation est
 leVoucher.
 2- Pour confirmer cette réservation, le réceptionniste doit demander à l’Agence
 de voyages « Destination Afrique » de verser des arrhes ou d’envoyer une
@@ -1519,7 +1428,8 @@ l’agence de voyage « Destination Afrique » avec la facture et l’original d
 d’agence pour encaissement.
 -Si les clients ont dîné au restaurant : le réceptionniste facture cette prestation
 extra aux clients KPOKOU et encaisse le règlement.
-B1- Le terme professionnel qui recouvre une réservation non honorée et non
+B-
+1- Le terme professionnel qui recouvre une réservation non honorée et non
 annulée par un client est : No-show.
 2- L’argent versé devient la propriété de l’hôtel.
 3- Les dispositions envisagées en hôtellerie pour atténuer les effets des
@@ -1527,33 +1437,32 @@ réservations non honorées et non annulées par les clients et les réservation
 tardives sont :
 -Etablir une fiche de réservation complète : ceci permettra de contacter le client
 en cas de besoin et de formaliser certains aspects de la réservation.
+
 -Exiger une confirmation écrite : l’envoi d’un fax, d’une lettre par le client permet
 de responsabiliser un peu ce dernier
+
 -Demander les arrhes : la demande des arrhes doit être systématique surtout les
 réservations de long séjour.
 
 -Fixer une heure limite d’arrivée : l’heure d’arrivée est fixée généralement entre
 15h et 20h. Passé ce délai, l’hôtelier est dégagé de ses obligations envers le
 réservataire et peut louer la chambre a un autre client.
+
 4- Non, les acomptes n’ont pas la même signification que les arrhes.
 Justification : les acomptes constituent une somme d’argent versée par le client
 à l’hôtelier qui viendra en déduction du montant de sa facture tandis que les arrhes
 représentent une somme d’argent versée par le client à l’hôtelier pour garantir la
 réservation de chambre à l’hôtel.
-C1- Le message
-- Reçu le 06 juillet 2012.
-- Par le réceptionniste.
-- L’heure : à 09h 45 min.
-- Pour le client de la chambre 102.
-- N° de chambre : 102.
-- de la part de Monsieur ZANNOU.
-Rappeler
-
-×
-
-Rappellera
-
-Urgent
+C-
+1- Le message
+     - Reçu le 06 juillet 2012.
+     - Par le réceptionniste.
+     - L’heure : à 09h 45 min.
+     - Pour le client de la chambre 102.
+     - N° de chambre : 102.
+     - de la part de Monsieur ZANNOU.
+       Rappeler    ×
+                                    Rappellera                    Urgent
 
 2- Pour transmettre le message au client, le réceptionniste glisse un exemplaire du
 message dans la caisse où il y a la clef du client (carte magnétique) ou sous sa
@@ -1624,7 +1533,6 @@ transport international et le transport à l’interne du pays de destination.
 -Les compagnies aériennes ;
 -Les voyagistes ou tour operators ;
 -Les centrales de réservation ;
-
 -Les sociétés de service sur internet.
 7- Le schéma de fonctionnement d’une centrale de réservation
 8- Définition du mot et expression :
@@ -1635,11 +1543,13 @@ prestations consommées par le client.
 9- Explication de la gestion des arrhes dans un hôtel
 Les arrhes représentent une somme d’argent versée par le client à l’hôtelier pour
 garantir la réservation de sa chambre.
+
 Dans ses conditions lorsque le client ne vient pas au jour et heure indiqué ou
 annule le séjour les arrhes deviennent la propriété de l’hôtelier. Par contre lorsque
 l’hôtelier accepte une réservation ou lorsque le client vient au jour et heure indiqué
 et que l’hôtelier ne peut honorer ses obligations, il doit payer le double des arrhes
 reçues.
+
 10- Explication : Client No-show et Overbooking
 -Client No-show : client qui réserve une chambre à l’hôtel mais qui ne se présente
 pas au jour et heure indiqué.
@@ -1839,89 +1749,60 @@ climatiseur, fuite d’eau)
 -Chambre ne convenant pas au client
 3- Pour calculer le taux d’occupation des chambres d’un hôtel on pose la formule
 suivante :
-Nombre de chambres louées
+                               Nombre de chambres louées
 Taux d’Occupation =
-Nombre de chambre disponible
-
-× 100
+                            Nombre de chambre disponible            × 100
 
 4- La nature de la relation entre un client et un hôtelier est le contrat
 d’hébergement.
 Les caractéristiques du contrat d’hébergement sont :
 -Synallagmatique : il fait appel à des obligations réciproques ;
+
 -Verbal : téléphone ou le client se présente à l’hôtel ;
+
 -Ecrit : lettre, fax, courriel ;
+
 -Précis : le client sait quand il vient et quand il doit partir ;
+
 5-Quatre moyens de paiement d’une note d’hôtel :
 -Espèce ;
 -Chèque bancaire ;
--Carte bancaire ;
-
--Virement bancaire.
+-Carte bancaire ;       -Virement bancaire.
 
 ## EPREUVE 7 : DT HR 2020
 
-1- Compréhension de texte
-a) Les passages du texte qui montrent qu’Ali a reçu, dans la journée du 17 mai,
-les clients ayant réservé d’une part, et les clients n’ayant pas réservé d’autre part.
-■ Les passages du texte qui montrent qu’Ali a reçu, dans la journée du 17 mai, les
-clients ayant réservé d’une part :
-« Le matin du lundi 17 mai 2020, il se prépare à accueillir un groupe de clients
-attendus. »
-■ Les clients n’ayant pas réservé d’autre part :
-« Dans cette même journée, il reçoit un nombre important de clients n’ayant pas
-de bagage, des clients walk-in ».
-b) Identification dans le texte des mots ou expressions qui montrent qu’Ali a
-accueilli les clients ayant fait moins d’une journée d’une part, puis des clients
-ayant laissé leur bagage dans les chambres et passé la nuit ailleurs d’autre part.
-■ les clients ayant fait moins d’une journée d’une part :
-« des clients day-use »
-■ des clients ayant laissé leur bagage dans les chambres et passé la nuit ailleurs
-d’autre part :
-« des clients sleep-out »
-C) Les deux départements opérationnels d’un hôtel, puis les services qui
-composent chacun de ces départements, l'appellation des chefs de chacun de ces
-services et un personnel du service.
-Département
-Hébergement
-
-Services
-Réception
-Service des étages ou house
-keeping
-
-Restauration
-
-Economat
-Cuisine
-Restaurant
-
-Bar
-
-Chef du service
-Chef réceptionniste
-Gouvernante
-d’étage
-ou
-superviseur général
-Chef économe
-Chef de cuisine
-Directeur
-du
-restaurant
-ou
-Maître d’hôtel
-Chef barman
-
-Personnel
-Réceptionniste
-Femme de chambre ou valet
-de chambre
-Econome
-Sous-chef de cuisine
-Chef de rang
-
-Barman
+        1- Compréhension de texte
+        a) Les passages du texte qui montrent qu’Ali a reçu, dans la journée du 17 mai,
+        les clients ayant réservé d’une part, et les clients n’ayant pas réservé d’autre part.
+        ■ Les passages du texte qui montrent qu’Ali a reçu, dans la journée du 17 mai, les
+        clients ayant réservé d’une part :
+        « Le matin du lundi 17 mai 2020, il se prépare à accueillir un groupe de clients
+        attendus. »
+        ■ Les clients n’ayant pas réservé d’autre part :
+        « Dans cette même journée, il reçoit un nombre important de clients n’ayant pas
+        de bagage, des clients walk-in ».
+        b) Identification dans le texte des mots ou expressions qui montrent qu’Ali a
+        accueilli les clients ayant fait moins d’une journée d’une part, puis des clients
+        ayant laissé leur bagage dans les chambres et passé la nuit ailleurs d’autre part.
+        ■ les clients ayant fait moins d’une journée d’une part :
+        « des clients day-use »
+        ■ des clients ayant laissé leur bagage dans les chambres et passé la nuit ailleurs
+        d’autre part :
+        « des clients sleep-out »
+        C) Les deux départements opérationnels d’un hôtel, puis les services qui
+        composent chacun de ces départements, l'appellation des chefs de chacun de ces
+        services et un personnel du service.
+Département       Services                          Chef du service       Personnel
+Hébergement       Réception                         Chef réceptionniste   Réceptionniste
+                  Service des étages ou house       Gouvernante           Femme de chambre ou valet
+                  keeping                           d’étage          ou   de chambre
+                                                    superviseur général
+Restauration      Economat                          Chef économe          Econome
+                  Cuisine                           Chef de cuisine       Sous-chef de cuisine
+                  Restaurant                        Directeur        du   Chef de rang
+                                                    restaurant       ou
+                                                    Maître d’hôtel
+                  Bar                               Chef barman           Barman
 
 2- Contrôle de vocabulaire
 a) La différence entre ces termes couramment utilisés en hôtellerie :
@@ -2003,7 +1884,6 @@ journée (déjeuner ou dîner).
 repas de la journée.
 -Régime sans pension : régime de séjour qui comprend uniquement
 l’hébergement.
-
 b) En hôtellerie, l’acronyme B&B signifie Bed & Breakfast.
 3-Contrôle de connaissances techniques
 a) Six (06) moyens de règlement de la note du client :
@@ -2045,7 +1925,9 @@ touristique au Bénin couvre la période de mi-juin à novembre de chaque année
 II-Contrôle de connaissances professionnelles
 1- Trois caractères ou caractéristiques du contrat d’hébergement :
 -Synallagmatique : il fait appel à des obligations réciproques
+
 -Verbal : téléphone ou le client se présente à l’hôtel
+
 -Ecrit : lettre, fax, courriel
 2- Les éléments qui permettent de calculer le montant des arrhes à réclamer au
 client sont :
@@ -2110,16 +1992,15 @@ chambre. Le réceptionniste souhaite au client un séjour agréable.
 2- Le rôle et l’utilité du cardex :
 Le cardex a pour rôle de renseigner et de connaître les habitudes de consommation
 des clients, leurs goûts et leurs exigences. Il est très utile pour :
+
 -Personnaliser l’accueil du client lors de son arrivée,
 -Analyser la segmentation de la clientèle qui fréquente l’hôtel,
 -Fidéliser la clientèle par l’envoi de mailing à l’occasion de promotion ou
 d’événement particulier pouvant intéresser ceux-ci.
 3- Le taux d’occupation d’un hôtel se calcule par la formule suivante :
-Nombre de chambres louées
+                         Nombre de chambres louées
 Taux d’Occupation =
-Nombre de chambre disponible
-
-× 100
+                          Nombre de chambre disponible              × 100
 
 4- Les moyens de réservation d’une part et les méthodes de réservation d’autre
 part :
@@ -2136,57 +2017,39 @@ part :
 
 ## EPREUVE 11 : DT HR 2024
 
-I- Compréhension du texte
-1- Le titre correspondant aux documents 1 et 2.
-Document 1 : La liste des clients attendus pour la journée du 25/06/2023
-Document 2 : Planning d’occupation journalière (room rack) de la journée du
-25/06/2023
-2- Les conforts des chambres du document 2
-N°♯
+      I- Compréhension du texte
+      1- Le titre correspondant aux documents 1 et 2.
+      Document 1 : La liste des clients attendus pour la journée du 25/06/2023
+      Document 2 : Planning d’occupation journalière (room rack) de la journée du
+      25/06/2023
+      2- Les conforts des chambres du document 2
+N°♯   Confort           Signification
+101   XXBWC             Chambre à deux lits d’une personne avec Bain et Toilettes
+102   XXBWC             Chambre à deux lits d’une personne avec Bain et Toilettes
+105   XXDWC             Chambre à deux lits d’une personne avec Douche et Toilettes
+107   XXBWC             Chambre à deux lits d’une personne avec Bain et Toilettes
+108   OXDWC             Chambre à grand lit et un lit d’une personne avec Douche et Toilettes
+109   OXBWC             Chambre à grand lit et un lit d’une personne avec Bain et Toilettes
+110   OXBWC             Chambre à grand lit et un lit d’une personne avec Bain et Toilettes
+111   OXBDWC            Chambre à grand lit et un lit d’une personne avec Bain, Douche et
+                        Toilettes
+112   OBWC              Chambre à grand lit avec Bain et Toilettes
+115   HANDI             Chambre pour handicapé à grand lit avec Bain et Toilettes
+      OBWC
+      3- Pour trouver le nombre de chambres restant à louer, il faut effectuer le calcul
+      suivant :
+      Chambres restant à louer = Chambres disponibles – Chambres louées
+      Chambres restant à louer = 15 – 10 = 05 Chambres
+      4- Le taux d’occupation de l’hôtel pour cette journée est :
+                             Nombre de chambres louées
+      Taux d’Occupation =------------------------------------------- × 100
+                               Nombre de chambre disponible
 
-Confort
-XXBWC
-XXBWC
-XXDWC
-XXBWC
-OXDWC
-OXBWC
-OXBWC
-OXBDWC
+      Nombre de chambres louées = 10
+      Nombre de chambre disponibles = 15
 
-OBWC
-HANDI
-OBWC
-3- Pour trouver le nombre de chambres restant à louer, il faut effectuer le calcul
-suivant :
-
-Signification
-Chambre à deux lits d’une personne avec Bain et Toilettes
-Chambre à deux lits d’une personne avec Bain et Toilettes
-Chambre à deux lits d’une personne avec Douche et Toilettes
-Chambre à deux lits d’une personne avec Bain et Toilettes
-Chambre à grand lit et un lit d’une personne avec Douche et Toilettes
-Chambre à grand lit et un lit d’une personne avec Bain et Toilettes
-Chambre à grand lit et un lit d’une personne avec Bain et Toilettes
-Chambre à grand lit et un lit d’une personne avec Bain, Douche et
-Toilettes
-Chambre à grand lit avec Bain et Toilettes
-Chambre pour handicapé à grand lit avec Bain et Toilettes
-
-Chambres restant à louer = Chambres disponibles – Chambres louées
-Chambres restant à louer = 15 – 10 = 05 Chambres
-4- Le taux d’occupation de l’hôtel pour cette journée est :
-Nombre de chambres louées
-Taux d’Occupation =------------------------------------------- × 100
-Nombre de chambre disponible
-
-Nombre de chambres louées = 10
-Nombre de chambre disponibles = 15
-
-## TO = ----------------------------------- × 100
-
-## TO = 66,66 %
-
+TO = ----------------------------------- × 100
+TO = 66,66 %
 II- Contrôle de vocabulaire
 Définition des termes professionnels :
 1- no-show : terme qui recouvre une réservation non honorée par un client.
@@ -2200,7 +2063,7 @@ III- Contrôle de connaissances professionnelles
 1-a) Le document dans lequel les opérations sont enregistrées, les opérations
 comptables relatives aux clients et à l’hôtel au niveau de la caisse de l’hôtel est :
 Main courante.
-b) La main se présente en trois parties : Partie gestion commerciale ; Partie
+  b) La main se présente en trois parties : Partie gestion commerciale ; Partie
 gestion des ventes ; Partie gestion des encaissements.
 2- Pour obtenir le crédit à reporter sur la main courante, on fait la différence ou la
 soustraction entre le Total Général et le Total des Encaissements pour chaque
@@ -2271,10 +2134,15 @@ lequel un hôtelier s’engage à fournir les prestations convenues à un client
 
 3- Les caractères de ce contrat sont :
 -Synallagmatique : il fait appel à des obligations réciproques ;
+
 -Verbal : téléphone ou le client se présente à l’hôtel ;
+
 -Ecrit : lettre, fax, courriel ;
+
 -Précis : le client sait quand il vient et quand il doit partir ;
+
 -A titre onéreux : les prestations ont un prix, elles ne sont pas gratuites.
+
 4- La responsabilité illimitée : on parle de responsabilité illimitée dans le cas de
 la perte d’objet de valeur confié à l’hôtel. L’hôtel paye jusqu’à concurrence de la
 valeur de l’objet perdu.
