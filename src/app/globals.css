@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Jetons — repris de direction-visuelle.html (§8 du brief).
+   Les valeurs vivent dans :root pour rester thémables à l'exécution ;
+   @theme inline les expose à Tailwind sans figer la valeur.
+   ============================================================ */
+
+:root {
+  --paper: #f7f5f0;
+  --surface: #ffffff;
+  --ink: #1c2a2b;
+  --ink-2: #5d6e6f;
+  --ink-3: #8b9a9a;
+  --line: #e2dfd7;
+  --line-2: #cbc7bc;
+  --primary: #0f4f4a;
+  --primary-ink: #ffffff;
+  --agent-edge: #0f4f4a;
+  --accent: #c07c2c;
+  --accent-ink: #96601c;
+  --accent-soft: #f6eada;
+  --ok: #2f6b4f;
+  --stop: #8c3a2e;
+  --stop-soft: #f7e5e1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0e1516;
+    --surface: #16201f;
+    --ink: #e8edeb;
+    --ink-2: #9fb0b0;
+    --ink-3: #6f8080;
+    --line: #243030;
+    --line-2: #354443;
+    --primary: #17564f;
+    --primary-ink: #ffffff;
+    --agent-edge: #5fb3a9;
+    --accent: #d89a4a;
+    --accent-ink: #d89a4a;
+    --accent-soft: #2b2216;
+    --ok: #63b489;
+    --stop: #d07c6c;
+    --stop-soft: #2c1c19;
+  }
+}
+
+/* Le sélecteur explicite doit pouvoir gagner dans les deux sens. */
+:root[data-theme="dark"] {
+  --paper: #0e1516;
+  --surface: #16201f;
+  --ink: #e8edeb;
+  --ink-2: #9fb0b0;
+  --ink-3: #6f8080;
+  --line: #243030;
+  --line-2: #354443;
+  --primary: #17564f;
+  --agent-edge: #5fb3a9;
+  --accent: #d89a4a;
+  --accent-ink: #d89a4a;
+  --accent-soft: #2b2216;
+  --ok: #63b489;
+  --stop: #d07c6c;
+  --stop-soft: #2c1c19;
+}
+
+:root[data-theme="light"] {
+  --paper: #f7f5f0;
+  --surface: #ffffff;
+  --ink: #1c2a2b;
+  --ink-2: #5d6e6f;
+  --ink-3: #8b9a9a;
+  --line: #e2dfd7;
+  --line-2: #cbc7bc;
+  --primary: #0f4f4a;
+  --agent-edge: #0f4f4a;
+  --accent: #c07c2c;
+  --accent-ink: #96601c;
+  --accent-soft: #f6eada;
+  --ok: #2f6b4f;
+  --stop: #8c3a2e;
+  --stop-soft: #f7e5e1;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-agent-edge: var(--agent-edge);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-ok: var(--ok);
+  --color-stop: var(--stop);
+  --color-stop-soft: var(--stop-soft);
+
+  --radius-pinch: 6px;
+  --radius-btn: 12px;
+  --radius-card: 14px;
+  --radius-bubble: 18px;
+  --radius-field: 20px;
+
+  /* Aucune police téléchargée : 0 octet sur données comptées. */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  /* Deux graisses seulement : 400 et 600. Les graisses intermédiaires sont
+     souvent synthétisées sur Android d'entrée de gamme et rendent mal. */
+  font-weight: 400;
+  overscroll-behavior-y: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Entrée d'un message — 240 ms ease-out. Sans elle, le fil paraît cassé. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise 240ms var(--ease-out) both;
+}
+
+@keyframes pulse-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+.animate-dot {
+  animation: pulse-dot 1.25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

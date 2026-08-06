@@ -1,0 +1,799 @@
+<title>Tuto DT HR IA — Direction visuelle</title>
+<style>
+/* ============ CHROME DE LA PAGE (suit le thème du lecteur) ============ */
+:root{
+  --pg-bg:#F7F5F0; --pg-card:#FFFFFF; --pg-ink:#1C2A2B; --pg-ink2:#5D6E6F; --pg-ink3:#8B9A9A;
+  --pg-line:#E2DFD7; --pg-line2:#CBC7BC; --pg-primary:#0F4F4A; --pg-accent:#96601C;
+  --pg-accent-fill:#C07C2C; --pg-accent-soft:#F6EADA;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --e-out:cubic-bezier(.23,1,.32,1);
+  --e-inout:cubic-bezier(.77,0,.175,1);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --pg-bg:#0E1516; --pg-card:#16201F; --pg-ink:#E8EDEB; --pg-ink2:#9FB0B0; --pg-ink3:#6F8080;
+    --pg-line:#243030; --pg-line2:#354443; --pg-primary:#5FB3A9; --pg-accent:#D89A4A;
+    --pg-accent-fill:#C07C2C; --pg-accent-soft:#2B2216;
+  }
+}
+:root[data-theme="dark"]{
+  --pg-bg:#0E1516; --pg-card:#16201F; --pg-ink:#E8EDEB; --pg-ink2:#9FB0B0; --pg-ink3:#6F8080;
+  --pg-line:#243030; --pg-line2:#354443; --pg-primary:#5FB3A9; --pg-accent:#D89A4A;
+  --pg-accent-fill:#C07C2C; --pg-accent-soft:#2B2216;
+}
+:root[data-theme="light"]{
+  --pg-bg:#F7F5F0; --pg-card:#FFFFFF; --pg-ink:#1C2A2B; --pg-ink2:#5D6E6F; --pg-ink3:#8B9A9A;
+  --pg-line:#E2DFD7; --pg-line2:#CBC7BC; --pg-primary:#0F4F4A; --pg-accent:#96601C;
+  --pg-accent-fill:#C07C2C; --pg-accent-soft:#F6EADA;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg-bg);color:var(--pg-ink);font-family:var(--sans);
+  font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.prose{max-width:66ch}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+a{color:var(--pg-primary);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--pg-accent-fill);outline-offset:3px;border-radius:4px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--pg-accent);font-weight:650}
+
+header.top{padding:56px 0 44px;border-bottom:1px solid var(--pg-line);
+  background:linear-gradient(180deg,var(--pg-accent-soft) 0%,transparent 80%)}
+header.top h1{font-size:clamp(30px,4.4vw,50px);line-height:1.05;letter-spacing:-.028em;
+  font-weight:660;margin:14px 0 0;max-width:17ch}
+.standfirst{margin:20px 0 0;font-size:clamp(16.5px,1.7vw,19px);color:var(--pg-ink2);max-width:58ch}
+.meta{display:flex;flex-wrap:wrap;gap:9px 24px;margin-top:26px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--pg-ink3)}
+.meta b{color:var(--pg-ink2);font-weight:650}
+
+section{padding:58px 0;border-bottom:1px solid var(--pg-line)}
+section h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.022em;line-height:1.15;margin:12px 0 0;font-weight:650}
+section h3{font-size:19px;letter-spacing:-.012em;margin:40px 0 0;font-weight:640}
+section p{margin:14px 0 0}
+.lead{font-size:17.5px;color:var(--pg-ink2);margin-top:16px}
+.hint{font-family:var(--mono);font-size:11px;color:var(--pg-ink3);letter-spacing:.04em;margin-top:12px}
+
+/* ---- principes ---- */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:26px}
+.pcard{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:18px 18px 20px}
+.pcard .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--pg-accent);font-weight:650;display:block;margin-bottom:8px}
+.pcard h4{font-size:15px;margin:0 0 7px;font-weight:640}
+.pcard p{margin:0;font-size:14px;line-height:1.55;color:var(--pg-ink2)}
+
+/* ---- palette ---- */
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px;margin-top:22px}
+.sw{border:1px solid var(--pg-line);border-radius:11px;overflow:hidden;background:var(--pg-card)}
+.sw .chipc{height:76px;display:block}
+.sw .info{padding:11px 12px 13px}
+.sw .nm{font-size:13.4px;font-weight:640;letter-spacing:-.005em}
+.sw .hx{font-family:var(--mono);font-size:11.5px;color:var(--pg-ink2);margin-top:3px;text-transform:uppercase}
+.sw .use{font-size:11.8px;color:var(--pg-ink3);margin-top:6px;line-height:1.4}
+.ratio{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:4px;
+  background:var(--pg-accent-soft);color:var(--pg-accent);font-weight:650;margin-top:7px;letter-spacing:.03em}
+
+/* ---- type ---- */
+.spec{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;
+  padding:8px 22px;margin-top:22px}
+.row{display:grid;grid-template-columns:118px 1fr;gap:20px;align-items:baseline;
+  padding:15px 0;border-bottom:1px solid var(--pg-line)}
+.row:last-child{border-bottom:none}
+.row .lbl{font-family:var(--mono);font-size:10.5px;color:var(--pg-ink3);letter-spacing:.06em;text-transform:uppercase}
+.t30{font-size:30px;font-weight:600;letter-spacing:-.022em;line-height:1.2}
+.t24{font-size:24px;font-weight:600;letter-spacing:-.018em;line-height:1.25}
+.t20{font-size:20px;font-weight:600;letter-spacing:-.012em;line-height:1.3}
+.t17{font-size:17px;font-weight:400;line-height:1.55}
+.t15{font-size:15px;font-weight:400;line-height:1.5;color:var(--pg-ink2)}
+.t13{font-size:13px;font-weight:600;letter-spacing:.02em}
+
+/* ============ JETONS DES COMPOSANTS (portée locale) ============ */
+.ui{
+  --paper:#F7F5F0; --surface:#FFFFFF; --ink:#1C2A2B; --ink2:#5D6E6F; --ink3:#8B9A9A;
+  --line:#E2DFD7; --line2:#CBC7BC;
+  --primary:#0F4F4A; --primary-ink:#FFFFFF; --agent-bg:#FFFFFF; --agent-edge:#0F4F4A;
+  --accent:#C07C2C; --accent-ink:#96601C; --accent-soft:#F6EADA;
+  --ok:#2F6B4F; --warn:#96601C; --stop:#8C3A2E; --stop-soft:#F7E5E1;
+  --r-bub:18px; --r-card:14px; --r-btn:12px;
+  color:var(--ink);
+}
+.ui.dark{
+  --paper:#0E1516; --surface:#16201F; --ink:#E8EDEB; --ink2:#9FB0B0; --ink3:#6F8080;
+  --line:#243030; --line2:#354443;
+  --primary:#17564F; --primary-ink:#FFFFFF; --agent-bg:#16201F; --agent-edge:#5FB3A9;
+  --accent:#D89A4A; --accent-ink:#D89A4A; --accent-soft:#2B2216;
+  --ok:#63B489; --warn:#D89A4A; --stop:#D07C6C; --stop-soft:#2C1C19;
+}
+
+/* ---- téléphone ---- */
+.phones{display:flex;gap:26px;flex-wrap:wrap;margin-top:26px}
+.phonewrap{flex:0 0 auto}
+.phonelbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--pg-ink3);margin-bottom:10px;font-weight:650}
+.phone{width:314px;height:646px;border-radius:34px;border:1px solid var(--line2);
+  background:var(--paper);overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 2px 6px rgba(20,40,40,.08),0 18px 44px rgba(20,40,40,.10)}
+.ui.dark .phone{box-shadow:0 2px 6px rgba(0,0,0,.5),0 18px 44px rgba(0,0,0,.42)}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px 4px;
+  font-size:11.5px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.appbar{display:flex;align-items:center;gap:11px;padding:8px 16px 12px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.avatar{width:32px;height:32px;border-radius:10px;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-size:13px;font-weight:600;flex:0 0 auto}
+.ui.dark .avatar{background:var(--agent-edge);color:#0E1516}
+.appbar .nm{font-size:14.5px;font-weight:600;line-height:1.2}
+.appbar .sub{font-size:11.5px;color:var(--ink2);line-height:1.3}
+
+.thread{flex:1 1 auto;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+
+/* ---- bulles ---- */
+.bub{max-width:82%;padding:11px 14px;font-size:14.4px;line-height:1.52;
+  animation:rise 240ms var(--e-out) both}
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.bub.agent{align-self:flex-start;background:var(--agent-bg);color:var(--ink);
+  border:1px solid var(--line);border-left:2.5px solid var(--agent-edge);
+  border-radius:6px var(--r-bub) var(--r-bub) 6px}
+.bub.me{align-self:flex-end;background:var(--primary);color:var(--primary-ink);
+  border-radius:var(--r-bub) var(--r-bub) 6px var(--r-bub)}
+.bub.relance{background:var(--accent-soft);border-left-color:var(--accent);color:var(--ink)}
+.bub .tag{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent-ink);font-weight:650;margin-bottom:5px}
+.bub .time{display:block;font-size:10.5px;margin-top:5px;opacity:.62;font-variant-numeric:tabular-nums}
+
+/* réflexion */
+.thinking{align-self:flex-start;display:flex;align-items:center;gap:8px;padding:11px 15px;
+  background:var(--agent-bg);border:1px solid var(--line);border-left:2.5px solid var(--agent-edge);
+  border-radius:6px var(--r-bub) var(--r-bub) 6px}
+.thinking .lb{font-size:12.5px;color:var(--ink2)}
+.dots{display:flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--agent-edge);opacity:.35;
+  animation:pulse 1.25s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.16s}
+.dots i:nth-child(3){animation-delay:.32s}
+@keyframes pulse{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* ---- carte pièce jointe ---- */
+.attach{align-self:flex-start;max-width:88%;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-card);padding:13px;display:flex;gap:12px;align-items:flex-start}
+.attach .ico{width:38px;height:44px;border-radius:7px;background:var(--accent-soft);
+  border:1px solid var(--accent);display:grid;place-items:center;flex:0 0 auto;
+  font-family:var(--mono);font-size:9px;font-weight:700;color:var(--accent-ink);letter-spacing:.04em}
+.attach .ttl{font-size:13.6px;font-weight:640;line-height:1.35}
+.attach .sub{font-size:11.8px;color:var(--ink2);margin-top:3px;font-variant-numeric:tabular-nums}
+.attach .act{margin-top:9px;display:flex;gap:7px}
+
+/* ---- boutons ---- */
+.btn{font-family:inherit;font-size:13.4px;font-weight:600;border-radius:var(--r-btn);
+  padding:9px 15px;border:1px solid transparent;cursor:pointer;
+  transition:transform 160ms var(--e-out),background 160ms ease,border-color 160ms ease;
+  display:inline-flex;align-items:center;gap:7px;line-height:1.2}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--primary);color:var(--primary-ink)}
+.btn.sec{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn.ghost{background:transparent;color:var(--ink2);border-color:transparent;padding-left:6px;padding-right:6px}
+.btn.sm{font-size:12.2px;padding:7px 12px}
+.ui.dark .btn.pri{background:var(--agent-edge);color:#0E1516}
+@media (hover:hover) and (pointer:fine){
+  .btn.sec:hover{border-color:var(--ink3)}
+  .btn.ghost:hover{color:var(--ink)}
+}
+
+/* ---- actions rapides ---- */
+.qa{display:flex;flex-direction:column;gap:8px;padding:2px 0}
+.qbtn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-card);padding:13px 14px;cursor:pointer;
+  font-family:inherit;color:var(--ink);
+  transition:transform 160ms var(--e-out),border-color 160ms ease}
+.qbtn:active{transform:scale(.985)}
+@media (hover:hover) and (pointer:fine){.qbtn:hover{border-color:var(--line2)}}
+.qbtn .qi{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);
+  display:grid;place-items:center;flex:0 0 auto}
+.qbtn .qt{font-size:14px;font-weight:600;line-height:1.25}
+.qbtn .qs{font-size:11.8px;color:var(--ink2);margin-top:2px;line-height:1.35}
+
+/* ---- barre de saisie ---- */
+.composer{flex:0 0 auto;border-top:1px solid var(--line);background:var(--surface);
+  padding:9px 11px;display:flex;align-items:center;gap:8px}
+.iconbtn{width:36px;height:36px;border-radius:11px;border:1px solid transparent;background:transparent;
+  color:var(--ink2);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;
+  transition:transform 160ms var(--e-out),background 160ms ease,color 160ms ease}
+.iconbtn:active{transform:scale(.94)}
+@media (hover:hover) and (pointer:fine){.iconbtn:hover{background:var(--paper);color:var(--ink)}}
+.field{flex:1 1 auto;min-width:0;background:var(--paper);border:1px solid var(--line);
+  border-radius:20px;padding:9px 14px;font-size:13.6px;color:var(--ink3)}
+.iconbtn.send{background:var(--primary);color:var(--primary-ink);border-radius:50%}
+.ui.dark .iconbtn.send{background:var(--agent-edge);color:#0E1516}
+svg{display:block}
+
+/* ---- flashcard ---- */
+.fcstage{perspective:1400px;width:262px;height:172px;margin:0}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;cursor:pointer;
+  border:0;padding:0;background:none;font-family:inherit;
+  transition:transform 460ms var(--e-inout)}
+.fc.flipped{transform:rotateY(180deg)}
+.fc .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:var(--r-card);padding:18px;display:flex;flex-direction:column;justify-content:space-between;
+  text-align:left;border:1px solid var(--line)}
+.fc .front{background:var(--surface)}
+.fc .back{background:var(--accent-soft);border-color:var(--accent);transform:rotateY(180deg)}
+.fc .kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent-ink);font-weight:650}
+.fc .q{font-size:15px;font-weight:600;line-height:1.35;color:var(--ink)}
+.fc .a{font-size:13.6px;line-height:1.45;color:var(--ink)}
+.fc .flip{font-size:11px;color:var(--ink3);font-family:var(--mono);letter-spacing:.04em}
+
+/* ---- états système ---- */
+.states{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.banner{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:10px;font-size:12.8px;line-height:1.4}
+.banner.off{background:var(--stop-soft);color:var(--stop);border:1px solid transparent}
+.banner.sync{background:var(--accent-soft);color:var(--accent-ink)}
+.sending{align-self:flex-end;display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ink3);
+  font-family:var(--mono);letter-spacing:.03em}
+.failed{align-self:flex-end;max-width:82%}
+.failed .bub{opacity:.55}
+.failrow{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:5px;
+  font-size:11.5px;color:var(--stop)}
+.skel{height:11px;border-radius:6px;background:var(--line);position:relative;overflow:hidden}
+.skel::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
+  animation:shim 1.35s linear infinite}
+.ui.dark .skel::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
+@keyframes shim{to{transform:translateX(100%)}}
+
+/* ---- vitrine composant ---- */
+.demo{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px}
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(292px,1fr));gap:16px;margin-top:24px}
+.demo .cap{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);font-weight:650;margin-bottom:14px}
+.stack{display:flex;flex-direction:column;gap:10px}
+
+/* ---- échelles ---- */
+.scale{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
+.scale .it{text-align:center}
+.scale .bx{background:var(--pg-accent-soft);border:1px solid var(--pg-accent-fill);margin-bottom:7px}
+.scale .lb{font-family:var(--mono);font-size:10.5px;color:var(--pg-ink3)}
+.spacing{display:flex;align-items:flex-end;gap:12px;margin-top:22px;flex-wrap:wrap}
+.spacing .sp{background:var(--pg-primary);width:22px;border-radius:3px}
+
+pre{background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:18px 20px;
+  overflow-x:auto;font-family:var(--mono);font-size:12.2px;line-height:1.7;color:var(--pg-ink2);margin-top:22px}
+pre b{color:var(--pg-ink);font-weight:600}
+pre i{color:var(--pg-ink3);font-style:normal}
+
+ul.tight{margin:14px 0 0;padding-left:20px}
+ul.tight li{margin:7px 0;font-size:15px;color:var(--pg-ink2);line-height:1.55}
+ul.tight li b{color:var(--pg-ink);font-weight:640}
+ul.tight li::marker{color:var(--pg-accent-fill)}
+.note{margin-top:24px;padding:17px 19px;border:1px dashed var(--pg-line2);border-radius:11px;background:var(--pg-card)}
+.note p{margin:0;font-size:13.8px;color:var(--pg-ink2);line-height:1.55}
+.note b{color:var(--pg-ink)}
+footer{padding:44px 0 70px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important}
+  .fc{transition:none}
+}
+@media (max-width:640px){
+  .wrap{padding:0 18px}
+  section{padding:42px 0}
+  .row{grid-template-columns:1fr;gap:6px}
+  .phone{width:100%;max-width:314px}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <span class="eyebrow">Tuto DT HR IA — Phase 1, livrable n°1</span>
+    <h1>Direction visuelle</h1>
+    <p class="standfirst">Palette, typographie et bibliothèque de composants, dérivées des contraintes
+      réelles du public&nbsp;: téléphone d'entrée de gamme, réseau intermittent, révision du soir,
+      stress d'examen.</p>
+    <div class="meta">
+      <span><b>2</b> graisses · <b>0</b> police à télécharger</span>
+      <span><b>8</b> composants livrés</span>
+      <span>Clair + sombre</span>
+      <span>Contrastes vérifiés AA</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Point de départ</span>
+      <h2>Quatre contraintes, quatre décisions non négociables</h2>
+      <p class="lead">La §8 du brief proposait une ambiance. Voici ce que les contraintes de la §3
+        imposent réellement, une fois traduites en décisions techniques.</p>
+    </div>
+    <div class="grid3">
+      <div class="pcard"><span class="k">Données mobiles comptées</span>
+        <h4>Aucune police à télécharger</h4>
+        <p>Une police web coûte 100 à 300&nbsp;Ko avant le premier mot lisible, et laisse un écran vide
+        sur réseau lent. On utilise la police système&nbsp;: Roboto sur Android, San&nbsp;Francisco sur iOS.
+        Zéro octet, rendu optimisé pour les petits écrans, aucun risque de repli silencieux.</p></div>
+      <div class="pcard"><span class="k">Révision du soir</span>
+        <h4>Le mode sombre est livré, pas prévu</h4>
+        <p>Les deux thèmes sont construits en parallèle sur les mêmes jetons&nbsp;: le sombre n'est pas
+        une inversion du clair. Le bleu-vert s'éclaircit pour rester lisible, l'ocre se désature.</p></div>
+      <div class="pcard"><span class="k">Stress d'examen</span>
+        <h4>Aucun rouge de sanction</h4>
+        <p>Le rouge est réservé à un seul cas&nbsp;: un message non délivré, qui est une panne technique,
+        jamais une erreur du candidat. Une mauvaise réponse ne déclenche aucun signal visuel négatif.</p></div>
+      <div class="pcard"><span class="k">Réseau intermittent</span>
+        <h4>Chaque état a une forme</h4>
+        <p>Envoi en cours, hors-ligne, non délivré, synchronisation&nbsp;: quatre états visibles et
+        distincts. Un message qui semble parti sans l'être détruit la confiance en une session.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Couleur</span>
+      <h2>Une base neutre, un bleu-vert, un ocre — et rien d'autre</h2>
+      <p class="lead">Le bleu-vert profond porte le sérieux et l'identité du tuteur. L'ocre évoque
+        l'hospitalité et ne sert qu'à trois choses&nbsp;: la relance maïeutique, le verso d'une flashcard,
+        et les pièces jointes. S'il apparaît ailleurs, c'est une erreur.</p>
+      <h3>Thème clair</h3>
+    </div>
+    <div class="pal">
+      <div class="sw"><span class="chipc" style="background:#F7F5F0"></span><div class="info">
+        <div class="nm">Fond</div><div class="hx">#F7F5F0</div>
+        <div class="use">Blanc cassé légèrement chaud. Moins agressif qu'un blanc pur le soir.</div></div></div>
+      <div class="sw"><span class="chipc" style="background:#FFFFFF;box-shadow:inset 0 0 0 1px #E2DFD7"></span><div class="info">
+        <div class="nm">Surface</div><div class="hx">#FFFFFF</div>
+        <div class="use">Bulles de l'agent, cartes. Se détache du fond sans ombre lourde.</div></div></div>
+      <div class="sw"><span class="chipc" style="background:#1C2A2B"></span><div class="info">
+        <div class="nm">Texte principal</div><div class="hx">#1C2A2B</div>
+        <div class="use">Gris ardoise infusé de vert — accordé à la primaire, jamais un noir pur.</div>
+        <span class="ratio">13.62:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#5D6E6F"></span><div class="info">
+        <div class="nm">Texte secondaire</div><div class="hx">#5D6E6F</div>
+        <div class="use">Horodatage, méta, sous-titres.</div><span class="ratio">4.91:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#0F4F4A"></span><div class="info">
+        <div class="nm">Primaire</div><div class="hx">#0F4F4A</div>
+        <div class="use">Identité de l'agent, bulle du candidat, bouton principal.</div>
+        <span class="ratio">9.39:1 en aplat</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#C07C2C"></span><div class="info">
+        <div class="nm">Accent — aplat</div><div class="hx">#C07C2C</div>
+        <div class="use">Filets, icônes, bordures. Jamais en texte courant.</div>
+        <span class="ratio">3.13:1 · UI seulement</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#96601C"></span><div class="info">
+        <div class="nm">Accent — texte</div><div class="hx">#96601C</div>
+        <div class="use">Variante foncée obligatoire dès que l'ocre porte des mots.</div>
+        <span class="ratio">4.83:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#F6EADA"></span><div class="info">
+        <div class="nm">Accent — fond</div><div class="hx">#F6EADA</div>
+        <div class="use">Relance maïeutique, verso de flashcard.</div><span class="ratio">12.50:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#8C3A2E"></span><div class="info">
+        <div class="nm">Panne</div><div class="hx">#8C3A2E</div>
+        <div class="use">Message non délivré uniquement. Jamais une réponse fausse.</div></div></div>
+    </div>
+
+    <div class="prose"><h3>Thème sombre</h3></div>
+    <div class="pal">
+      <div class="sw"><span class="chipc" style="background:#0E1516"></span><div class="info">
+        <div class="nm">Fond</div><div class="hx">#0E1516</div>
+        <div class="use">Presque noir, teinté vert. Pas de noir pur&nbsp;: évite le halo sur OLED.</div></div></div>
+      <div class="sw"><span class="chipc" style="background:#16201F"></span><div class="info">
+        <div class="nm">Surface</div><div class="hx">#16201F</div>
+        <div class="use">Élévation par la valeur, pas par l'ombre.</div></div></div>
+      <div class="sw"><span class="chipc" style="background:#E8EDEB"></span><div class="info">
+        <div class="nm">Texte principal</div><div class="hx">#E8EDEB</div>
+        <div class="use">Blanc adouci&nbsp;: le blanc pur vibre sur fond sombre.</div>
+        <span class="ratio">15.60:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#9FB0B0"></span><div class="info">
+        <div class="nm">Texte secondaire</div><div class="hx">#9FB0B0</div>
+        <div class="use">Méta et horodatage.</div><span class="ratio">8.19:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#5FB3A9"></span><div class="info">
+        <div class="nm">Primaire éclaircie</div><div class="hx">#5FB3A9</div>
+        <div class="use">Le #0F4F4A devient illisible ici&nbsp;: l'identité monte en valeur.</div>
+        <span class="ratio">7.48:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#17564F"></span><div class="info">
+        <div class="nm">Bulle candidat</div><div class="hx">#17564F</div>
+        <div class="use">Reste un aplat profond, texte blanc.</div><span class="ratio">8.47:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#D89A4A"></span><div class="info">
+        <div class="nm">Accent désaturé</div><div class="hx">#D89A4A</div>
+        <div class="use">Utilisable en texte ici, contrairement au thème clair.</div>
+        <span class="ratio">7.60:1</span></div></div>
+      <div class="sw"><span class="chipc" style="background:#2B2216"></span><div class="info">
+        <div class="nm">Accent — fond</div><div class="hx">#2B2216</div>
+        <div class="use">Relance et verso de flashcard, version nuit.</div></div></div>
+    </div>
+    <p class="hint">Ratios calculés selon WCAG&nbsp;2.1 · Seuil retenu&nbsp;: 4.5:1 pour le texte, 3:1 pour
+      les éléments d'interface non textuels</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Typographie</span>
+      <h2>La police du système, deux graisses, une échelle</h2>
+      <p class="lead">Le brief demande «&nbsp;une sans-serif très lisible sur petit écran, deux graisses
+        seulement&nbsp;». La police système répond aux deux, et ne coûte rien à télécharger.</p>
+    </div>
+    <div class="spec">
+      <div class="row"><span class="lbl">30 / 600</span><div class="t30">Technologie Hôtelière</div></div>
+      <div class="row"><span class="lbl">24 / 600</span><div class="t24">Où en es-tu dans le programme&nbsp;?</div></div>
+      <div class="row"><span class="lbl">20 / 600</span><div class="t20">Épreuve — Session 2024</div></div>
+      <div class="row"><span class="lbl">17 / 400</span><div class="t17">Réfléchis un instant&nbsp;: à quoi sert exactement la mise en place avant le service&nbsp;? Donne-moi ce qui te vient, même incomplet.</div></div>
+      <div class="row"><span class="lbl">15 / 400</span><div class="t15">Texte secondaire, méta, légendes de cartes et sous-titres d'actions.</div></div>
+      <div class="row"><span class="lbl">13 / 600</span><div class="t13">LIBELLÉS DE BOUTONS ET ÉTIQUETTES</div></div>
+    </div>
+    <div class="prose">
+      <ul class="tight">
+        <li><b>Deux graisses, sans exception&nbsp;:</b> 400 pour tout le texte courant, 600 pour les titres,
+          boutons et étiquettes. Pas de 500 ni de 700 — sur les polices système Android, les graisses
+          intermédiaires sont souvent synthétisées et rendent mal.</li>
+        <li><b>Interlignage 1,5 minimum</b> dans les bulles. Les réponses du tuteur sont longues&nbsp;;
+          c'est le paramètre qui décide du confort de lecture, avant la taille.</li>
+        <li><b>Aucun texte sous 11,5&nbsp;px</b>, horodatages compris.</li>
+        <li><b>Chiffres tabulaires</b> sur les durées, tailles de fichiers et compteurs, pour éviter le
+          tremblement des colonnes.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Formes &amp; rythme</span>
+      <h2>Rayons et espacements</h2>
+    </div>
+    <div class="scale">
+      <div class="it"><div class="bx" style="width:70px;height:46px;border-radius:6px"></div><div class="lb">6 · coin pincé</div></div>
+      <div class="it"><div class="bx" style="width:70px;height:46px;border-radius:12px"></div><div class="lb">12 · bouton</div></div>
+      <div class="it"><div class="bx" style="width:70px;height:46px;border-radius:14px"></div><div class="lb">14 · carte</div></div>
+      <div class="it"><div class="bx" style="width:70px;height:46px;border-radius:18px"></div><div class="lb">18 · bulle</div></div>
+      <div class="it"><div class="bx" style="width:70px;height:46px;border-radius:20px"></div><div class="lb">20 · champ</div></div>
+      <div class="it"><div class="bx" style="width:70px;height:46px;border-radius:999px"></div><div class="lb">999 · pastille</div></div>
+    </div>
+    <div class="prose">
+      <p>Les bulles gardent un <b>coin pincé à 6&nbsp;px du côté de leur émetteur</b>&nbsp;: c'est ce
+      détail, plus que la couleur, qui permet de distinguer l'agent du candidat d'un coup d'œil — y
+      compris pour un daltonien.</p>
+    </div>
+    <div class="spacing">
+      <div class="sp" style="height:4px"></div><div class="sp" style="height:8px"></div>
+      <div class="sp" style="height:12px"></div><div class="sp" style="height:16px"></div>
+      <div class="sp" style="height:24px"></div><div class="sp" style="height:32px"></div>
+      <div class="sp" style="height:48px"></div>
+    </div>
+    <p class="hint">Échelle d'espacement 4 · 8 · 12 · 16 · 24 · 32 · 48 — aucune valeur hors échelle</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Bibliothèque — §7 du brief</span>
+      <h2>Les composants, en vrai</h2>
+      <p class="lead">Tout ce qui suit est du HTML et du CSS réels, pas des images. La flashcard se
+        retourne, les boutons s'enfoncent, l'indicateur de réflexion tourne.</p>
+    </div>
+
+    <div class="demos ui">
+      <div class="demo"><div class="cap">Bulles — agent · relance · candidat</div>
+        <div class="stack">
+          <div class="bub agent">Bonjour&nbsp;! Sur quoi veux-tu travailler en Technologie Hôtelière aujourd'hui&nbsp;?<span class="time">19:04</span></div>
+          <div class="bub me">C'est quoi la mise en place&nbsp;?<span class="time">19:05</span></div>
+          <div class="bub agent relance"><span class="tag">Relance — tentative 1</span>Avant que je réponde&nbsp;: d'après toi, à quel moment du service se fait-elle&nbsp;? Dis-moi ce qui te vient.<span class="time">19:05</span></div>
+          <div class="bub me">Avant que les clients arrivent&nbsp;?<span class="time">19:06</span></div>
+          <div class="bub agent">Exactement. Et qu'est-ce qu'on y prépare, concrètement&nbsp;?<span class="time">19:06</span></div>
+        </div>
+      </div>
+
+      <div class="demo"><div class="cap">Réflexion · pièce jointe · chargement</div>
+        <div class="stack">
+          <div class="thinking"><div class="dots"><i></i><i></i><i></i></div><span class="lb">Le tuteur réfléchit…</span></div>
+          <div class="attach"><div class="ico">PDF</div><div>
+            <div class="ttl">Technologie Hôtelière — Session 2024</div>
+            <div class="sub">Épreuve sans corrigé · 1,4 Mo · 6 pages</div>
+            <div class="act"><button class="btn pri sm">Télécharger</button><button class="btn ghost sm">S'entraîner dessus</button></div>
+          </div></div>
+          <div class="attach"><div class="ico">PDF</div><div style="flex:1;min-width:0">
+            <div class="skel" style="width:78%"></div>
+            <div class="skel" style="width:52%;margin-top:8px"></div>
+            <div class="skel" style="width:34%;margin-top:12px;height:26px;border-radius:9px"></div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="demo"><div class="cap">Flashcard — recto / verso · cliquer pour retourner</div>
+        <div class="fcstage">
+          <button class="fc" type="button" aria-label="Retourner la flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="face front">
+              <span class="kicker">Recto · question</span>
+              <div class="q">Quels sont les trois services de base en restauration&nbsp;?</div>
+              <span class="flip">Appuie pour voir la réponse ↻</span>
+            </div>
+            <div class="face back">
+              <span class="kicker">Verso · réponse</span>
+              <div class="a">Le service à l'assiette, le service à l'anglaise et le service à la française. Le service au guéridon en est une variante.</div>
+              <span class="flip">Carte suivante →</span>
+            </div>
+          </button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="btn sec sm">Je savais</button>
+          <button class="btn sec sm">À revoir</button>
+          <button class="btn ghost sm">Suivante</button>
+        </div>
+      </div>
+
+      <div class="demo"><div class="cap">Actions rapides — le menu principal</div>
+        <div class="qa">
+          <button class="qbtn"><span class="qi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg></span>
+            <span><span class="qt">Poser une question</span><span class="qs">Le tuteur te guide, tentative par tentative</span></span></button>
+          <button class="qbtn"><span class="qi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+            <span><span class="qt">Obtenir une épreuve</span><span class="qs">Annales réelles, sans le corrigé</span></span></button>
+          <button class="qbtn"><span class="qi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M8 5v14"/></svg></span>
+            <span><span class="qt">Réviser</span><span class="qs">Flashcards, fiches et emploi du temps</span></span></button>
+        </div>
+      </div>
+
+      <div class="demo"><div class="cap">Barre de saisie multiformat</div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+          <div class="composer" style="border-top:none">
+            <button class="iconbtn" aria-label="Prendre une photo"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.3"/></svg></button>
+            <button class="iconbtn" aria-label="Dicter"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5"/></svg></button>
+            <div class="field">Écris ta question…</div>
+            <button class="iconbtn send" aria-label="Envoyer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <p style="font-size:13.4px;color:var(--ink2);margin-top:14px;line-height:1.5">Photo et micro sont
+          <b>à gauche, au même rang que le texte</b> — pas cachés derrière un «&nbsp;+&nbsp;». Le brief en
+          fait trois entrées égales&nbsp;; l'interface doit le dire.</p>
+      </div>
+
+      <div class="demo"><div class="cap">États système</div>
+        <div class="states">
+          <div class="banner off"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 3l20 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 3.5-2.3M19 13a10 10 0 0 0-6-2.9"/><circle cx="12" cy="20" r=".6" fill="currentColor"/></svg>
+            Hors ligne — tes réponses partiront dès le retour du réseau</div>
+          <div class="banner sync"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg>
+            Synchronisation de tes révisions…</div>
+          <div class="sending">Envoi… <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div class="failed">
+            <div class="bub me" style="animation:none">La brigade de cuisine comprend combien de postes&nbsp;?</div>
+            <div class="failrow"><span>Non délivré</span><button class="btn ghost sm" style="color:var(--stop)">Réessayer</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Livrable n°4 du brief</span>
+      <h2>L'écran de conversation, dans les deux thèmes</h2>
+      <p class="lead">Même balisage, mêmes jetons&nbsp;: seules les valeurs changent. C'est ce qui garantit
+        que le mode sombre ne dérive pas au fil des écrans.</p>
+    </div>
+    <div class="phones">
+      <div class="phonewrap ui">
+        <div class="phonelbl">Clair — révision de jour</div>
+        <div class="phone">
+          <div class="statusbar"><span>19:04</span><span>▂▄▆ &nbsp;68%</span></div>
+          <div class="appbar"><div class="avatar">TH</div><div>
+            <div class="nm">Tuteur DT HR</div><div class="sub">Technologie Hôtelière</div></div></div>
+          <div class="thread">
+            <div class="bub agent">Bonsoir&nbsp;! Sur quoi veux-tu travailler ce soir&nbsp;?<span class="time">19:04</span></div>
+            <div class="bub me">La mise en place, je comprends pas bien<span class="time">19:05</span></div>
+            <div class="bub agent relance"><span class="tag">Relance — tentative 1</span>On va y arriver ensemble. D'abord&nbsp;: à quel moment du service crois-tu qu'elle se fait&nbsp;?<span class="time">19:05</span></div>
+            <div class="bub me">Avant l'arrivée des clients<span class="time">19:06</span></div>
+            <div class="bub agent">Tu y es. Et d'après toi, qu'est-ce qu'on y prépare&nbsp;? Cite-moi deux choses.<span class="time">19:06</span></div>
+            <div class="thinking"><div class="dots"><i></i><i></i><i></i></div><span class="lb">Le tuteur réfléchit…</span></div>
+          </div>
+          <div class="composer">
+            <button class="iconbtn" aria-label="Photo"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.3"/></svg></button>
+            <button class="iconbtn" aria-label="Micro"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5"/></svg></button>
+            <div class="field">Écris ta question…</div>
+            <button class="iconbtn send" aria-label="Envoyer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="phonewrap ui dark">
+        <div class="phonelbl" style="color:var(--pg-ink3)">Sombre — révision du soir</div>
+        <div class="phone">
+          <div class="statusbar"><span>22:47</span><span>▂▄▆ &nbsp;31%</span></div>
+          <div class="appbar"><div class="avatar">TH</div><div>
+            <div class="nm">Tuteur DT HR</div><div class="sub">Technologie Hôtelière</div></div></div>
+          <div class="thread">
+            <div class="banner off" style="margin-bottom:2px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 3l20 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 3.5-2.3M19 13a10 10 0 0 0-6-2.9"/><circle cx="12" cy="20" r=".6" fill="currentColor"/></svg>
+              Hors ligne — l'envoi reprendra tout seul</div>
+            <div class="bub agent">Voici l'épreuve que tu m'as demandée. Prends le temps de la lire avant qu'on en parle.<span class="time">22:44</span></div>
+            <div class="attach"><div class="ico">PDF</div><div>
+              <div class="ttl">Technologie Hôtelière — Session 2024</div>
+              <div class="sub">Sans corrigé · 1,4 Mo</div>
+              <div class="act"><button class="btn pri sm">Télécharger</button></div></div></div>
+            <div class="failed" style="align-self:flex-end;max-width:82%">
+              <div class="bub me" style="animation:none">Je l'ai lue, on commence par quoi&nbsp;?</div>
+              <div class="failrow"><span>Non délivré</span><button class="btn ghost sm" style="color:var(--stop)">Réessayer</button></div>
+            </div>
+          </div>
+          <div class="composer">
+            <button class="iconbtn" aria-label="Photo"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.3"/></svg></button>
+            <button class="iconbtn" aria-label="Micro"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5"/></svg></button>
+            <div class="field">Écris ta question…</div>
+            <button class="iconbtn send" aria-label="Envoyer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Issu de la recherche onboarding</span>
+      <h2>Le premier lancement — une seule question</h2>
+      <p class="lead">La session du DT&nbsp;HR étant une date nationale unique, la question «&nbsp;tu passes
+        l'examen quand&nbsp;?&nbsp;» disparaît&nbsp;: la date est connue et codée en dur. Il ne reste qu'une
+        question, et elle est passable.</p>
+    </div>
+    <div class="phones">
+      <div class="phonewrap ui">
+        <div class="phonelbl">01 — Accueil</div>
+        <div class="phone">
+          <div class="statusbar"><span>19:02</span><span>▂▄▆ &nbsp;68%</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 28px;text-align:center">
+            <div class="avatar" style="width:56px;height:56px;border-radius:17px;font-size:19px;margin:0 auto 22px">TH</div>
+            <div style="font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.2">Tuto DT HR</div>
+            <div style="font-size:14.5px;color:var(--ink2);margin-top:10px;line-height:1.5">Ton tuteur de révision en Technologie Hôtelière. Il te guide, il ne te donne pas la réponse tout de suite.</div>
+            <div style="background:var(--accent-soft);color:var(--accent-ink);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:999px;margin:22px auto 0;display:inline-block">Pas besoin de compte</div>
+          </div>
+          <div style="padding:0 20px 20px;flex:0 0 auto">
+            <button class="btn pri" style="width:100%;justify-content:center;padding:14px;font-size:15px">Commencer</button>
+            <div style="font-size:11px;color:var(--ink3);margin-top:12px;text-align:center;line-height:1.45">Tes conversations restent sur ton téléphone. <span style="color:var(--accent-ink);font-weight:600">En savoir plus</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phonewrap ui">
+        <div class="phonelbl">02 — L'unique question</div>
+        <div class="phone">
+          <div class="statusbar"><span>19:02</span><span>▂▄▆ &nbsp;68%</span></div>
+          <div style="padding:14px 20px 0;flex:0 0 auto">
+            <div style="height:4px;background:var(--line);border-radius:999px;overflow:hidden">
+              <div style="width:50%;height:100%;background:var(--accent)"></div></div>
+          </div>
+          <div style="flex:1;padding:30px 20px 0">
+            <div style="font-size:21px;font-weight:600;letter-spacing:-.015em;line-height:1.25">Où en es-tu en Technologie Hôtelière&nbsp;?</div>
+            <div style="font-size:13.5px;color:var(--ink2);margin-top:9px;line-height:1.5">Aucune mauvaise réponse — ça m'aide juste à ajuster mes relances.</div>
+            <div class="qa" style="margin-top:22px">
+              <button class="qbtn"><span class="qi">1</span><span><span class="qt">Je pars de zéro</span><span class="qs">On reprend les bases ensemble</span></span></button>
+              <button class="qbtn" style="border-color:var(--accent)"><span class="qi">2</span><span><span class="qt">J'ai déjà revu une partie</span><span class="qs">On consolide et on comble les trous</span></span></button>
+              <button class="qbtn"><span class="qi">3</span><span><span class="qt">Je révise pour l'examen</span><span class="qs">On travaille surtout sur les annales</span></span></button>
+            </div>
+          </div>
+          <div style="padding:0 20px 20px;flex:0 0 auto;display:flex;gap:10px;align-items:center">
+            <button class="btn ghost">Passer</button>
+            <button class="btn pri" style="flex:1;justify-content:center;padding:13px">Continuer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="phonewrap ui">
+        <div class="phonelbl">03 — Le compte, après le premier artefact</div>
+        <div class="phone">
+          <div class="statusbar"><span>19:31</span><span>▂▄▆ &nbsp;64%</span></div>
+          <div class="appbar"><div class="avatar">TH</div><div>
+            <div class="nm">Tuteur DT HR</div><div class="sub">Technologie Hôtelière</div></div></div>
+          <div class="thread">
+            <div class="bub agent">Beau travail. Je t'ai préparé 8 flashcards à partir de ce qu'on vient de voir.<span class="time">19:30</span></div>
+            <div class="attach"><div class="ico" style="font-size:8px">CARTES</div><div>
+              <div class="ttl">Le service en salle — 8 cartes</div>
+              <div class="sub">Créées à l'instant</div></div></div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-left:2.5px solid var(--accent);border-radius:6px 14px 14px 6px;padding:15px;margin-top:4px">
+              <div style="font-size:14px;font-weight:600;line-height:1.35">Tu veux garder tes révisions&nbsp;?</div>
+              <div style="font-size:12.8px;color:var(--ink2);margin-top:6px;line-height:1.5">Enregistre ton numéro et tu les retrouveras même si tu changes de téléphone. Sinon, tout reste ici.</div>
+              <div style="display:flex;gap:8px;margin-top:13px;align-items:center">
+                <button class="btn pri sm">Enregistrer mon numéro</button>
+                <button class="btn ghost sm">Plus tard</button>
+              </div>
+            </div>
+          </div>
+          <div class="composer">
+            <button class="iconbtn" aria-label="Photo"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.3"/></svg></button>
+            <button class="iconbtn" aria-label="Micro"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5"/></svg></button>
+            <div class="field">Écris ta question…</div>
+            <button class="iconbtn send" aria-label="Envoyer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <div class="note"><p><b>Trois écrans avant la première vraie question, dont un seul obligatoire.</b>
+        Duolingo en pose huit parce qu'il enseigne quarante langues&nbsp;; nous en couvrons une. Le compte
+        n'apparaît qu'à l'écran&nbsp;03, une demi-heure plus tard, quand le candidat possède quelque chose
+        qu'il aurait tort de perdre — et «&nbsp;Plus tard&nbsp;» est sans conséquence.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">Mouvement</span>
+      <h2>Ce qui bouge, et pendant combien de temps</h2>
+      <p class="lead">Une conversation est vue des centaines de fois par semaine. Presque rien ne doit
+        s'animer — et ce qui s'anime doit être court.</p>
+      <ul class="tight">
+        <li><b>Arrivée d'un message — 240&nbsp;ms, <code>ease-out</code>.</b> Opacité + 9&nbsp;px vers le
+          haut. Sans elle, les bulles apparaissent d'un coup et le fil semble cassé.</li>
+        <li><b>Appui sur un bouton — 160&nbsp;ms, <code>scale(0.97)</code>.</b> Le seul retour tactile
+          disponible&nbsp;; indispensable quand le réseau met deux secondes à répondre.</li>
+        <li><b>Retournement de flashcard — 460&nbsp;ms, <code>ease-in-out</code>.</b> Plus long, car
+          c'est un geste occasionnel et volontaire&nbsp;: la lenteur y est de la matière, pas de l'attente.</li>
+        <li><b>Indicateur de réflexion — boucle de 1,25&nbsp;s.</b> Assez lent pour paraître calme,
+          assez visible pour prouver que l'app n'est pas figée.</li>
+        <li><b>Aucune animation sur l'ouverture du clavier ni sur le défilement du fil.</b> Ce sont des
+          gestes répétés en continu&nbsp;; toute animation y serait perçue comme de la lenteur.</li>
+        <li><b><code>prefers-reduced-motion</code> respecté&nbsp;:</b> les opacités restent, les
+          déplacements et le retournement 3D disparaissent.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <span class="eyebrow">À copier dans le projet</span>
+      <h2>Les jetons</h2>
+    </div>
+<pre><i>/* ---------- Thème clair ---------- */</i>
+<b>--paper</b>:#F7F5F0;      <i>fond de l'application</i>
+<b>--surface</b>:#FFFFFF;     <i>bulles agent, cartes</i>
+<b>--ink</b>:#1C2A2B;         <i>texte principal        13.62:1</i>
+<b>--ink-2</b>:#5D6E6F;       <i>texte secondaire        4.91:1</i>
+<b>--ink-3</b>:#8B9A9A;       <i>texte tertiaire, désactivé</i>
+<b>--line</b>:#E2DFD7;        <i>bordures</i>
+<b>--line-2</b>:#CBC7BC;      <i>bordures appuyées</i>
+<b>--primary</b>:#0F4F4A;     <i>agent, bulle candidat, bouton   9.39:1</i>
+<b>--accent</b>:#C07C2C;      <i>aplats et filets — jamais du texte</i>
+<b>--accent-ink</b>:#96601C;  <i>accent porteur de texte          4.83:1</i>
+<b>--accent-soft</b>:#F6EADA; <i>relance, verso de flashcard</i>
+<b>--stop</b>:#8C3A2E;        <i>message non délivré — et rien d'autre</i>
+
+<i>/* ---------- Thème sombre ---------- */</i>
+<b>--paper</b>:#0E1516;  <b>--surface</b>:#16201F;
+<b>--ink</b>:#E8EDEB;    <b>--ink-2</b>:#9FB0B0;   <b>--ink-3</b>:#6F8080;
+<b>--line</b>:#243030;   <b>--line-2</b>:#354443;
+<b>--primary</b>:#17564F;      <i>aplat de la bulle candidat</i>
+<b>--primary-bright</b>:#5FB3A9; <i>identité, icônes, bouton   7.48:1</i>
+<b>--accent</b>:#D89A4A;      <i>texte autorisé ici          7.60:1</i>
+<b>--accent-soft</b>:#2B2216;
+<b>--stop</b>:#D07C6C;
+
+<i>/* ---------- Formes, rythme, courbes ---------- */</i>
+<b>--r-pinch</b>:6px;  <b>--r-btn</b>:12px;  <b>--r-card</b>:14px;
+<b>--r-bubble</b>:18px; <b>--r-field</b>:20px; <b>--r-pill</b>:999px;
+<b>espacement</b>: 4 · 8 · 12 · 16 · 24 · 32 · 48
+<b>--ease-out</b>:cubic-bezier(.23,1,.32,1);      <i>entrées, appuis</i>
+<b>--ease-in-out</b>:cubic-bezier(.77,0,.175,1);  <i>retournement de carte</i>
+<b>graisses</b>: 400 (courant) · 600 (titres, boutons) — aucune autre</pre>
+  </div>
+</section>
+
+<footer class="wrap prose">
+  <span class="eyebrow">Reste à faire — Phase 1</span>
+  <ul class="tight">
+    <li><b>Écrans encore à concevoir&nbsp;:</b> banque d'épreuves en pleine page, fiche de révision,
+      emploi du temps hebdomadaire, et le retour de lecture après envoi d'une photo.</li>
+    <li><b>À décider&nbsp;:</b> le logo. La pastille «&nbsp;TH&nbsp;» est un substitut de travail, pas une
+      proposition d'identité.</li>
+    <li><b>À vérifier sur appareil réel&nbsp;:</b> le rendu des deux graisses sur Android d'entrée de
+      gamme, et la lisibilité du thème sombre en plein soleil.</li>
+    <li><b>Le brief à mettre à jour&nbsp;:</b> sa §6 ne prévoit ni l'écran de sauvegarde du numéro, ni la
+      ligne de transparence sur les données, ni l'abandon de l'écran d'accueil défilant.</li>
+  </ul>
+</footer>
