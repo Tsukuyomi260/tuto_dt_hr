@@ -28,7 +28,32 @@ try {
 }
 
 const client = new Anthropic();
-const modele = process.env.ANTHROPIC_MODEL ?? "claude-opus-5";
+
+// Même source de vérité que la route : la liste des modèles acceptant la
+// réflexion adaptative est lue dans lib/modele.ts plutôt que recopiée ici.
+// Sans ce tri, le script envoie `thinking: adaptive` à Haiku 4.5 et prend
+// un 400 — l'erreur exacte que ce script est censé aider à diagnostiquer.
+const source = readFileSync("src/lib/modele.ts", "utf8");
+const adaptatifs = [
+  ...source
+    .split("const ADAPTATIFS = [")[1]
+    .split("];")[0]
+    .matchAll(/"([^"]+)"/g),
+].map((m) => m[1]);
+
+const modele = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5";
+const estAdaptatif = adaptatifs.some((p) => modele.startsWith(p));
+const budget = Number(process.env.ANTHROPIC_THINKING_BUDGET ?? 0);
+const maxJetons = estAdaptatif ? 12000 : 6000;
+
+const reglages = estAdaptatif
+  ? {
+      thinking: { type: "adaptive" },
+      output_config: { effort: process.env.ANTHROPIC_EFFORT ?? "medium" },
+    }
+  : budget >= 1024 && budget < maxJetons
+    ? { thinking: { type: "enabled", budget_tokens: budget } }
+    : {};
 
 const system = [
   { type: "text", text: SYSTEM_PROMPT },
@@ -46,6 +71,15 @@ const system = [
 const question = process.argv[2] ?? "C'est quoi la mise en place ?";
 
 console.log(`Modèle   : ${modele}`);
+console.log(
+  `Réflexion: ${
+    estAdaptatif
+      ? `adaptative, effort ${process.env.ANTHROPIC_EFFORT ?? "medium"}`
+      : budget >= 1024
+        ? `budget ${budget} jetons`
+        : "désactivée (modèle antérieur à la 4.6)"
+  }`,
+);
 console.log(`Corpus   : ${corpus ? `${corpus.length.toLocaleString("fr-FR")} caractères` : "absent"}`);
 console.log(`Question : « ${question} »\n`);
 console.log("─".repeat(60));
@@ -55,10 +89,9 @@ let premierJeton = null;
 
 const flux = client.messages.stream({
   model: modele,
-  max_tokens: 6000,
+  max_tokens: maxJetons,
   system,
-  thinking: { type: "adaptive" },
-  output_config: { effort: process.env.ANTHROPIC_EFFORT ?? "medium" },
+  ...reglages,
   messages: [{ role: "user", content: question }],
 });
 

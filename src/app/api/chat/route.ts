@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { CORPUS, CORPUS_DISPONIBLE } from "@/lib/corpus";
+import { MODELE, reglagesModele } from "@/lib/modele";
 import { SYSTEM_PROMPT, consigneNiveau, type Niveau } from "@/lib/prompt";
 
 export const runtime = "nodejs";
@@ -15,13 +16,8 @@ function getClient() {
   return clientMemo;
 }
 
-const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-opus-5";
-const EFFORT = (process.env.ANTHROPIC_EFFORT ?? "medium") as
-  | "low"
-  | "medium"
-  | "high"
-  | "xhigh"
-  | "max";
+// Le modèle et ses paramètres de réflexion sont résolus ensemble : Haiku 4.5
+// rejette `thinking: adaptive` et `output_config.effort` (voir lib/modele.ts).
 
 type Entrant = { role: "user" | "assistant"; content: string };
 
@@ -72,8 +68,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const flux = getClient().messages.stream({
-      model: MODEL,
-      max_tokens: 6000,
+      model: MODELE,
       // Prompt maïeutique + annale entière. Le point de cache est sur le
       // dernier bloc : il couvre les deux. Le préfixe est identique pour tous
       // les candidats, donc le cache est partagé — on l'écrit une fois, tout
@@ -91,10 +86,8 @@ export async function POST(req: NextRequest) {
             ]
           : []),
       ],
-      // La réflexion est active par défaut sur Opus 5 ; `medium` garde la
-      // latence acceptable sur un réseau lent sans perdre en qualité.
-      thinking: { type: "adaptive" },
-      output_config: { effort: EFFORT },
+      // Plafond de sortie et réflexion, accordés au modèle choisi.
+      ...reglagesModele(),
       messages,
     });
 

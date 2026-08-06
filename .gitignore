@@ -83,9 +83,16 @@ Thumbs.db
 *.swp
 
 # --- Annales et corpus dérivé ---
-# Œuvre d'un tiers (DAASSI S. H. Romaric, édition 2025) : ni le PDF ni son
-# texte extrait ne sont versionnés. Le corpus se régénère avec `npm run corpus`.
-# À revoir au moment du déploiement : la production a besoin du corpus.
+# Œuvre d'un tiers (DAASSI S. H. Romaric, édition 2025).
+#
+# Le PDF source reste hors du dépôt. Le corpus dérivé, lui, y entre : Vercel
+# construit depuis Git, et la route le lit sur le disque à l'exécution. Sans
+# lui, `CORPUS_DISPONIBLE` est faux et le tuteur répond de mémoire, sans
+# l'annale et sans que rien ne l'indique au candidat.
+#
+# ⚠ Cela met le texte d'un tiers dans le dépôt : à réserver à un dépôt privé,
+# ou à couvrir par un accord avec l'auteur avant toute publication.
 data/annales/*
 data/corpus/*
 !data/**/.gitkeep
+!data/corpus/technologie-hoteliere.md
