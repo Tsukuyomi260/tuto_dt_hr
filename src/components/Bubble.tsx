@@ -2,8 +2,13 @@ import { cn } from "@/lib/cn";
 
 type Props = {
   role: "user" | "assistant";
-  /** Relance maïeutique — la signature pédagogique du produit. */
-  relance?: boolean;
+  /**
+   * Relance maïeutique — la signature pédagogique du produit. La valeur est
+   * le numéro de tentative. Le compteur n'apparaît qu'à partir de la
+   * deuxième : afficher « tentative 1 » dès la première relance reviendrait
+   * à tenir le décompte des échecs d'un candidat déjà stressé.
+   */
+  relance?: number | boolean;
   horodatage?: number;
   /**
    * `rise`    — le message apparaît vraiment (candidat).
@@ -55,6 +60,13 @@ export function Bubble({
             <path d="M12 3v6m0 6v6M3 12h6m6 0h6" />
           </svg>
           À toi de jouer
+          {/* Seule la deuxième tentative est nommée. La première n'a pas
+              besoin d'être comptée, et au-delà le compteur dérive : le
+              serveur ne peut pas voir qu'une nouvelle question a commencé,
+              et « tentative 4 » se lirait comme un décompte d'échecs. */}
+          {relance === 2 && (
+            <span className="opacity-70 tabular-nums">· 2ᵉ tentative</span>
+          )}
         </span>
       )}
       {children}

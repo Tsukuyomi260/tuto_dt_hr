@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { CORPUS, CORPUS_DISPONIBLE } from "@/lib/corpus";
 import { ANNEES, trouverEpreuve } from "@/lib/epreuves";
+import { TERMES, fichesParTermes, tirerFlashcards } from "@/lib/flashcards";
 import type { Trame } from "@/lib/flux";
 import { MODELE, reglagesModele } from "@/lib/modele";
 import { SYSTEM_PROMPT, consigneNiveau, type Niveau } from "@/lib/prompt";
@@ -21,9 +22,41 @@ function getClient() {
 // Le modèle et ses paramètres de réflexion sont résolus ensemble : Haiku 4.5
 // rejette `thinking: adaptive` et `output_config.effort` (voir lib/modele.ts).
 
-type Entrant = { role: "user" | "assistant"; content: string };
+type Entrant = {
+  role: "user" | "assistant";
+  content: string;
+  /** Renvoyé par le client pour les messages déjà marqués comme relances. */
+  relance?: number;
+};
+
+/**
+ * Numéro de la tentative en cours.
+ *
+ * Le modèle sait dire *si* son message est une relance ; il compte mal
+ * *combien* il en a déjà faites — testé, il annonce « 1 » à la deuxième. On
+ * ne lui laisse donc que la décision binaire et on remonte l'historique :
+ * chaque relance consécutive du tuteur compte pour une tentative, jusqu'à un
+ * message qui n'en était pas une (une correction remet le compteur à zéro).
+ */
+function tentativeCourante(entrants: Entrant[]): number {
+  let n = 0;
+  for (let i = entrants.length - 1; i >= 0; i--) {
+    const m = entrants[i];
+    if (m.role !== "assistant") continue;
+    if (!m.relance) break;
+    n++;
+  }
+  return n + 1;
+}
 
 const OUTIL_EPREUVE = "fournir_epreuve";
+const OUTIL_FICHES = "fournir_flashcards";
+
+/**
+ * Marqueur que le modèle place en tête d'une relance maïeutique. Il est
+ * retiré du texte avant affichage : le candidat ne doit jamais le voir.
+ */
+const MARQUEUR_RELANCE = /^\s*\[relance\s*:\s*([1-9])\s*\]\s*/i;
 
 /**
  * Demande explicite d'épreuve.
@@ -50,8 +83,29 @@ const INTENTION_DEMANDE =
 
 function demandeEpreuve(message: string): boolean {
   if (!MOT_EPREUVE.test(message)) return false;
+  // Une année nommée qui n'existe pas dans le recueil : ne pas forcer. L'outil
+  // n'accepte que des années valides, le modèle en choisirait donc une autre
+  // et servirait 2012 à qui demande 2013, sans le dire.
+  const annee = message.match(/(?<!\d)(19|20)\d{2}(?!\d)/)?.[0];
+  if (annee && !ANNEES.includes(annee)) return false;
+
   return (
     INTENTION_DEMANDE.test(message) || message.trim().split(/\s+/).length <= 5
+  );
+}
+
+// Même garantie pour les fiches : sans forçage, le modèle répond parfois par
+// une question au lieu d'afficher le paquet, et le candidat repart les mains
+// vides après avoir appuyé sur « Réviser ».
+const MOT_FICHES =
+  /(?<!\p{L})(flash\s?cards?|fiches?|cartes?\s+de\s+r[ée]vision|vocabulaire)(?!\p{L})/iu;
+
+function demandeFiches(message: string): boolean {
+  if (!MOT_FICHES.test(message)) return false;
+  return (
+    INTENTION_DEMANDE.test(message) ||
+    /(?<!\p{L})(pr[ée]pares?|r[ée]vise[rz]?|entra[iî]ne)(?!\p{L})/iu.test(message) ||
+    message.trim().split(/\s+/).length <= 5
   );
 }
 
@@ -79,6 +133,31 @@ const OUTILS: Anthropic.Tool[] = [
         },
       },
       required: [],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: OUTIL_FICHES,
+    description:
+      "Affiche au candidat un paquet de flashcards recto/verso (terme au recto, " +
+      "définition au verso), tirées mot pour mot du vocabulaire de l'annale. " +
+      "Utilise cet outil dès qu'il demande des flashcards, des fiches, ou de " +
+      "quoi réviser le vocabulaire. N'invente jamais de définition toi-même.",
+    input_schema: {
+      type: "object",
+      properties: {
+        termes: {
+          type: "array",
+          items: { type: "string", enum: TERMES },
+          description:
+            "Termes à réviser, choisis par toi dans la liste. Six font un bon " +
+            "paquet. Si le candidat demande un thème (le paiement, la " +
+            "réservation, l'accueil…), sélectionne les termes qui en relèvent : " +
+            "toi seul sais les rapprocher, une recherche par mot-clé échouerait. " +
+            "Sans thème précis, prends un éventail couvrant tout le programme.",
+        },
+      },
+      required: ["termes"],
       additionalProperties: false,
     },
   },
@@ -133,10 +212,11 @@ export async function POST(req: NextRequest) {
   // tour en cours. Sans épreuve chargée, on ne force rien — l'outil ne
   // pourrait que répondre en erreur.
   const dernierDuCandidat = entrants.filter((m) => m.role === "user").at(-1);
-  const forcerEpreuve =
-    ANNEES.length > 0 &&
-    typeof dernierDuCandidat?.content === "string" &&
-    demandeEpreuve(dernierDuCandidat.content);
+  const tentative = tentativeCourante(entrants);
+  const dit = typeof dernierDuCandidat?.content === "string" ? dernierDuCandidat.content : "";
+  const forcerEpreuve = ANNEES.length > 0 && demandeEpreuve(dit);
+  // Un seul outil peut être imposé : l'épreuve prime, elle est plus explicite.
+  const forcerFiches = !forcerEpreuve && TERMES.length > 0 && demandeFiches(dit);
 
   // Le point de cache est sur le dernier bloc système : il couvre le prompt
   // et l'annale. Le préfixe est identique pour tous les candidats, donc le
@@ -149,7 +229,17 @@ export async function POST(req: NextRequest) {
       ? [
           {
             type: "text" as const,
-            text: `Voici l'intégralité de l'annale de référence. Appuie-toi dessus en priorité : c'est le programme réellement enseigné et évalué au Bénin. Si une question sort de ce document, dis-le plutôt que d'extrapoler.\n\n${CORPUS}`,
+            text: `DOCUMENTATION PRIVÉE — LE CANDIDAT NE LA VOIT PAS.
+
+Ce qui suit est l'annale de référence, fournie à toi seul. Elle n'est affichée nulle part dans l'application et ne fait pas partie de votre conversation : le candidat n'y a aucun accès et ne peut rien y chercher.
+
+Ne dis donc jamais « je t'ai fourni », « regarde plus haut », « dans le document ci-dessus », « cherche dans le résumé de cours ». Ces phrases envoient le candidat chercher quelque chose qui n'existe pas pour lui. Quand tu as besoin d'un passage, d'une liste ou d'une définition, écris-le toi-même dans ton message.
+
+La seule chose de ce document que le candidat voit un jour, c'est une épreuve, et seulement quand tu l'affiches avec l'outil \`fournir_epreuve\`.
+
+Appuie-toi dessus en priorité : c'est le programme réellement enseigné et évalué au Bénin. Si une question en sort, dis-le plutôt que d'extrapoler.
+
+${CORPUS}`,
             cache_control: { type: "ephemeral" as const, ttl: "1h" as const },
           },
         ]
@@ -185,20 +275,56 @@ export async function POST(req: NextRequest) {
               tool_choice:
                 tour === 0 && forcerEpreuve
                   ? { type: "tool", name: OUTIL_EPREUVE }
-                  : { type: "auto" },
+                  : tour === 0 && forcerFiches
+                    ? { type: "tool", name: OUTIL_FICHES }
+                    : { type: "auto" },
               ...reglagesModele(),
               messages,
             });
+
+            // Le marqueur de relance arrive en tête de message. Tant qu'on ne
+            // peut pas trancher, on retient le texte : sinon « [relance:2] »
+            // s'afficherait à l'écran avant d'être reconnu et retiré.
+            let tete = "";
+            let tranche = false;
+
+            const libere = (texte: string) => {
+              envoyer({ t: "txt", v: texte });
+              dejaEcrit = dejaEcrit || texte.trim() !== "";
+            };
+
+            const pousser = (texte: string) => {
+              if (tranche) return libere(texte);
+
+              tete += texte;
+              const m = tete.match(MARQUEUR_RELANCE);
+              if (m) {
+                // Le numéro écrit par le modèle est ignoré : seul compte le
+                // fait qu'il ait marqué le message.
+                envoyer({ t: "rel", v: tentative });
+                tranche = true;
+                const reste = tete.slice(m[0].length);
+                if (reste) libere(reste);
+                return;
+              }
+              // Assez de texte pour être certain que ce n'en est pas un.
+              if (tete.length >= 20 || tete.includes("\n")) {
+                tranche = true;
+                libere(tete);
+              }
+            };
 
             for await (const evenement of flux) {
               if (
                 evenement.type === "content_block_delta" &&
                 evenement.delta.type === "text_delta"
               ) {
-                envoyer({ t: "txt", v: evenement.delta.text });
-                dejaEcrit = dejaEcrit || evenement.delta.text.trim() !== "";
+                pousser(evenement.delta.text);
               }
             }
+
+            // Message plus court que le seuil : il n'a jamais été libéré.
+            if (!tranche && tete) libere(tete);
 
             const final = await flux.finalMessage();
 
@@ -216,7 +342,44 @@ export async function POST(req: NextRequest) {
 
             const resultats: Anthropic.ToolResultBlockParam[] = [];
             for (const bloc of final.content) {
-              if (bloc.type !== "tool_use" || bloc.name !== OUTIL_EPREUVE) continue;
+              if (bloc.type !== "tool_use") continue;
+
+              if (bloc.name === OUTIL_FICHES) {
+                const entree = bloc.input as
+                  | { termes?: string[]; sujet?: string; nombre?: number }
+                  | null;
+                // Les termes choisis par le modèle priment ; le tirage par
+                // mot-clé n'est qu'un repli.
+                const choisis = Array.isArray(entree?.termes)
+                  ? fichesParTermes(entree.termes)
+                  : [];
+                const paquet =
+                  choisis.length > 0
+                    ? choisis
+                    : tirerFlashcards(entree?.sujet, entree?.nombre ?? 6);
+
+                if (paquet.length === 0) {
+                  resultats.push({
+                    type: "tool_result",
+                    tool_use_id: bloc.id,
+                    is_error: true,
+                    content: "Aucune fiche disponible : le vocabulaire de l'annale n'a pas pu être chargé.",
+                  });
+                  continue;
+                }
+
+                envoyer({ t: "fic", v: paquet });
+                resultats.push({
+                  type: "tool_result",
+                  tool_use_id: bloc.id,
+                  content: `${paquet.length} fiches viennent d'être affichées au candidat : ${paquet
+                    .map((f) => f.terme)
+                    .join(", ")}. Ne les recopie pas. Dis-lui en une phrase comment s'en servir, puis laisse-le travailler.`,
+                });
+                continue;
+              }
+
+              if (bloc.name !== OUTIL_EPREUVE) continue;
 
               const annee = (bloc.input as { annee?: string } | null)?.annee;
               const epreuve = trouverEpreuve(annee);

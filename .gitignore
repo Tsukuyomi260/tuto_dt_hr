@@ -67,12 +67,22 @@ yarn-error.log*
 pnpm-debug.log*
 
 # --- Outillage local ---
-.claude/settings.local.json
-.claude/*.local.json
 .cache/
 .parcel-cache/
 .turbo/
 .vercel/
+
+# --- Outillage Claude / agents ---
+# Réglages, compétences et fichiers d'instructions destinés aux agents : c'est
+# de l'outillage de poste de travail, pas du produit.
+# CLAUDE.md et AGENTS.md sont régénérés par `next dev` à chaque lancement
+# (node_modules/next/dist/server/lib/generate-agent-files.js) ; pour ne plus
+# les voir apparaître du tout, mettre `agentRules: false` dans next.config.ts.
+.claude/
+.agents/
+CLAUDE.md
+AGENTS.md
+skills-lock.json
 
 # --- OS / éditeurs ---
 .DS_Store

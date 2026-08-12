@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { ActionCard } from "@/components/ActionCard";
 import { Bubble } from "@/components/Bubble";
 import { CarteEpreuve } from "@/components/CarteEpreuve";
+import { CarteFlashcard } from "@/components/CarteFlashcard";
 import { Composer } from "@/components/Composer";
 import { Thinking } from "@/components/Thinking";
-import { db, type EpreuveJointe, type Message } from "@/lib/db";
+import { db, type EpreuveJointe, type FlashcardJointe, type Message } from "@/lib/db";
 import type { Trame } from "@/lib/flux";
 import { useReglages } from "@/lib/store";
 
@@ -41,6 +42,10 @@ export default function Chat() {
   const [enCours, setEnCours] = useState<string | null>(null);
   /** Épreuve reçue pendant le flux, avant son enregistrement local. */
   const [epreuveEnCours, setEpreuveEnCours] = useState<EpreuveJointe | null>(null);
+  /** Numéro de tentative reçu pendant le flux, avant enregistrement local. */
+  const [relanceEnCours, setRelanceEnCours] = useState<number | null>(null);
+  /** Paquet de fiches reçu pendant le flux, avant enregistrement local. */
+  const [fichesEnCours, setFichesEnCours] = useState<FlashcardJointe[] | null>(null);
   const [occupe, setOccupe] = useState(false);
   const [horsLigne, setHorsLigne] = useState(false);
   const fil = useRef<HTMLDivElement>(null);
@@ -98,13 +103,21 @@ export default function Chat() {
     setOccupe(true);
     setEnCours("");
     setEpreuveEnCours(null);
+    setRelanceEnCours(null);
+    setFichesEnCours(null);
     premierJeton.current = true;
     try {
       const reponse = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: historique.map((m) => ({ role: m.role, content: m.content })),
+          // `relance` repart avec l'historique : c'est lui qui permet au
+          // serveur de compter les tentatives sans se fier au modèle.
+          messages: historique.map((m) => ({
+            role: m.role,
+            content: m.content,
+            ...(m.relance ? { relance: m.relance } : {}),
+          })),
           niveau,
         }),
       });
@@ -115,6 +128,8 @@ export default function Chat() {
       let tampon = "";
       let accumule = "";
       let epreuve: EpreuveJointe | undefined;
+      let relance: number | undefined;
+      let flashcards: FlashcardJointe[] | undefined;
 
       // Flux NDJSON : une trame par ligne. Le texte du tuteur et l'énoncé
       // d'une épreuve arrivent par des canaux distincts — l'énoncé n'est
@@ -133,6 +148,12 @@ export default function Chat() {
         } else if (trame.t === "epr") {
           epreuve = trame.v;
           setEpreuveEnCours(trame.v);
+        } else if (trame.t === "rel") {
+          relance = trame.v;
+          setRelanceEnCours(trame.v);
+        } else if (trame.t === "fic") {
+          flashcards = trame.v;
+          setFichesEnCours(trame.v);
         }
       };
 
@@ -147,12 +168,14 @@ export default function Chat() {
       }
       traiter(tampon);
 
-      if (accumule.trim() || epreuve) {
+      if (accumule.trim() || epreuve || flashcards) {
         await db.messages.add({
           role: "assistant",
           content: accumule,
           createdAt: Date.now(),
           ...(epreuve ? { epreuve } : {}),
+          ...(relance ? { relance } : {}),
+          ...(flashcards ? { flashcards } : {}),
         });
       }
     } catch {
@@ -160,8 +183,11 @@ export default function Chat() {
       if (dernier?.id) await db.messages.update(dernier.id, { echec: true });
     } finally {
       setEnCours(null);
-      // L'épreuve est désormais lue depuis le stockage local, avec son message.
+      // L'épreuve et la relance sont désormais lues depuis le stockage local,
+      // avec leur message.
       setEpreuveEnCours(null);
+      setRelanceEnCours(null);
+      setFichesEnCours(null);
       setOccupe(false);
     }
   }
@@ -267,9 +293,11 @@ export default function Chat() {
             {/* L'épreuve précède le message : le candidat lit le sujet avant
                 que le tuteur ne lui pose sa première question. */}
             {m.epreuve && <CarteEpreuve epreuve={m.epreuve} />}
+            {m.flashcards && <CarteFlashcard fiches={m.flashcards} />}
             {m.content.trim() !== "" && (
               <Bubble
                 role={m.role}
+                relance={m.relance}
                 horodatage={m.createdAt}
                 anime={m.role === "user" ? "rise" : false}
               >
@@ -292,6 +320,7 @@ export default function Chat() {
         ))}
 
         {epreuveEnCours && <CarteEpreuve epreuve={epreuveEnCours} />}
+        {fichesEnCours && <CarteFlashcard fiches={fichesEnCours} />}
 
         {enCours !== null &&
           (enCours === "" ? (
@@ -299,7 +328,7 @@ export default function Chat() {
           ) : (
             // Le flou de `emerge` masque le remplacement de l'indicateur par
             // le texte : sans lui, on voit les deux objets se croiser.
-            <Bubble role="assistant" anime="emerge">
+            <Bubble role="assistant" relance={relanceEnCours ?? undefined} anime="emerge">
               {enCours}
             </Bubble>
           ))}
