@@ -20,8 +20,8 @@ export const viewport: Viewport = {
   // reste au-dessus de lui au lieu de passer dessous.
   interactiveWidget: "resizes-content",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#0E1516" },
+    { media: "(prefers-color-scheme: light)", color: "#F2F5F7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B1721" },
   ],
 };
 

@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from "dexie";
+import { FIL_INITIAL } from "./fils";
 
 /**
  * Stockage local d'abord : tout fonctionne hors ligne, et le compte n'est
@@ -21,6 +22,12 @@ export interface FlashcardJointe {
 
 export interface Message {
   id?: number;
+  /**
+   * Discussion à laquelle le message appartient. Indexé : c'est la clé de
+   * lecture du fil affiché, et l'index évite de relire toute la table à
+   * chaque nouveau jeton reçu en streaming.
+   */
+  fil: string;
   role: "user" | "assistant";
   content: string;
   createdAt: number;
@@ -68,6 +75,67 @@ db.version(3).stores({
 db.version(4).stores({
   messages: "++id, createdAt",
 });
+
+// v5 découpe l'historique en discussions. C'est la première version qui
+// ajoute un *index* et non un simple champ : elle a donc besoin d'une
+// migration réelle. Les messages écrits avant existent sans `fil` ; or une
+// propriété absente n'entre pas dans un index IndexedDB, si bien qu'une
+// requête par fil ne les retrouverait jamais. On les rattache au fil initial :
+// le candidat qui met à jour retrouve sa conversation là où il l'a laissée.
+db.version(5)
+  .stores({
+    messages: "++id, createdAt, fil",
+  })
+  .upgrade((tx) =>
+    tx
+      .table<Message>("messages")
+      .toCollection()
+      .modify((m) => {
+        m.fil ??= FIL_INITIAL;
+      }),
+  );
+
+/** Une discussion telle qu'elle apparaît dans la liste. */
+export type ResumeFil = {
+  fil: string;
+  /** Première question du candidat — ce qui rend le fil reconnaissable. */
+  titre: string;
+  /** Date du dernier message, qui décide de l'ordre de la liste. */
+  dernier: number;
+  nombre: number;
+};
+
+/**
+ * Les discussions, de la plus récemment active à la plus ancienne.
+ *
+ * La table est relue en entier : une application de révision se compte en
+ * centaines de messages, pas en millions, et regrouper en mémoire coûte
+ * moins qu'un aller-retour d'index par fil.
+ */
+export async function resumeFils(): Promise<ResumeFil[]> {
+  const tous = await db.messages.orderBy("createdAt").toArray();
+
+  const par = new Map<string, Message[]>();
+  for (const m of tous) {
+    const cle = m.fil ?? FIL_INITIAL;
+    const liste = par.get(cle);
+    if (liste) liste.push(m);
+    else par.set(cle, [m]);
+  }
+
+  const resumes: ResumeFil[] = [];
+  for (const [fil, liste] of par) {
+    const premiereQuestion = liste.find((m) => m.role === "user");
+    resumes.push({
+      fil,
+      titre: premiereQuestion?.content.trim() || "Discussion sans question",
+      dernier: liste[liste.length - 1]?.createdAt ?? 0,
+      nombre: liste.length,
+    });
+  }
+
+  return resumes.sort((a, b) => b.dernier - a.dernier);
+}
 
 export async function effacerConversations() {
   await db.messages.clear();

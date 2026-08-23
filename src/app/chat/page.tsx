@@ -7,6 +7,7 @@ import { Bubble } from "@/components/Bubble";
 import { CarteEpreuve } from "@/components/CarteEpreuve";
 import { CarteFlashcard } from "@/components/CarteFlashcard";
 import { Composer } from "@/components/Composer";
+import { PanneauFils } from "@/components/PanneauFils";
 import { Thinking } from "@/components/Thinking";
 import { db, type EpreuveJointe, type FlashcardJointe, type Message } from "@/lib/db";
 import type { Trame } from "@/lib/flux";
@@ -36,9 +37,19 @@ function salutation() {
 }
 
 export default function Chat() {
-  const messages = useLiveQuery(() => db.messages.orderBy("createdAt").toArray(), []);
   const niveau = useReglages((e) => e.niveau);
+  const filCourant = useReglages((e) => e.filCourant);
+  const nouveauFil = useReglages((e) => e.nouveauFil);
 
+  // Seuls les messages de la discussion ouverte. `filCourant` est dans les
+  // dépendances : sans lui, changer de fil ne relancerait pas la requête et
+  // l'écran resterait sur l'ancienne conversation.
+  const messages = useLiveQuery(
+    () => db.messages.where("fil").equals(filCourant).sortBy("createdAt"),
+    [filCourant],
+  );
+
+  const [panneauOuvert, setPanneauOuvert] = useState(false);
   const [enCours, setEnCours] = useState<string | null>(null);
   /** Épreuve reçue pendant le flux, avant son enregistrement local. */
   const [epreuveEnCours, setEpreuveEnCours] = useState<EpreuveJointe | null>(null);
@@ -170,6 +181,7 @@ export default function Chat() {
 
       if (accumule.trim() || epreuve || flashcards) {
         await db.messages.add({
+          fil: filCourant,
           role: "assistant",
           content: accumule,
           createdAt: Date.now(),
@@ -192,27 +204,46 @@ export default function Chat() {
     }
   }
 
+  /** L'historique envoyé au tuteur est celui du fil ouvert, et lui seul. */
+  const filComplet = () =>
+    db.messages.where("fil").equals(filCourant).sortBy("createdAt");
+
   async function envoyer(texte: string) {
-    await db.messages.add({ role: "user", content: texte, createdAt: Date.now() });
-    await demander(await db.messages.orderBy("createdAt").toArray());
+    await db.messages.add({
+      fil: filCourant,
+      role: "user",
+      content: texte,
+      createdAt: Date.now(),
+    });
+    await demander(await filComplet());
   }
 
   async function reessayer(msg: Message) {
     if (!msg.id) return;
     await db.messages.update(msg.id, { echec: false });
-    await demander(await db.messages.orderBy("createdAt").toArray());
+    await demander(await filComplet());
   }
 
   const vide = messages !== undefined && messages.length === 0 && enCours === null;
+
+  /**
+   * Ouvrir un fil déjà vierge n'accomplirait rien et laisserait une
+   * discussion vide de plus dans la liste. Le bouton est donc désactivé
+   * quand l'écran est déjà celui d'une conversation neuve.
+   */
+  function demarrerDiscussion() {
+    if (vide || occupe) return;
+    nouveauFil();
+  }
 
   return (
     <main className="relative flex h-full flex-col">
       <header
         ref={barre}
         style={{ ["--p" as string]: 0 }}
-        className="material absolute inset-x-0 top-0 z-10 flex h-[56px] items-center gap-2.5 px-4"
+        className="material absolute inset-x-0 top-0 z-10 flex h-[56px] items-center gap-2.5 px-3"
       >
-        <div className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-[11px] font-semibold text-primary-ink">
+        <div className="jeton ml-1 grid size-8 shrink-0 place-items-center rounded-[10px] text-[11px] font-semibold text-accent">
           TH
         </div>
         <div className="min-w-0 flex-1">
@@ -223,6 +254,38 @@ export default function Chat() {
             Technologie Hôtelière
           </div>
         </div>
+
+        {/* Les deux sorties du fil. Elles sont dans l'en-tête et non derrière
+            un menu : une conversation dont on ne peut pas sortir en un geste
+            est une conversation dont on ne sort pas. */}
+        <button
+          type="button"
+          onClick={demarrerDiscussion}
+          disabled={vide || occupe}
+          aria-label="Nouvelle discussion"
+          title="Nouvelle discussion"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-ink-2 transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.92] disabled:opacity-35 disabled:active:scale-100"
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" />
+            <path d="M18.4 2.6a2 2 0 0 1 2.8 2.8L12 14.6l-3.5.9.9-3.5z" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setPanneauOuvert(true)}
+          aria-label="Mes discussions"
+          aria-haspopup="dialog"
+          aria-expanded={panneauOuvert}
+          title="Mes discussions"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-ink-2 transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.92]"
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden>
+            <path d="M4 7h16M4 12h16M4 17h10" />
+          </svg>
+        </button>
+
         <span className="absolute inset-x-0 bottom-0 h-px bg-line opacity-[var(--p)]" aria-hidden />
       </header>
 
@@ -249,7 +312,7 @@ export default function Chat() {
             {/* L'accueil est un moment, pas un vide. Le tuteur se présente,
                 puis les trois usages du brief sont là, à portée de pouce. */}
             <div className="animate-materialize flex flex-col items-start">
-              <div className="jeton mb-4 grid size-14 place-items-center rounded-[18px] text-[17px] font-semibold text-primary-ink">
+              <div className="jeton mb-4 grid size-14 place-items-center rounded-[18px] text-[17px] font-semibold text-accent">
                 TH
               </div>
               <h1 className="t-display text-balance">{salutation()}.</h1>
@@ -271,6 +334,7 @@ export default function Chat() {
                 icone={IcoEpreuve}
                 titre="Obtenir une épreuve"
                 detail="Annales réelles, sans le corrigé"
+                teinte="calme"
                 delai={145}
                 onClick={() =>
                   envoyer("Donne-moi une ancienne épreuve de Technologie Hôtelière.")
@@ -339,6 +403,11 @@ export default function Chat() {
       <div ref={barreBasse} className="material absolute inset-x-0 bottom-0 z-10">
         <Composer onEnvoi={envoyer} occupe={occupe} />
       </div>
+
+      <PanneauFils
+        ouvert={panneauOuvert}
+        onFermer={() => setPanneauOuvert(false)}
+      />
     </main>
   );
 }

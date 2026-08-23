@@ -7,7 +7,11 @@ type Props = {
   titre: string;
   detail: string;
   onClick: () => void;
-  teinte?: "primaire" | "accent";
+  /**
+   * Les trois pastilles se répartissent les deux couleurs de marque, comme
+   * sur l'accueil : bleu à icône jaune, jaune plein à icône bleue, bleu pâle.
+   */
+  teinte?: "primaire" | "accent" | "calme";
   delai?: number;
 };
 
@@ -43,8 +47,10 @@ export function ActionCard({
         className={cn(
           "grid size-10 shrink-0 place-items-center rounded-[13px]",
           teinte === "accent"
-            ? "bg-accent-soft text-accent-ink"
-            : "jeton text-primary-ink",
+            ? "bg-accent text-accent-on"
+            : teinte === "calme"
+              ? "bg-primary-soft text-primary"
+              : "jeton text-accent",
         )}
       >
         {icone}

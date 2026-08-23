@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tuto DT HR">
+  <!--
+    Favicon — le couple de la planche de marque : Uniform Blue #122837 en
+    fond, Palesun Yellow #FBFC09 en monogramme (13,74:1). Next le sert
+    automatiquement depuis src/app/icon.svg, il n'y a pas de <link> à écrire.
+    Le liseré clair du haut reprend l'inset de `.jeton` dans globals.css,
+    sinon la pastille est un carré de couleur au lieu d'une matière.
+  -->
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="0.45" y2="1">
+      <stop offset="0" stop-color="#1a3a4f" />
+      <stop offset="1" stop-color="#0a1a25" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#fond)" />
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="15.25" fill="none"
+        stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.5" />
+
+  <text x="32" y="41.5" text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+        font-size="25" font-weight="600" letter-spacing="-0.5" fill="#fbfc09">TH</text>
+</svg>

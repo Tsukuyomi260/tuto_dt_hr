@@ -1,42 +1,57 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Palette — chaleur d'hôtellerie : lin, laiton, bleu-vert profond.
+   Palette — deux couleurs de marque, et une règle qui gouverne tout.
+
+     Uniform Blue   #122837   15,17:1 sur blanc
+     Palesun Yellow #FBFC09    1,10:1 sur blanc — 13,74:1 sur Uniform Blue
+
+   Le jaune ne porte JAMAIS de texte sur fond clair : à 1,10:1 il est
+   invisible, et aucune taille de police ne rattrape ça. Il n'a que deux
+   emplois légitimes — être une surface qui porte de l'encre bleue
+   (`--accent-on`), ou être du texte posé sur le bleu profond. Partout
+   ailleurs où du jaune doit se lire sur du clair, c'est `--accent-ink`,
+   sa version assombrie, qui prend le relais.
+
    Contrastes vérifiés WCAG 2.1 (4,5:1 texte / 3:1 éléments d'interface).
-   Les surfaces ne sont jamais blanc pur : c'est ce qui délavait tout.
    ============================================================ */
 
 :root {
-  --paper: #f5efe6; /* lin chaud */
-  --surface: #fffcf7; /* blanc chaud, jamais #FFF */
-  --raised: #fffefb; /* surface qui doit se détacher d'une autre surface */
-  --ink: #1a2a27; /* 13,08:1 */
-  --ink-2: #5b6b66; /* 4,91:1 */
-  --ink-3: #8b9691;
-  --line: #e6decf;
-  --line-2: #d2c7b4;
+  --paper: #f2f5f7; /* blanc bleuté, tiré du bleu de marque */
+  --surface: #ffffff; /* les cartes, franchement blanches */
+  --raised: #ffffff; /* surface qui doit se détacher d'une autre surface */
+  --ink: #122837; /* Uniform Blue — 15,17:1 */
+  --ink-2: #4a6275; /* 6,38:1 */
+  --ink-3: #8095a4; /* tertiaire — jamais porteur d'information seule */
+  --line: #dfe5ea;
+  --line-2: #c4d0d9;
 
-  --primary: #0e4f49; /* 8,23:1 */
-  --primary-deep: #0a3b36;
-  --primary-ink: #fffcf7;
-  --agent-edge: #0e4f49;
+  --primary: #122837; /* 15,17:1 */
+  --primary-deep: #0a1a25;
+  --primary-ink: #f2f6f8;
+  --primary-soft: #e3eaf0; /* aplat calme qui porte du bleu — 12,49:1 */
+  --agent-edge: #122837;
 
-  --accent: #c0762a; /* aplats, filets, icônes — 3,13:1 */
-  --accent-ink: #8c5514; /* dès que l'ocre porte du texte — 5,36:1 */
-  --accent-soft: #f7e9d5;
+  --accent: #fbfc09; /* Palesun Yellow — surface uniquement sur fond clair */
+  --accent-on: #122837; /* l'encre qui va SUR le jaune — 13,74:1 */
+  --accent-ink: #6b6d00; /* le jaune quand il doit se lire sur clair — 5,51:1 */
+  --accent-soft: #fbfbdd;
 
-  --ok: #2f6b4f;
-  --stop: #8c3a2e;
-  --stop-soft: #f7e4de;
+  --ok: #17914f; /* réserve sémantique — succès */
+  --ok-soft: #dff3e6;
+  --stop: #c0362c; /* 5,51:1 — message non délivré, et rien d'autre */
+  --stop-soft: #fce8e6;
 
-  /* Les ombres sont teintées chaud. Une ombre grise sur un fond chaud est
-     exactement ce qui donne l'impression de « plat » et de pas fini. */
-  --shadow-1: 0 1px 2px rgba(74, 48, 20, 0.05);
-  --shadow-2: 0 2px 4px rgba(74, 48, 20, 0.05), 0 8px 20px rgba(74, 48, 20, 0.06);
-  --shadow-3: 0 4px 10px rgba(74, 48, 20, 0.07), 0 18px 42px rgba(74, 48, 20, 0.09);
+  /* Les ombres sont teintées du bleu de marque. Une ombre grise neutre sur
+     un papier bleuté est exactement ce qui donne l'impression de « plat ». */
+  --shadow-1: 0 1px 2px rgba(18, 40, 55, 0.06);
+  --shadow-2: 0 2px 4px rgba(18, 40, 55, 0.06), 0 8px 20px rgba(18, 40, 55, 0.08);
+  --shadow-3: 0 4px 10px rgba(18, 40, 55, 0.08), 0 18px 42px rgba(18, 40, 55, 0.11);
 
-  --wash: rgba(192, 118, 42, 0.13);
-  --grain: 0.04;
+  --wash: rgba(251, 252, 9, 0.12);
+  /* Le grain reste bas : les références sont franchement plates, et une
+     texture par-dessus un aplat le salit au lieu de le matiérer. */
+  --grain: 0.022;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -49,34 +64,42 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #13120f;
-    --surface: #1c1a16;
-    --raised: #232019;
-    --ink: #ede7dd;
-    --ink-2: #a79e90;
-    --ink-3: #7b746a;
-    --line: #2a2721;
-    --line-2: #3b362d;
+    /* En sombre, la couleur de marque cesse d'être un accent : c'est elle
+       qui devient la surface. Le papier passe donc *sous* elle, sinon les
+       cartes n'ont plus rien contre quoi se détacher. */
+    --paper: #0b1721;
+    --surface: #122837; /* Uniform Blue */
+    --raised: #17303f;
+    --ink: #e8eef2;
+    --ink-2: #a3b6c2; /* 7,25:1 sur Uniform Blue */
+    --ink-3: #6d8494;
+    --line: #1e3a4c;
+    --line-2: #2c4d61;
 
-    --primary: #17564f;
-    --primary-deep: #0e3d38;
-    --primary-ink: #fffcf7;
-    --agent-edge: #63b5aa;
+    /* Le bleu de marque ne peut plus servir d'aplat d'action — il est le
+       fond. On le remonte d'un cran pour qu'un bouton reste un objet. */
+    --primary: #1d4a66;
+    --primary-deep: #12303f;
+    --primary-ink: #eef4f7;
+    --primary-soft: #1a3444;
+    --agent-edge: #fbfc09; /* le filet du tuteur passe au jaune : 13,74:1 */
 
-    --accent: #dfa35a;
-    --accent-ink: #dfa35a;
-    --accent-soft: #2e2317;
+    --accent: #fbfc09;
+    --accent-on: #122837;
+    --accent-ink: #fbfc09; /* sur fond sombre le jaune se lit — 11,91:1 */
+    --accent-soft: #2b3320;
 
-    --ok: #63b489;
-    --stop: #d07c6c;
-    --stop-soft: #2c1c19;
+    --ok: #4cc27f;
+    --ok-soft: #17301f;
+    --stop: #ef7a6e;
+    --stop-soft: #3a1e1c;
 
     --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.34);
     --shadow-3: 0 4px 10px rgba(0, 0, 0, 0.45), 0 18px 42px rgba(0, 0, 0, 0.4);
 
-    --wash: rgba(223, 163, 90, 0.09);
-    --grain: 0.05;
+    --wash: rgba(251, 252, 9, 0.06);
+    --grain: 0.03;
   }
 }
 
@@ -92,17 +115,22 @@
   --color-primary: var(--primary);
   --color-primary-deep: var(--primary-deep);
   --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
   --color-agent-edge: var(--agent-edge);
   --color-accent: var(--accent);
+  --color-accent-on: var(--accent-on);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
   --color-stop: var(--stop);
   --color-stop-soft: var(--stop-soft);
 
+  /* Les rayons s'arrondissent : les trois références tournent toutes autour
+     de 20 px sur les cartes et du plein rond sur les boutons d'action. */
   --radius-pinch: 6px;
-  --radius-btn: 14px;
-  --radius-card: 18px;
+  --radius-btn: 16px;
+  --radius-card: 20px;
   --radius-bubble: 20px;
 
   --font-sans:
@@ -122,8 +150,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
 
-  /* Lumière chaude en haut d'écran — la lampe de la salle de révision.
-     Un lavis très doux, pas un dégradé voyant. */
+  /* Halo Palesun en haut d'écran — le jaune de marque en lavis, là où il ne
+     porte aucun texte et ne risque donc rien. Très doux, pas un dégradé. */
   background:
     radial-gradient(130% 55% at 50% -8%, var(--wash), transparent 68%),
     var(--paper);
@@ -143,7 +171,7 @@ body::after {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-ink);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -277,6 +305,34 @@ body::after {
   animation: materialize 460ms var(--ease-out) both;
 }
 
+/* Voile et feuille arrivent ensemble : le voile seul ferait clignoter
+   l'écran, la feuille seule la ferait surgir de nulle part. */
+@keyframes voile {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-voile {
+  animation: voile 200ms var(--ease-out) both;
+}
+
+@keyframes feuille {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-feuille {
+  animation: feuille 280ms var(--ease-out) both;
+}
+
 @keyframes pulse-dot {
   0%,
   60%,
@@ -303,7 +359,9 @@ body::after {
   }
   .animate-rise,
   .animate-emerge,
-  .animate-materialize {
+  .animate-materialize,
+  .animate-voile,
+  .animate-feuille {
     animation: none;
     opacity: 1;
     transform: none;

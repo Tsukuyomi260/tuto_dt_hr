@@ -25,7 +25,7 @@ export default function Calibrage() {
     <main className="flex h-full flex-col">
       <div className="shrink-0 px-5 pt-4">
         <div className="h-1 overflow-hidden rounded-full bg-line">
-          <div className="h-full w-1/2 rounded-full bg-accent" />
+          <div className="h-full w-1/2 rounded-full bg-primary" />
         </div>
       </div>
 
@@ -49,7 +49,7 @@ export default function Calibrage() {
                 style={{ animationDelay: `${120 + i * 60}ms` }}
                 className={`animate-rise flex w-full items-center gap-3.5 rounded-[var(--radius-card)] border bg-[var(--raised)] px-4 py-4 text-left shadow-[var(--shadow-1)] transition-[transform,border-color,background-color] duration-[180ms] ease-[var(--ease-out)] active:scale-[0.975] ${
                   choisi
-                    ? "border-accent bg-accent-soft"
+                    ? "border-accent-ink bg-accent-soft"
                     : "border-line"
                 }`}
               >

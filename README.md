@@ -35,8 +35,9 @@ src/components/     Bibliothèque de composants (§7 du brief)
 src/lib/prompt.ts   Prompt maïeutique — préfixe mis en cache
 src/lib/modele.ts   Modèle courant et paramètres de réflexion compatibles
 src/lib/corpus.ts   Chargement de l'annale, injectée entière dans le prompt
-src/lib/db.ts       Dexie / IndexedDB : stockage local d'abord
-src/lib/store.ts    Zustand : niveau de calibrage, état d'onboarding
+src/lib/db.ts       Dexie / IndexedDB : stockage local d'abord, un fil par discussion
+src/lib/fils.ts     Identité d'une discussion — constante de migration et générateur
+src/lib/store.ts    Zustand : niveau, onboarding, discussion ouverte
 ```
 
 ## Déploiement (Vercel)

@@ -50,7 +50,7 @@ export function Bubble({
           : "self-end rounded-[20px_20px_8px_20px] bg-[linear-gradient(160deg,var(--primary)_0%,var(--primary-deep)_100%)] text-primary-ink shadow-[var(--shadow-2)]",
         agent &&
           (relance
-            ? "border-l-accent bg-accent-soft"
+            ? "border-l-accent-ink bg-accent-soft"
             : "border-l-agent-edge bg-[var(--surface)]"),
       )}
     >
