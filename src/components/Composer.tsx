@@ -162,7 +162,7 @@ export function Composer({ onEnvoi, occupe }: Props) {
               "grid size-10 shrink-0 place-items-center rounded-full",
               "transition-[transform,opacity,background-color] duration-[180ms] ease-[var(--ease-out)]",
               peutEnvoyer
-                ? "jeton text-primary-ink active:scale-[0.92]"
+                ? "bg-accent text-accent-on active:scale-[0.92]"
                 : // Inactif, le bouton reste lisible mais cesse d'appeler :
                   // un aplat plein sans texte à envoyer serait une promesse.
                   "bg-[var(--line)] text-ink-3",

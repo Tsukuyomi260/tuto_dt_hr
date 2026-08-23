@@ -68,11 +68,11 @@ export function CarteEpreuve({ epreuve }: { epreuve: EpreuveJointe }) {
       // zéro. Sans ce garde-fou, la carte est le seul enfant rétractable du
       // fil : dès que la conversation dépasse la hauteur de l'écran, elle
       // absorbe tout le dépassement et s'aplatit à l'épaisseur de sa bordure.
-      className="animate-emerge w-full shrink-0 self-start overflow-hidden rounded-[16px] border border-line bg-[var(--surface)] shadow-[var(--shadow-1)]"
+      className="animate-emerge w-full shrink-0 self-start overflow-hidden rounded-[var(--radius-card)] border border-line bg-[var(--surface)] shadow-[var(--shadow-1)]"
       aria-label={`Épreuve DT HR ${epreuve.annee}`}
     >
       <header className="flex items-center gap-2.5 border-b border-line px-4 py-3">
-        <span className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-[11px] font-semibold text-primary-ink">
+        <span className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-[11px] font-semibold text-accent">
           {epreuve.annee.slice(2)}
         </span>
         <div className="min-w-0 flex-1">
@@ -89,7 +89,7 @@ export function CarteEpreuve({ epreuve }: { epreuve: EpreuveJointe }) {
         {blocs.map((bloc, i) =>
           bloc.type === "tableau" ? (
             <div key={i} className="-mx-1 my-2 overflow-x-auto">
-              <pre className="w-max min-w-full rounded-[10px] bg-accent-soft px-3 py-2.5 font-mono text-[12.5px] leading-relaxed">
+              <pre className="w-max min-w-full rounded-[10px] bg-primary-soft px-3 py-2.5 font-mono text-[12.5px] leading-relaxed">
                 {bloc.lignes.join("\n").replace(/^\n+|\n+$/g, "")}
               </pre>
             </div>

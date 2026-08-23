@@ -25,6 +25,7 @@ répond « Configuration du serveur incomplète ».
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run corpus` | Régénère l'annale depuis `data/annales/*.pdf` — **redémarre le serveur ensuite** : le corpus est lu une seule fois au démarrage |
 | `npm run verif:api` | Appel réel : latence, cache, et surtout — le tuteur relance-t-il ? |
+| `npm run verif:parcours` | Les 15 parcours du tuteur contre un serveur qui tourne — lance `npm run dev` d'abord |
 
 ## Structure
 
@@ -80,8 +81,14 @@ Ou, par Git : pousser sur `main` et importer le dépôt depuis
   interpoler une date, un niveau ou un identifiant invalide le cache et fait
   repayer l'intégralité du préfixe à chaque appel. Tout ce qui varie passe
   par `messages`.
-- **Deux graisses de police, 400 et 600.** Les graisses intermédiaires sont
-  synthétisées sur Android d'entrée de gamme et rendent mal.
+- **Le Palesun ne porte jamais de texte sur fond clair.** `#FBFC09` sur blanc
+  est à 1,10:1 : invisible, et aucune taille de police ne rattrape ça. En
+  aplat il porte l'encre bleue (`--accent-on`, 13,74:1) ; en trait ou en texte
+  sur du clair, c'est `--accent-ink` qui prend le relais. La règle complète
+  est en tête de `src/app/globals.css`.
+- **Trois graisses de police : 400, 600 et 700.** Pas d'intermédiaires — elles
+  sont synthétisées sur Android d'entrée de gamme et rendent mal. Le 700 n'est
+  utilisé que par `.t-display`.
 - **Le rouge est réservé au message non délivré**, jamais à une mauvaise
   réponse (§4 et §8 du brief).
 

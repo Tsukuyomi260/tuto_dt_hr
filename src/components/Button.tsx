@@ -16,14 +16,19 @@ const bouton = cva(
   {
     variants: {
       variante: {
-        pri: "bg-[linear-gradient(160deg,var(--primary)_0%,var(--primary-deep)_100%)] text-primary-ink shadow-[var(--shadow-2)] active:shadow-[var(--shadow-1)]",
+        // Le jaune de marque est la seule couleur d'action de l'application :
+        // partout où il apparaît en aplat, c'est qu'il y a quelque chose à
+        // presser. Il porte toujours l'encre bleue — 13,74:1.
+        pri: "bg-accent text-accent-on shadow-[var(--shadow-2)] active:shadow-[var(--shadow-1)]",
         sec: "border border-line bg-[var(--raised)] text-ink shadow-[var(--shadow-1)]",
         ghost: "text-ink-2",
       },
+      // Plein rond : c'est la forme des boutons d'action des trois références,
+      // et elle distingue un bouton d'une carte, qui reste à 20 px.
       taille: {
-        sm: "t-caption px-3.5 py-2 rounded-[var(--radius-btn)]",
-        base: "t-sub px-4 py-2.5 rounded-[var(--radius-btn)]",
-        lg: "t-body px-5 py-4 w-full rounded-[var(--radius-btn)]",
+        sm: "t-caption px-3.5 py-2 rounded-full",
+        base: "t-sub px-4 py-2.5 rounded-full",
+        lg: "t-body px-5 py-4 w-full rounded-full",
       },
     },
     defaultVariants: { variante: "pri", taille: "base" },

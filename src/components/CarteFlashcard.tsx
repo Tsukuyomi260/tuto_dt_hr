@@ -31,11 +31,11 @@ export function CarteFlashcard({ fiches }: { fiches: FlashcardJointe[] }) {
     <section
       // `shrink-0` : le fil est un conteneur flex en colonne, et tout enfant
       // dont l'`overflow` n'est pas `visible` peut y être écrasé à zéro.
-      className="animate-emerge w-full shrink-0 self-start overflow-hidden rounded-[16px] border border-line bg-[var(--surface)] shadow-[var(--shadow-1)]"
+      className="animate-emerge w-full shrink-0 self-start overflow-hidden rounded-[var(--radius-card)] border border-line bg-[var(--surface)] shadow-[var(--shadow-1)]"
       aria-label="Fiches de révision"
     >
       <header className="flex items-center gap-2.5 border-b border-line px-4 py-3">
-        <span className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-primary-ink">
+        <span className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-accent">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <rect x="3" y="6" width="14" height="12" rx="2" />
             <path d="M7 3h11a3 3 0 0 1 3 3v9" />
@@ -68,14 +68,14 @@ export function CarteFlashcard({ fiches }: { fiches: FlashcardJointe[] }) {
             )}
           >
             {/* Recto — le terme à retrouver. */}
-            <div className="col-start-1 row-start-1 grid min-h-[112px] place-items-center rounded-[12px] bg-accent-soft px-4 py-5 [backface-visibility:hidden]">
+            <div className="col-start-1 row-start-1 grid min-h-[112px] place-items-center rounded-[14px] bg-accent text-accent-on px-4 py-5 [backface-visibility:hidden]">
               <span className="t-body text-center font-semibold text-balance">
                 {fiche.terme}
               </span>
             </div>
 
             {/* Verso — la définition, retournée pour se lire à l'endroit. */}
-            <div className="col-start-1 row-start-1 grid min-h-[112px] items-center rounded-[12px] border border-line bg-[var(--raised)] px-4 py-5 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            <div className="col-start-1 row-start-1 grid min-h-[112px] items-center rounded-[14px] border border-line bg-[var(--raised)] px-4 py-5 [backface-visibility:hidden] [transform:rotateY(180deg)]">
               <span className="t-sub">{fiche.definition}</span>
             </div>
           </div>
@@ -85,14 +85,14 @@ export function CarteFlashcard({ fiches }: { fiches: FlashcardJointe[] }) {
           <button
             type="button"
             onClick={() => setRetournee((r) => !r)}
-            className="flex-1 rounded-[12px] border border-line px-3 py-2.5 t-caption font-semibold text-ink-2 transition-colors duration-200 active:bg-accent-soft"
+            className="flex-1 rounded-full border border-line px-3 py-2.5 t-caption font-semibold text-ink-2 transition-colors duration-200 active:bg-accent-soft"
           >
             {retournee ? "Revoir le terme" : "Voir la réponse"}
           </button>
           <button
             type="button"
             onClick={suivante}
-            className="jeton flex-1 rounded-[12px] px-3 py-2.5 t-caption font-semibold text-primary-ink transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.97]"
+            className="jeton flex-1 rounded-full px-3 py-2.5 t-caption font-semibold text-accent transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.97]"
           >
             {derniere ? "Recommencer" : "Carte suivante"}
           </button>

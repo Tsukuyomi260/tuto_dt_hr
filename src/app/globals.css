@@ -86,8 +86,12 @@
 
     --accent: #fbfc09;
     --accent-on: #122837;
-    --accent-ink: #fbfc09; /* sur fond sombre le jaune se lit — 11,91:1 */
-    --accent-soft: #2b3320;
+    --accent-ink: #fbfc09; /* sur fond sombre le jaune se lit — 12,02:1 */
+    /* En clair, l'aplat doux est un jaune pâle. En sombre il ne peut pas
+       l'être : un jaune assombri donne un olive qui tourne au brun contre le
+       bleu des surfaces. L'aplat reste donc dans la famille bleue et c'est
+       l'encre jaune, elle, qui porte l'identité d'accent. */
+    --accent-soft: #1c3242;
 
     --ok: #4cc27f;
     --ok-soft: #17301f;

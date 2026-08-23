@@ -23,7 +23,18 @@ export default function Calibrage() {
 
   return (
     <main className="flex h-full flex-col">
-      <div className="shrink-0 px-5 pt-4">
+      {/* La marque suit le candidat de l'accueil jusqu'ici : sans elle,
+          l'écran 2 a l'air d'appartenir à une autre application. */}
+      <div className="flex shrink-0 items-center gap-2.5 px-5 pt-[max(18px,env(safe-area-inset-top))]">
+        <div className="jeton grid size-9 shrink-0 place-items-center rounded-[12px] text-[12px] font-semibold text-accent">
+          TH
+        </div>
+        <span className="t-label text-ink-3">Technologie Hôtelière</span>
+      </div>
+
+      <div className="shrink-0 px-5 pt-5">
+        {/* La barre reste bleue : en Palesun sur `--line`, elle serait à
+            1,05:1, c'est-à-dire absente. */}
         <div className="h-1 overflow-hidden rounded-full bg-line">
           <div className="h-full w-1/2 rounded-full bg-primary" />
         </div>
@@ -56,8 +67,8 @@ export default function Calibrage() {
                 <span
                   className={`grid size-9 shrink-0 place-items-center rounded-[12px] text-[13px] font-semibold transition-colors duration-[180ms] ${
                     choisi
-                      ? "jeton text-primary-ink"
-                      : "bg-accent-soft text-accent-ink"
+                      ? "jeton text-accent"
+                      : "bg-primary-soft text-primary"
                   }`}
                 >
                   {i + 1}
