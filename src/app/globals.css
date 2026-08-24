@@ -174,10 +174,20 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent-ink);
-  outline-offset: 3px;
-  border-radius: 6px;
+/* En couche `base`, et pas hors couche : une règle sans couche bat une règle
+   en couche quelle que soit sa spécificité, si bien que cet anneau écrasait
+   le `focus:outline-none` que la zone de saisie demandait déjà. Depuis
+   `base`, les utilitaires Tailwind repassent au-dessus — un composant qui
+   porte son propre signal de focus peut donc le refuser.
+
+   L'anneau reste partout ailleurs : sans lui, la navigation au clavier se
+   fait à l'aveugle. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
 }
 
 /* ============================================================
