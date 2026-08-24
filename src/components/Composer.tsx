@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { cn } from "@/lib/cn";
+import { ImageIllisible, reduireImage } from "@/lib/image";
 
 /* L'API Web Speech n'est pas typée dans la lib DOM standard. */
 type Reconnaissance = {
@@ -23,7 +25,8 @@ declare global {
 }
 
 type Props = {
-  onEnvoi: (texte: string) => void;
+  /** `image` est une URL de données déjà réduite (voir lib/image.ts). */
+  onEnvoi: (texte: string, image?: string) => void;
   occupe: boolean;
 };
 
@@ -31,8 +34,12 @@ export function Composer({ onEnvoi, occupe }: Props) {
   const [texte, setTexte] = useState("");
   const [dicte, setDicte] = useState(false);
   const [dictaDispo, setDictaDispo] = useState(false);
+  /** Photo jointe, déjà réduite, en attente d'envoi. */
+  const [image, setImage] = useState<string | null>(null);
+  const [prepare, setPrepare] = useState(false);
   const reco = useRef<Reconnaissance | null>(null);
   const champ = useRef<HTMLTextAreaElement>(null);
+  const fichier = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const Ctor = window.SpeechRecognition ?? window.webkitSpeechRecognition;
@@ -75,15 +82,39 @@ export function Composer({ onEnvoi, occupe }: Props) {
     el.style.height = `${Math.min(el.scrollHeight, 132)}px`;
   }, [texte]);
 
+  async function choisirPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    // Le champ est remis à zéro tout de suite : sans ça, rechoisir la même
+    // photo après l'avoir retirée ne déclenche aucun événement.
+    e.target.value = "";
+    if (!f) return;
+
+    setPrepare(true);
+    try {
+      setImage(await reduireImage(f));
+    } catch (erreur) {
+      toast.error(
+        erreur instanceof ImageIllisible
+          ? erreur.message
+          : "Cette photo n'a pas pu être préparée.",
+      );
+    } finally {
+      setPrepare(false);
+    }
+  }
+
   function envoyer() {
     const t = texte.trim();
-    if (!t || occupe) return;
-    onEnvoi(t);
+    // Une photo seule est un envoi valable : « c'est quoi ça ? » se pose très
+    // bien en montrant l'énoncé sans rien écrire.
+    if ((!t && !image) || occupe || prepare) return;
+    onEnvoi(t, image ?? undefined);
     setTexte("");
+    setImage(null);
     champ.current?.focus();
   }
 
-  const peutEnvoyer = texte.trim() !== "" && !occupe;
+  const peutEnvoyer = (texte.trim() !== "" || image !== null) && !occupe && !prepare;
 
   return (
     /* La carte flotte sur la couche translucide parente : c'est elle qui porte
@@ -95,6 +126,33 @@ export function Composer({ onEnvoi, occupe }: Props) {
           "transition-colors duration-200 focus-within:border-line-2",
         )}
       >
+        {/* La photo se voit avant de partir. Sans vignette, le candidat ne
+            sait pas s'il a joint le bon cliché — ni s'il en a joint un. */}
+        {image && (
+          <div className="animate-emerge px-3 pt-3">
+            <div className="relative inline-block">
+              {/* Une URL de données locale : ni `next/image` ni optimisation
+                  serveur n'ont de sens ici, d'où la balise native. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image}
+                alt="Photo jointe à ton message"
+                className="max-h-28 rounded-[14px] border border-line object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => setImage(null)}
+                aria-label="Retirer la photo"
+                className="absolute -top-1.5 -right-1.5 grid size-6 place-items-center rounded-full bg-[var(--primary)] text-primary-ink shadow-[var(--shadow-2)] transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.9]"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden>
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Le champ occupe sa propre ligne, en pleine largeur : une question
             longue reste lisible d'un coup d'œil au lieu de défiler dans une
             fente entre deux icônes. */}
@@ -118,17 +176,48 @@ export function Composer({ onEnvoi, occupe }: Props) {
             texte — le brief en fait trois entrées égales et interdit de les
             replier derrière un « + ». */}
         <div className="flex items-center gap-1 px-2 pt-0.5 pb-2">
+          {/* Pas d'attribut `capture` : il forcerait l'appareil photo et
+              retirerait l'accès à la galerie. Or le cahier des charges veut
+              aussi les captures d'écran, qui n'y vivent nulle part ailleurs.
+              Sans lui, Android propose les deux. */}
+          <input
+            ref={fichier}
+            type="file"
+            accept="image/*"
+            onChange={choisirPhoto}
+            className="hidden"
+            tabIndex={-1}
+            aria-hidden
+          />
           <button
             type="button"
-            aria-label="Prendre une photo (bientôt)"
-            title="Entrée par photo — bientôt"
-            disabled
-            className="grid size-9 shrink-0 place-items-center rounded-full text-ink-2 opacity-40"
+            onClick={() => fichier.current?.click()}
+            disabled={occupe || prepare}
+            aria-label="Joindre une photo ou une capture d'écran"
+            title="Photo ou capture d'écran"
+            className={cn(
+              "grid size-9 shrink-0 place-items-center rounded-full",
+              "transition-[transform,background-color] duration-[160ms] ease-[var(--ease-out)] active:scale-[0.94]",
+              image ? "bg-accent-soft text-accent-ink" : "text-ink-2",
+              (occupe || prepare) && "opacity-40",
+            )}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <circle cx="12" cy="12.5" r="3.3" />
-            </svg>
+            {prepare ? (
+              <span className="flex gap-0.5" aria-hidden>
+                {[0, 1, 2].map((i) => (
+                  <i
+                    key={i}
+                    className="animate-dot block size-1 rounded-full bg-current"
+                    style={{ animationDelay: `${i * 0.14}s` }}
+                  />
+                ))}
+              </span>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 8a2 2 0 0 1 2-2h2.2l1.3-2h7l1.3 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <circle cx="12" cy="12.5" r="3.3" />
+              </svg>
+            )}
           </button>
 
           <button

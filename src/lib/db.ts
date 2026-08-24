@@ -45,6 +45,12 @@ export interface Message {
   relance?: number;
   /** Paquet de fiches affiché avec ce message, stocké pour la révision hors ligne. */
   flashcards?: FlashcardJointe[];
+  /**
+   * Photo ou capture d'écran jointe par le candidat, en URL de données, déjà
+   * réduite côté téléphone. Conservée telle quelle : elle fait partie de la
+   * question, et le fil doit rester relisible hors ligne.
+   */
+  image?: string;
 }
 
 export const db = new Dexie("tuto-dt-hr") as Dexie & {
@@ -94,6 +100,14 @@ db.version(5)
         m.fil ??= FIL_INITIAL;
       }),
   );
+
+// v6 ajoute `image`. Champ non indexé : comme aux versions 2 à 4, le schéma
+// ne bouge pas, mais l'incrément est ce qui laisse Dexie rouvrir la base des
+// candidats déjà installés au lieu de la recréer. Aucune migration de données
+// n'est nécessaire — un message sans photo n'en a simplement pas.
+db.version(6).stores({
+  messages: "++id, createdAt, fil",
+});
 
 /** Une discussion telle qu'elle apparaît dans la liste. */
 export type ResumeFil = {

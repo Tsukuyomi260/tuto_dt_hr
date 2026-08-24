@@ -125,10 +125,14 @@ export default function Chat() {
         body: JSON.stringify({
           // `relance` repart avec l'historique : c'est lui qui permet au
           // serveur de compter les tentatives sans se fier au modèle.
+          // Les photos repartent avec l'historique : le tuteur doit pouvoir
+          // relire l'énoncé au tour suivant. Elles sont en aval du point de
+          // cache, donc elles n'invalident pas le préfixe de l'annale.
           messages: historique.map((m) => ({
             role: m.role,
             content: m.content,
             ...(m.relance ? { relance: m.relance } : {}),
+            ...(m.image ? { image: m.image } : {}),
           })),
           niveau,
         }),
@@ -234,12 +238,13 @@ export default function Chat() {
   const filComplet = () =>
     db.messages.where("fil").equals(filCourant).sortBy("createdAt");
 
-  async function envoyer(texte: string) {
+  async function envoyer(texte: string, image?: string) {
     await db.messages.add({
       fil: filCourant,
       role: "user",
       content: texte,
       createdAt: Date.now(),
+      ...(image ? { image } : {}),
     });
     await demander(await filComplet());
   }
@@ -384,11 +389,12 @@ export default function Chat() {
                 que le tuteur ne lui pose sa première question. */}
             {m.epreuve && <CarteEpreuve epreuve={m.epreuve} />}
             {m.flashcards && <CarteFlashcard fiches={m.flashcards} />}
-            {m.content.trim() !== "" && (
+            {(m.content.trim() !== "" || m.image) && (
               <Bubble
                 role={m.role}
                 relance={m.relance}
                 horodatage={m.createdAt}
+                image={m.image}
                 anime={m.role === "user" ? "rise" : false}
               >
                 {m.content}

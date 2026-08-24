@@ -62,7 +62,36 @@ type Entrant = {
   content: string;
   /** Renvoyé par le client pour les messages déjà marqués comme relances. */
   relance?: number;
+  /** Photo jointe par le candidat, en URL de données déjà réduite. */
+  image?: string;
 };
+
+/**
+ * Une URL de données arrivant du navigateur est une entrée non fiable :
+ * elle est relayée telle quelle à l'API, et rien ne garantit qu'elle
+ * ressemble à ce que le composer produit. On ne relaie donc que ce qui est
+ * reconnu — type d'image attendu, base64 bien formé, taille bornée.
+ *
+ * Le plafond vise les 5 Mo de l'API en laissant de la marge : le composer
+ * réduit à 1024 px (~200 Ko), donc tout ce qui approche ce plafond n'est
+ * déjà plus une photo issue de l'application.
+ */
+const TAILLE_MAX_B64 = 4_000_000;
+
+function imageValide(
+  url: unknown,
+): { type: Anthropic.Base64ImageSource["media_type"]; data: string } | null {
+  if (typeof url !== "string") return null;
+  const m = url.match(
+    /^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/]+={0,2})$/,
+  );
+  if (!m) return null;
+  if (m[2].length > TAILLE_MAX_B64) return null;
+  return {
+    type: m[1] as Anthropic.Base64ImageSource["media_type"],
+    data: m[2],
+  };
+}
 
 /**
  * Numéro de la tentative en cours.
@@ -91,7 +120,14 @@ const OUTIL_FICHES = "fournir_flashcards";
  * Marqueur que le modèle place en tête d'une relance maïeutique. Il est
  * retiré du texte avant affichage : le candidat ne doit jamais le voir.
  */
-const MARQUEUR_RELANCE = /^\s*\[relance\s*:\s*([1-9])\s*\]\s*/i;
+const MARQUEUR_RELANCE = /\[\s*relance\s*:\s*([1-9])\s*\]/i;
+
+/**
+ * Longueur maximale d'un marqueur écrit au plus large (« [ relance : 1 ] »).
+ * Elle borne ce qu'on retient en fin de tampon quand un marqueur pourrait
+ * être coupé entre deux fragments du flux.
+ */
+const MARQUEUR_LONG = 18;
 
 /**
  * Demande explicite d'épreuve.
@@ -221,9 +257,30 @@ export async function POST(req: NextRequest) {
     return new Response("Aucun message.", { status: 400 });
   }
 
-  const messages: Anthropic.MessageParam[] = entrants
-    .filter((m) => typeof m.content === "string" && m.content.trim() !== "")
-    .map((m) => ({ role: m.role, content: m.content }));
+  const messages: Anthropic.MessageParam[] = [];
+  for (const m of entrants) {
+    const texte = typeof m.content === "string" ? m.content : "";
+    // Seul le candidat joint des photos ; une image annoncée côté tuteur
+    // viendrait d'un historique falsifié.
+    const image = m.role === "user" ? imageValide(m.image) : null;
+
+    // Un message vide de texte reste valable s'il porte une photo : « c'est
+    // quoi ça ? » se pose très bien en montrant seulement l'énoncé.
+    if (!texte.trim() && !image) continue;
+
+    if (!image) {
+      messages.push({ role: m.role, content: texte });
+      continue;
+    }
+
+    // L'image précède le texte : c'est l'ordre attendu par l'API, et celui
+    // qui donne les meilleurs résultats quand la question porte sur elle.
+    const blocs: Anthropic.ContentBlockParam[] = [
+      { type: "image", source: { type: "base64", media_type: image.type, data: image.data } },
+    ];
+    if (texte.trim()) blocs.push({ type: "text", text: texte });
+    messages.push({ role: "user", content: blocs });
+  }
 
   if (messages.length === 0 || messages[0].role !== "user") {
     return new Response("Le fil doit commencer par un message du candidat.", {
@@ -236,11 +293,18 @@ export async function POST(req: NextRequest) {
   // plus à rien. Il est préfixé au premier message du fil.
   const consigne = consigneNiveau(corps.niveau ?? null);
   if (consigne) {
+    const entete = `[Contexte pour toi, pas pour le candidat : ${consigne}]`;
     const premier = messages[0];
-    messages[0] = {
-      role: "user",
-      content: `[Contexte pour toi, pas pour le candidat : ${consigne}]\n\n${premier.content}`,
-    };
+    // Le premier message peut désormais être une liste de blocs — le candidat
+    // peut ouvrir la conversation par une photo. Concaténer une chaîne sur un
+    // tableau produirait « [object Object] » en tête de fil.
+    messages[0] =
+      typeof premier.content === "string"
+        ? { role: "user", content: `${entete}\n\n${premier.content}` }
+        : {
+            role: "user",
+            content: [{ type: "text", text: entete }, ...premier.content],
+          };
   }
 
   // Le dernier message du candidat décide : lui seul exprime l'intention du
@@ -317,36 +381,87 @@ ${CORPUS}`,
               messages,
             });
 
-            // Le marqueur de relance arrive en tête de message. Tant qu'on ne
-            // peut pas trancher, on retient le texte : sinon « [relance:2] »
-            // s'afficherait à l'écran avant d'être reconnu et retiré.
-            let tete = "";
-            let tranche = false;
+            // Le marqueur est cherché *partout*, pas seulement en tête.
+            //
+            // Le prompt exige qu'il ouvre le message, et le modèle le fait la
+            // plupart du temps — mais pas toujours : sur un énoncé
+            // photographié, observé, il écrit d'abord « Je vois l'exercice. »
+            // puis le marqueur. Ne le chercher qu'en tête, c'était donc à la
+            // fois rater la relance et afficher « [relance:1] » au candidat.
+            // Une consigne de prompt n'est pas une garantie ; ce filtre en
+            // est une.
+            let tampon = "";
+            let signale = false;
+            let premiereSortie = true;
+            /** Avaler les blancs qui suivent un marqueur, même différés. */
+            let chasse = false;
+            /** Un paragraphe reste à rouvrir là où se tenait le marqueur. */
+            let separateurDu = false;
 
             const libere = (texte: string) => {
-              envoyer({ t: "txt", v: texte });
-              dejaEcrit = dejaEcrit || texte.trim() !== "";
+              const v = premiereSortie ? texte.replace(/^\s+/, "") : texte;
+              if (!v) return;
+              premiereSortie = false;
+              envoyer({ t: "txt", v });
+              dejaEcrit = dejaEcrit || v.trim() !== "";
+            };
+
+            /** Retire les marqueurs complets et signale la relance une fois. */
+            const degager = () => {
+              for (;;) {
+                const m = tampon.match(MARQUEUR_RELANCE);
+                if (!m || m.index === undefined) break;
+                if (!signale) {
+                  // Le numéro écrit par le modèle est ignoré : seul compte le
+                  // fait qu'il ait marqué le message.
+                  envoyer({ t: "rel", v: tentative });
+                  signale = true;
+                }
+                // Ce qui précède part tout de suite, débarrassé du saut de
+                // ligne qui menait au marqueur.
+                const avant = tampon.slice(0, m.index).replace(/\s+$/, "");
+                if (avant) libere(avant);
+                tampon = tampon.slice(m.index + m[0].length);
+                // Les blancs qui suivent arrivent le plus souvent dans un
+                // fragment ultérieur : les couper ici ne suffit pas, il faut
+                // continuer à les avaler jusqu'au premier vrai caractère.
+                chasse = true;
+                separateurDu = !premiereSortie;
+              }
             };
 
             const pousser = (texte: string) => {
-              if (tranche) return libere(texte);
+              tampon += texte;
+              degager();
 
-              tete += texte;
-              const m = tete.match(MARQUEUR_RELANCE);
-              if (m) {
-                // Le numéro écrit par le modèle est ignoré : seul compte le
-                // fait qu'il ait marqué le message.
-                envoyer({ t: "rel", v: tentative });
-                tranche = true;
-                const reste = tete.slice(m[0].length);
-                if (reste) libere(reste);
-                return;
+              if (chasse) {
+                tampon = tampon.replace(/^\s+/, "");
+                // Encore rien d'autre que du blanc : on attend la suite.
+                if (!tampon) return;
+                chasse = false;
+                if (separateurDu) {
+                  tampon = `\n\n${tampon}`;
+                  separateurDu = false;
+                }
               }
-              // Assez de texte pour être certain que ce n'en est pas un.
-              if (tete.length >= 20 || tete.includes("\n")) {
-                tranche = true;
-                libere(tete);
-              }
+
+              // Un marqueur peut être coupé entre deux fragments du flux. On
+              // retient donc toute fin de tampon qui pourrait en amorcer un,
+              // et rien de plus — sinon le texte cesserait de s'afficher au
+              // fil de l'eau.
+              //
+              // Les blancs de fin sont retenus aussi : un marqueur est presque
+              // toujours précédé d'un saut de ligne, et l'avoir déjà émis
+              // rendrait impossible de le rattraper au moment de le retirer.
+              const depart = Math.max(0, tampon.length - MARQUEUR_LONG);
+              const partiel = tampon
+                .slice(depart)
+                .search(/(?:\s*\[[\s\p{L}:0-9]*|\s+)$/u);
+              const coupe = partiel === -1 ? tampon.length : depart + partiel;
+
+              const pret = tampon.slice(0, coupe);
+              tampon = tampon.slice(coupe);
+              if (pret) libere(pret);
             };
 
             for await (const evenement of flux) {
@@ -358,8 +473,17 @@ ${CORPUS}`,
               }
             }
 
-            // Message plus court que le seuil : il n'a jamais été libéré.
-            if (!tranche && tete) libere(tete);
+            // Ce qui restait retenu : soit un marqueur complet de fin, soit
+            // une amorce qui n'en était pas une.
+            degager();
+            if (chasse) {
+              // Un message qui se termine sur un marqueur ne laisse que du
+              // blanc : il ne doit rien produire du tout.
+              tampon = tampon.replace(/^\s+/, "");
+              if (tampon && separateurDu) tampon = `\n\n${tampon}`;
+            }
+            if (tampon) libere(tampon);
+            tampon = "";
 
             const final = await flux.finalMessage();
 

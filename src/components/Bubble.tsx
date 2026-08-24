@@ -18,6 +18,8 @@ type Props = {
    *             (le contenu est déjà à l'écran, le ré-animer le ferait sauter).
    */
   anime?: "rise" | "emerge" | false;
+  /** Photo jointe par le candidat, en URL de données. */
+  image?: string;
   children: React.ReactNode;
 };
 
@@ -34,6 +36,7 @@ export function Bubble({
   relance,
   horodatage,
   anime = "rise",
+  image,
   children,
 }: Props) {
   const agent = role === "assistant";
@@ -54,6 +57,17 @@ export function Bubble({
             : "border-l-agent-edge bg-[var(--surface)]"),
       )}
     >
+      {/* La photo passe avant le texte : c'est d'elle que parle la question,
+          et le candidat doit la revoir en relisant son fil. Balise native —
+          une URL de données locale n'a rien à optimiser côté serveur. */}
+      {image && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={image}
+          alt="Photo envoyée avec ce message"
+          className="mb-2 max-h-64 w-full rounded-[12px] object-contain"
+        />
+      )}
       {relance && (
         <span className="mb-2 flex items-center gap-1.5 t-label text-accent-ink">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
