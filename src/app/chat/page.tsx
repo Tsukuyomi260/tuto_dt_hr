@@ -2,6 +2,7 @@
 
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ActionCard } from "@/components/ActionCard";
 import { Bubble } from "@/components/Bubble";
 import { CarteEpreuve } from "@/components/CarteEpreuve";
@@ -141,6 +142,13 @@ export default function Chat() {
       let epreuve: EpreuveJointe | undefined;
       let relance: number | undefined;
       let flashcards: FlashcardJointe[] | undefined;
+      /**
+       * Panne annoncée par le serveur dans le flux. Elle n'est jamais
+       * enregistrée comme un message du tuteur : elle repartirait ensuite
+       * dans l'historique, et le modèle relirait « Trop de demandes en ce
+       * moment » comme s'il l'avait dit lui-même.
+       */
+      let panne: string | undefined;
 
       // Flux NDJSON : une trame par ligne. Le texte du tuteur et l'énoncé
       // d'une épreuve arrivent par des canaux distincts — l'énoncé n'est
@@ -165,6 +173,8 @@ export default function Chat() {
         } else if (trame.t === "fic") {
           flashcards = trame.v;
           setFichesEnCours(trame.v);
+        } else if (trame.t === "err") {
+          panne = trame.v;
         }
       };
 
@@ -179,6 +189,9 @@ export default function Chat() {
       }
       traiter(tampon);
 
+      // Ce que le tuteur a réellement produit avant la panne est conservé :
+      // une épreuve déjà affichée ou une relance à moitié écrite valent mieux
+      // qu'un tour effacé. Seule la panne elle-même n'entre pas dans le fil.
       if (accumule.trim() || epreuve || flashcards) {
         await db.messages.add({
           fil: filCourant,
@@ -190,7 +203,20 @@ export default function Chat() {
           ...(flashcards ? { flashcards } : {}),
         });
       }
-    } catch {
+
+      if (panne) {
+        toast.error(panne);
+        // Le message du candidat reste marqué : c'est lui qui porte le bouton
+        // « Réessayer », et c'est bien sa question qui n'a pas abouti.
+        const dernier = historique.at(-1);
+        if (dernier?.id) await db.messages.update(dernier.id, { echec: true });
+      }
+    } catch (erreur) {
+      // Échec avant le flux : la route a répondu par un code et un texte.
+      // On l'affiche plutôt que de le perdre — c'est là qu'atterrissent la
+      // clé absente, le 429 et le 503 quand ils précèdent le streaming.
+      const texte = erreur instanceof Error ? erreur.message.trim() : "";
+      toast.error(texte || "Le tuteur n'a pas pu répondre.");
       const dernier = historique.at(-1);
       if (dernier?.id) await db.messages.update(dernier.id, { echec: true });
     } finally {

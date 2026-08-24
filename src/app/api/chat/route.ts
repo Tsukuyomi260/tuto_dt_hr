@@ -22,6 +22,41 @@ function getClient() {
 // Le modèle et ses paramètres de réflexion sont résolus ensemble : Haiku 4.5
 // rejette `thinking: adaptive` et `output_config.effort` (voir lib/modele.ts).
 
+/**
+ * Traduit une erreur du SDK en un code HTTP et une phrase pour le candidat.
+ *
+ * L'ordre des tests n'est pas cosmétique : dans le SDK TypeScript,
+ * `APIConnectionError` **hérite** d'`APIError` (contrairement au SDK Python,
+ * où les deux sont frères). Le tester après absorberait toute panne réseau
+ * dans le cas générique, et le candidat hors couverture lirait « le tuteur
+ * n'a pas pu répondre » au lieu de « vérifie ta connexion ».
+ */
+function interpreterErreur(erreur: unknown): { statut: number; message: string } {
+  if (
+    erreur instanceof Anthropic.AuthenticationError ||
+    (erreur instanceof Error && /ANTHROPIC_API_KEY/.test(erreur.message))
+  ) {
+    // Diagnostic pour l'exploitant : le candidat n'y peut rien, mais celui
+    // qui lit les journaux doit comprendre en une ligne.
+    console.error("ANTHROPIC_API_KEY absente ou invalide.");
+    return { statut: 500, message: "Configuration du serveur incomplète." };
+  }
+  if (erreur instanceof Anthropic.RateLimitError) {
+    return {
+      statut: 429,
+      message: "Trop de demandes en ce moment. Réessaie dans un instant.",
+    };
+  }
+  if (erreur instanceof Anthropic.APIConnectionError) {
+    return {
+      statut: 503,
+      message: "Le tuteur est injoignable. Vérifie ta connexion.",
+    };
+  }
+  console.error("Échec de l'appel au modèle :", erreur);
+  return { statut: 500, message: "Le tuteur n'a pas pu répondre." };
+}
+
 type Entrant = {
   role: "user" | "assistant";
   content: string;
@@ -418,7 +453,14 @@ ${CORPUS}`,
 
           controleur.close();
         } catch (erreur) {
-          controleur.error(erreur);
+          // `controleur.error()` coupait la connexion : le candidat n'obtenait
+          // qu'un transfert avorté, et le serveur journalisait « failed to
+          // pipe response » au lieu de la cause. On ferme proprement en
+          // déposant la panne dans le flux — c'est le seul canal encore
+          // ouvert une fois la `Response` rendue.
+          const { message } = interpreterErreur(erreur);
+          envoyer({ t: "err", v: message });
+          controleur.close();
         }
       },
     });
@@ -432,27 +474,17 @@ ${CORPUS}`,
       },
     });
   } catch (erreur) {
-    // Clé absente (levée par le constructeur) ou refusée par l'API.
-    if (
-      erreur instanceof Anthropic.AuthenticationError ||
-      (erreur instanceof Error && /ANTHROPIC_API_KEY/.test(erreur.message))
-    ) {
-      console.error("ANTHROPIC_API_KEY absente ou invalide.");
-      return new Response("Configuration du serveur incomplète.", {
-        status: 500,
-      });
-    }
-    if (erreur instanceof Anthropic.RateLimitError) {
-      return new Response("Trop de demandes en ce moment. Réessaie dans un instant.", {
-        status: 429,
-      });
-    }
-    if (erreur instanceof Anthropic.APIConnectionError) {
-      return new Response("Le tuteur est injoignable. Vérifie ta connexion.", {
-        status: 503,
-      });
-    }
-    console.error("Échec de l'appel au modèle :", erreur);
-    return new Response("Le tuteur n'a pas pu répondre.", { status: 500 });
+    // Filet pour ce qui échoue *avant* que la `Response` ne parte : seul
+    // moment où choisir un code HTTP a encore un sens.
+    //
+    // Les erreurs de l'API n'arrivent pas ici, et ne le peuvent pas :
+    // `messages.stream()` ne révèle son échec qu'à l'itération, donc à
+    // l'intérieur du `ReadableStream`, dont les rejets sont captés par le
+    // `catch` interne. C'est ce qui rendait la version précédente de ce bloc
+    // inatteignable — 401, 429 et 503 y étaient écrits sans jamais s'exécuter.
+    // Le traitement réel est désormais dans le flux ; ce qui reste ici ne
+    // couvre que la construction du flux et de la réponse.
+    const { statut, message } = interpreterErreur(erreur);
+    return new Response(message, { status: statut });
   }
 }
