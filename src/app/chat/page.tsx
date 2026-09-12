@@ -6,11 +6,22 @@ import { toast } from "sonner";
 import { ActionCard } from "@/components/ActionCard";
 import { Bubble } from "@/components/Bubble";
 import { CarteEpreuve } from "@/components/CarteEpreuve";
+import { CarteFicheRevision } from "@/components/CarteFicheRevision";
 import { CarteFlashcard } from "@/components/CarteFlashcard";
+import { CartePlanning } from "@/components/CartePlanning";
+import { CarteQuiz } from "@/components/CarteQuiz";
 import { Composer } from "@/components/Composer";
 import { PanneauFils } from "@/components/PanneauFils";
 import { Thinking } from "@/components/Thinking";
-import { db, type EpreuveJointe, type FlashcardJointe, type Message } from "@/lib/db";
+import {
+  db,
+  type EpreuveJointe,
+  type FicheRevision,
+  type FlashcardJointe,
+  type Message,
+  type PlanningJoint,
+  type QuizJoint,
+} from "@/lib/db";
 import type { Trame } from "@/lib/flux";
 import { useReglages } from "@/lib/store";
 
@@ -29,6 +40,18 @@ const IcoReviser = (
     <rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18M8 5v14" />
   </svg>
 );
+
+/**
+ * Les outils de révision au-delà des trois usages principaux. Ce sont des
+ * raccourcis, pas des écrans : chacun envoie au tuteur la phrase qu'un
+ * candidat aurait tapée, et la conversation reprend la main.
+ */
+const RACCOURCIS: { libelle: string; message: string }[] = [
+  { libelle: "Quiz", message: "Fais-moi un quiz pour m'auto-évaluer." },
+  { libelle: "Fiche de révision", message: "Je voudrais une fiche de révision." },
+  { libelle: "Emploi du temps", message: "Aide-moi à faire un emploi du temps de révision." },
+  { libelle: "Méthodes", message: "Comment réviser efficacement pour l'examen ?" },
+];
 
 function salutation() {
   const h = new Date().getHours();
@@ -58,6 +81,10 @@ export default function Chat() {
   const [relanceEnCours, setRelanceEnCours] = useState<number | null>(null);
   /** Paquet de fiches reçu pendant le flux, avant enregistrement local. */
   const [fichesEnCours, setFichesEnCours] = useState<FlashcardJointe[] | null>(null);
+  /** Fiche de révision, quiz ou planning reçus pendant le flux. */
+  const [ficheEnCours, setFicheEnCours] = useState<FicheRevision | null>(null);
+  const [quizEnCours, setQuizEnCours] = useState<QuizJoint | null>(null);
+  const [planningEnCours, setPlanningEnCours] = useState<PlanningJoint | null>(null);
   const [occupe, setOccupe] = useState(false);
   const [horsLigne, setHorsLigne] = useState(false);
   const fil = useRef<HTMLDivElement>(null);
@@ -109,7 +136,7 @@ export default function Chat() {
     if (el) el.scrollTop = el.scrollHeight;
     // `hauteurBasse` est dans les dépendances : quand le composer grandit, le
     // fil doit se recoller au bas, sinon le dernier message remonte hors vue.
-  }, [messages, enCours, epreuveEnCours, hauteurBasse]);
+  }, [messages, enCours, epreuveEnCours, ficheEnCours, quizEnCours, planningEnCours, hauteurBasse]);
 
   async function demander(historique: Message[]) {
     setOccupe(true);
@@ -117,6 +144,9 @@ export default function Chat() {
     setEpreuveEnCours(null);
     setRelanceEnCours(null);
     setFichesEnCours(null);
+    setFicheEnCours(null);
+    setQuizEnCours(null);
+    setPlanningEnCours(null);
     premierJeton.current = true;
     try {
       const reponse = await fetch("/api/chat", {
@@ -146,6 +176,9 @@ export default function Chat() {
       let epreuve: EpreuveJointe | undefined;
       let relance: number | undefined;
       let flashcards: FlashcardJointe[] | undefined;
+      let fiche: FicheRevision | undefined;
+      let quiz: QuizJoint | undefined;
+      let planning: PlanningJoint | undefined;
       /**
        * Panne annoncée par le serveur dans le flux. Elle n'est jamais
        * enregistrée comme un message du tuteur : elle repartirait ensuite
@@ -177,6 +210,15 @@ export default function Chat() {
         } else if (trame.t === "fic") {
           flashcards = trame.v;
           setFichesEnCours(trame.v);
+        } else if (trame.t === "rev") {
+          fiche = trame.v;
+          setFicheEnCours(trame.v);
+        } else if (trame.t === "qcm") {
+          quiz = trame.v;
+          setQuizEnCours(trame.v);
+        } else if (trame.t === "pla") {
+          planning = trame.v;
+          setPlanningEnCours(trame.v);
         } else if (trame.t === "err") {
           panne = trame.v;
         }
@@ -196,7 +238,7 @@ export default function Chat() {
       // Ce que le tuteur a réellement produit avant la panne est conservé :
       // une épreuve déjà affichée ou une relance à moitié écrite valent mieux
       // qu'un tour effacé. Seule la panne elle-même n'entre pas dans le fil.
-      if (accumule.trim() || epreuve || flashcards) {
+      if (accumule.trim() || epreuve || flashcards || fiche || quiz || planning) {
         await db.messages.add({
           fil: filCourant,
           role: "assistant",
@@ -205,6 +247,9 @@ export default function Chat() {
           ...(epreuve ? { epreuve } : {}),
           ...(relance ? { relance } : {}),
           ...(flashcards ? { flashcards } : {}),
+          ...(fiche ? { fiche } : {}),
+          ...(quiz ? { quiz } : {}),
+          ...(planning ? { planning } : {}),
         });
       }
 
@@ -230,6 +275,9 @@ export default function Chat() {
       setEpreuveEnCours(null);
       setRelanceEnCours(null);
       setFichesEnCours(null);
+      setFicheEnCours(null);
+      setQuizEnCours(null);
+      setPlanningEnCours(null);
       setOccupe(false);
     }
   }
@@ -374,11 +422,29 @@ export default function Chat() {
               <ActionCard
                 icone={IcoReviser}
                 titre="Réviser"
-                detail="Flashcards, fiches et emploi du temps"
+                detail="Flashcards sur tout le programme"
                 teinte="accent"
                 delai={200}
                 onClick={() => envoyer("Prépare-moi des flashcards pour réviser.")}
               />
+            </div>
+
+            {/* Les autres outils de révision, en pastilles : ils comptent,
+                mais ne doivent pas noyer les trois usages principaux. */}
+            <div
+              className="animate-rise flex flex-wrap gap-2"
+              style={{ animationDelay: "255ms" }}
+            >
+              {RACCOURCIS.map((r) => (
+                <button
+                  key={r.libelle}
+                  type="button"
+                  onClick={() => envoyer(r.message)}
+                  className="rounded-full border border-line bg-[var(--raised)] px-3.5 py-2 t-caption font-semibold text-ink-2 shadow-[var(--shadow-1)] transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.96]"
+                >
+                  {r.libelle}
+                </button>
+              ))}
             </div>
           </div>
         )}
@@ -389,6 +455,20 @@ export default function Chat() {
                 que le tuteur ne lui pose sa première question. */}
             {m.epreuve && <CarteEpreuve epreuve={m.epreuve} />}
             {m.flashcards && <CarteFlashcard fiches={m.flashcards} />}
+            {m.fiche && <CarteFicheRevision fiche={m.fiche} />}
+            {m.quiz && (
+              <CarteQuiz
+                quiz={m.quiz}
+                reponses={m.reponsesQuiz}
+                onRepondre={(reponsesQuiz) => {
+                  if (m.id) void db.messages.update(m.id, { reponsesQuiz });
+                }}
+                onRevoir={(bilan) => {
+                  if (!occupe) void envoyer(bilan);
+                }}
+              />
+            )}
+            {m.planning && <CartePlanning planning={m.planning} />}
             {(m.content.trim() !== "" || m.image) && (
               <Bubble
                 role={m.role}
@@ -417,6 +497,12 @@ export default function Chat() {
 
         {epreuveEnCours && <CarteEpreuve epreuve={epreuveEnCours} />}
         {fichesEnCours && <CarteFlashcard fiches={fichesEnCours} />}
+        {ficheEnCours && <CarteFicheRevision fiche={ficheEnCours} />}
+        {/* Pendant le flux, le quiz n'a pas encore d'enregistrement où ranger
+            les réponses : il s'affiche sans persistance, le temps que le
+            tuteur finisse sa phrase (une ou deux secondes). */}
+        {quizEnCours && <CarteQuiz quiz={quizEnCours} />}
+        {planningEnCours && <CartePlanning planning={planningEnCours} />}
 
         {enCours !== null &&
           (enCours === "" ? (

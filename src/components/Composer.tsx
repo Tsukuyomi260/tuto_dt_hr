@@ -12,10 +12,34 @@ type Reconnaissance = {
   continuous: boolean;
   start: () => void;
   stop: () => void;
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  onresult:
+    | ((e: {
+        resultIndex: number;
+        results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }>;
+      }) => void)
+    | null;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((e: { error: string }) => void) | null;
 };
+
+/** Ce que le candidat peut faire, selon la panne de dictée signalée par le navigateur. */
+function messageDictee(erreur: string): string | null {
+  switch (erreur) {
+    case "not-allowed":
+    case "service-not-allowed":
+      return "Le micro est bloqué. Autorise-le dans les réglages du navigateur pour dicter.";
+    case "network":
+      return "La dictée a besoin d'internet. Vérifie ta connexion, ou écris ta question.";
+    case "no-speech":
+      return "Je n'ai rien entendu. Appuie sur le micro et parle près du téléphone.";
+    case "audio-capture":
+      return "Aucun micro détecté sur cet appareil.";
+    case "aborted":
+      return null;
+    default:
+      return "La dictée s'est interrompue. Réessaie, ou écris ta question.";
+  }
+}
 
 declare global {
   interface Window {
@@ -38,6 +62,12 @@ export function Composer({ onEnvoi, occupe }: Props) {
   const [image, setImage] = useState<string | null>(null);
   const [prepare, setPrepare] = useState(false);
   const reco = useRef<Reconnaissance | null>(null);
+  /**
+   * Texte présent dans le champ au moment où la dictée démarre. La dictée
+   * s'ajoute à lui au lieu de l'écraser : le candidat qui a tapé le début de
+   * sa question et dicte la suite ne doit pas perdre ce qu'il a écrit.
+   */
+  const base = useRef("");
   const champ = useRef<HTMLTextAreaElement>(null);
   const fichier = useRef<HTMLInputElement>(null);
 
@@ -50,26 +80,47 @@ export function Composer({ onEnvoi, occupe }: Props) {
     const r = new Ctor();
     r.lang = "fr-FR";
     r.interimResults = true;
-    r.continuous = false;
+    // Continu : une question se dicte rarement d'une traite, et la dictée
+    // coupait à la première hésitation. Le candidat arrête lui-même.
+    r.continuous = true;
     r.onresult = (e) => {
-      const dernier = e.results[e.results.length - 1];
-      setTexte(dernier[0].transcript);
+      // Tous les segments reconnus depuis le démarrage, définitifs comme
+      // provisoires : ne garder que le dernier faisait disparaître le début
+      // de la phrase dès la première pause.
+      let dit = "";
+      for (let i = 0; i < e.results.length; i++) dit += e.results[i][0].transcript;
+      const avant = base.current.trimEnd();
+      setTexte(avant ? `${avant} ${dit.trimStart()}` : dit.trimStart());
     };
     r.onend = () => setDicte(false);
-    r.onerror = () => setDicte(false);
+    r.onerror = (e) => {
+      setDicte(false);
+      const m = messageDictee(e.error);
+      if (m) toast.error(m);
+    };
     reco.current = r;
     return () => r.stop();
   }, []);
 
   function basculerDictee() {
-    if (!reco.current) return;
+    if (!reco.current) {
+      // Le bouton reste appuyable même sans dictée : un bouton grisé sans
+      // explication laisse croire à une panne de l'application.
+      toast("La dictée n'est pas disponible sur ce navigateur. Utilise le micro de ton clavier (Gboard, SwiftKey…), ou ouvre l'application dans Chrome.");
+      return;
+    }
     if (dicte) {
       reco.current.stop();
       setDicte(false);
     } else {
-      setTexte("");
-      reco.current.start();
-      setDicte(true);
+      base.current = texte;
+      try {
+        reco.current.start();
+        setDicte(true);
+      } catch {
+        // `start()` lève si une session précédente n'est pas encore close.
+        reco.current.stop();
+      }
     }
   }
 
@@ -103,11 +154,38 @@ export function Composer({ onEnvoi, occupe }: Props) {
     }
   }
 
+  /**
+   * Une capture d'écran collée dans le champ (Ctrl+V sur ordinateur, appui
+   * long sur certains claviers) est jointe comme une photo. Le texte collé,
+   * lui, suit son chemin normal.
+   */
+  async function coller(e: React.ClipboardEvent<HTMLTextAreaElement>) {
+    const f = Array.from(e.clipboardData.files).find((x) => x.type.startsWith("image/"));
+    if (!f || occupe || prepare) return;
+    e.preventDefault();
+    setPrepare(true);
+    try {
+      setImage(await reduireImage(f));
+    } catch (erreur) {
+      toast.error(
+        erreur instanceof ImageIllisible ? erreur.message : "Cette image n'a pas pu être préparée.",
+      );
+    } finally {
+      setPrepare(false);
+    }
+  }
+
   function envoyer() {
     const t = texte.trim();
     // Une photo seule est un envoi valable : « c'est quoi ça ? » se pose très
     // bien en montrant l'énoncé sans rien écrire.
     if ((!t && !image) || occupe || prepare) return;
+    // La dictée en cours s'arrête à l'envoi : sinon ses derniers mots
+    // reviendraient remplir le champ qu'on vient de vider.
+    if (dicte) {
+      reco.current?.stop();
+      setDicte(false);
+    }
     onEnvoi(t, image ?? undefined);
     setTexte("");
     setImage(null);
@@ -161,6 +239,7 @@ export function Composer({ onEnvoi, occupe }: Props) {
           rows={1}
           value={texte}
           onChange={(e) => setTexte(e.target.value)}
+          onPaste={coller}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -223,7 +302,7 @@ export function Composer({ onEnvoi, occupe }: Props) {
           <button
             type="button"
             onClick={basculerDictee}
-            disabled={!dictaDispo || occupe}
+            disabled={occupe}
             aria-label={dicte ? "Arrêter la dictée" : "Dicter"}
             aria-pressed={dicte}
             title={dictaDispo ? "Dicter" : "Dictée indisponible sur ce navigateur"}

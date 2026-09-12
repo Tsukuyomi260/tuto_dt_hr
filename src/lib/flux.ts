@@ -1,4 +1,10 @@
-import type { EpreuveJointe, FlashcardJointe } from "./db";
+import type {
+  EpreuveJointe,
+  FicheRevision,
+  FlashcardJointe,
+  PlanningJoint,
+  QuizJoint,
+} from "./db";
 
 /**
  * Trames du flux NDJSON entre la route et le navigateur.
@@ -16,8 +22,14 @@ export type Trame =
   | { t: "epr"; v: EpreuveJointe }
   /** Numéro de tentative : ce message est une relance, pas une correction. */
   | { t: "rel"; v: number }
-  /** Paquet de flashcards, extrait littéralement de l'annale. */
+  /** Paquet de flashcards, extrait de l'annale ou rédigé d'après elle. */
   | { t: "fic"; v: FlashcardJointe[] }
+  /** Fiche de révision d'un chapitre. */
+  | { t: "rev"; v: FicheRevision }
+  /** Quiz d'auto-évaluation. */
+  | { t: "qcm"; v: QuizJoint }
+  /** Emploi du temps de révision. */
+  | { t: "pla"; v: PlanningJoint }
   /**
    * Panne côté serveur, formulée pour le candidat.
    *

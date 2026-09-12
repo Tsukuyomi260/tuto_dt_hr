@@ -1,4 +1,6 @@
+import { BoutonsExport } from "@/components/BoutonsExport";
 import type { EpreuveJointe } from "@/lib/db";
+import { deIndenter, epreuveEnDocument, segmenter } from "@/lib/enonce";
 
 /**
  * Affiche l'énoncé d'une ancienne épreuve, mot pour mot.
@@ -8,54 +10,8 @@ import type { EpreuveJointe } from "@/lib/db";
  * ne veut plus rien dire). On les rend différemment — la prose se replie sur
  * la largeur de l'écran, le tableau garde sa chasse fixe et défile
  * horizontalement dans son propre cadre, sans jamais faire défiler la page.
+ * La découpe vit dans lib/enonce.ts, partagée avec l'export PDF/image.
  */
-
-type Bloc = { type: "prose" | "tableau"; lignes: string[] };
-
-/**
- * Seul un écart *interne* entre colonnes signale un tableau. L'indentation
- * seule n'en est pas un : `pdftotext -layout` reproduit aussi les marges de
- * la page, si bien que des énoncés entièrement rédigés arrivent indentés
- * (l'épreuve 2024 par exemple). Les classer en tableau enfermerait leur
- * prose dans un cadre monospace à défilement horizontal.
- */
-function aDesColonnes(ligne: string): boolean {
-  return /\S {2,}\S/.test(ligne);
-}
-
-function segmenter(enonce: string): Bloc[] {
-  const blocs: Bloc[] = [];
-  for (const ligne of enonce.split("\n")) {
-    const dernier = blocs.at(-1);
-    const indentee = /^ {2,}\S/.test(ligne);
-
-    // Une ligne indentée sans colonnes prolonge un tableau déjà ouvert —
-    // c'est le second niveau d'un en-tête — mais n'en ouvre jamais un.
-    const type: Bloc["type"] = aDesColonnes(ligne)
-      ? "tableau"
-      : indentee && dernier?.type === "tableau"
-        ? "tableau"
-        : "prose";
-
-    // Une ligne vide prolonge le bloc courant plutôt que d'en ouvrir un autre :
-    // sans ça, un tableau aéré serait coupé en morceaux.
-    if (dernier && (dernier.type === type || ligne.trim() === "")) {
-      dernier.lignes.push(ligne);
-    } else {
-      blocs.push({ type, lignes: [ligne] });
-    }
-  }
-  return blocs;
-}
-
-/** L'indentation de la prose vient de la mise en page du PDF : elle ne porte
- *  rien et gênerait la lecture sur un écran étroit. */
-function deIndenter(lignes: string[]): string {
-  return lignes
-    .map((l) => l.trimStart())
-    .join("\n")
-    .replace(/^\n+|\n+$/g, "");
-}
 
 export function CarteEpreuve({ epreuve }: { epreuve: EpreuveJointe }) {
   const blocs = segmenter(epreuve.enonce);
@@ -100,6 +56,13 @@ export function CarteEpreuve({ epreuve }: { epreuve: EpreuveJointe }) {
           ),
         )}
       </div>
+
+      {/* Le sujet se garde : PDF pour l'imprimer, image pour le partager. Le
+          rapport des premiers testeurs le demandait explicitement. */}
+      <footer className="flex items-center gap-2 border-t border-line px-4 py-2.5">
+        <span className="min-w-0 flex-1 truncate t-caption text-ink-2">Garder ce sujet</span>
+        <BoutonsExport doc={() => epreuveEnDocument(epreuve)} />
+      </footer>
     </article>
   );
 }

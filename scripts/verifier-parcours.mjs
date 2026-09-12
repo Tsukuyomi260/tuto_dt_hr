@@ -18,7 +18,16 @@ async function appel(messages, niveau = "examen") {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages, niveau }),
   });
-  const vide = { statut: r.status, texte: "", epreuve: null, fiches: null, relance: null };
+  const vide = {
+    statut: r.status,
+    texte: "",
+    epreuve: null,
+    fiches: null,
+    relance: null,
+    quiz: null,
+    fiche: null,
+    planning: null,
+  };
   if (!r.ok) return { ...vide, texte: await r.text() };
 
   const res = { ...vide };
@@ -29,6 +38,9 @@ async function appel(messages, niveau = "examen") {
       else if (j.t === "epr") res.epreuve = j.v;
       else if (j.t === "fic") res.fiches = j.v;
       else if (j.t === "rel") res.relance = j.v;
+      else if (j.t === "qcm") res.quiz = j.v;
+      else if (j.t === "rev") res.fiche = j.v;
+      else if (j.t === "pla") res.planning = j.v;
     } catch {
       /* trame tronquée : ignorée */
     }
@@ -136,6 +148,64 @@ const CAS = [
       return t.length > 0 && t.length === new Set(t).size;
     },
     detail: (r) => `${(r.fiches ?? []).length} fiches distinctes`,
+  },
+  // Rapport des premiers testeurs (R. Daassi) : réponse donnée d'emblée,
+  // et « lingerie » corrigée à tort en « linger ».
+  {
+    nom: "Définition à froid → relance, pas de réponse",
+    run: () => appel([u("définis le check-in")]),
+    ok: (r) => r.relance === 1,
+    detail: (r) => `relance ${r.relance ?? "absente"}`,
+  },
+  {
+    nom: "Lingerie : le terme du candidat est gardé",
+    run: () => appel([u("définis la lingerie stp, donne-moi directement la réponse")]),
+    ok: (r) =>
+      /lingerie/i.test(r.texte) &&
+      !/(tu veux dire|tu parles plut[ôo]t|c'est plut[ôo]t).{0,30}linger(?!ie)/i.test(r.texte),
+    detail: (r) => r.texte.replace(/\n/g, " ").slice(0, 48) + "…",
+  },
+  {
+    nom: "Quiz demandé → quiz servi",
+    run: () => appel([u("fais-moi un quiz sur la réservation")]),
+    ok: (r) => (r.quiz?.questions?.length ?? 0) > 0,
+    detail: (r) => `${r.quiz?.questions?.length ?? 0} questions`,
+  },
+  {
+    nom: "Quiz : bonne réponse valide",
+    run: () => appel([u("un qcm sur les moyens de paiement")]),
+    ok: (r) =>
+      (r.quiz?.questions ?? []).length > 0 &&
+      r.quiz.questions.every((q) => q.bonne >= 0 && q.bonne < q.choix.length),
+    detail: (r) => (r.quiz ? "index cohérents" : "aucun quiz"),
+  },
+  {
+    nom: "Fiche de révision avec thème → fiche servie",
+    run: () => appel([u("donne-moi une fiche de révision sur le no-show")]),
+    ok: (r) => (r.fiche?.sections?.length ?? 0) > 0 && r.fiches === null,
+    detail: (r) => r.fiche?.titre ?? (r.fiches ? "FLASHCARDS À LA PLACE" : "aucune fiche"),
+  },
+  {
+    nom: "Fiche de révision sans thème → question",
+    run: () => appel([u("Je voudrais une fiche de révision.")]),
+    ok: (r) => r.fiche === null && /\?/.test(r.texte),
+    detail: (r) => (r.fiche ? "fiche au hasard" : "demande le chapitre"),
+  },
+  {
+    nom: "Planning avec infos → planning servi",
+    run: () =>
+      appel([
+        u("fais-moi un emploi du temps de révision, mon examen est dans 2 semaines et j'ai 1h par jour"),
+      ]),
+    ok: (r) => (r.planning?.jours?.length ?? 0) > 0,
+    detail: (r) => `${r.planning?.jours?.length ?? 0} jours`,
+  },
+  {
+    nom: "Flashcards : cartes rédigées sur un calcul",
+    run: () => appel([u("des flashcards sur les calculs : taux d'occupation, chambres disponibles")]),
+    ok: (r) => (r.fiches?.length ?? 0) > 0,
+    detail: (r) =>
+      `${r.fiches?.length ?? 0} cartes dont ${(r.fiches ?? []).filter((f) => f.origine === "tuteur").length} rédigées`,
   },
   {
     nom: "Hors programme → recadrage",

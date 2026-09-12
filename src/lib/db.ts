@@ -13,11 +13,55 @@ export interface EpreuveJointe {
   enonce: string;
 }
 
-/** Fiche recto/verso, extraite littéralement de l'annale. */
+/** Fiche recto/verso. */
 export interface FlashcardJointe {
   id: string;
   terme: string;
   definition: string;
+  /**
+   * `annale` : extraite mot pour mot du cours. `tuteur` : rédigée par le
+   * tuteur d'après le cours, pour une notion que les listes de vocabulaire ne
+   * couvrent pas (un calcul, une procédure). Absent sur les fiches stockées
+   * avant cette distinction — elles venaient toutes de l'annale.
+   */
+  origine?: "annale" | "tuteur";
+}
+
+/** Fiche de révision d'un chapitre, rédigée par le tuteur d'après l'annale. */
+export interface FicheRevision {
+  id: string;
+  titre: string;
+  sections: { titre: string; points: string[] }[];
+  /** Le piège classique de l'examen sur ce chapitre. */
+  piege?: string;
+  /** Vrai si une partie du contenu dépasse ce que couvre l'annale. */
+  horsAnnale?: boolean;
+}
+
+/** Quiz d'auto-évaluation à choix multiples. */
+export interface QuizJoint {
+  id: string;
+  titre: string;
+  questions: {
+    question: string;
+    choix: string[];
+    /** Index de la bonne réponse dans `choix`. */
+    bonne: number;
+    explication: string;
+  }[];
+}
+
+/** Emploi du temps de révision. */
+export interface PlanningJoint {
+  id: string;
+  titre: string;
+  /** Date de l'examen telle que le candidat l'a donnée, si connue. */
+  examen?: string;
+  jours: {
+    libelle: string;
+    seances: { sujet: string; activite: string; duree?: string }[];
+  }[];
+  conseils: string[];
 }
 
 export interface Message {
@@ -45,6 +89,18 @@ export interface Message {
   relance?: number;
   /** Paquet de fiches affiché avec ce message, stocké pour la révision hors ligne. */
   flashcards?: FlashcardJointe[];
+  /** Fiche de révision affichée avec ce message. */
+  fiche?: FicheRevision;
+  /** Quiz affiché avec ce message. */
+  quiz?: QuizJoint;
+  /**
+   * Réponses du candidat au quiz, dans l'ordre des questions (index du choix,
+   * ou `null` tant qu'il n'a pas répondu). Conservées pour qu'il retrouve son
+   * score en rouvrant la discussion.
+   */
+  reponsesQuiz?: (number | null)[];
+  /** Emploi du temps de révision affiché avec ce message. */
+  planning?: PlanningJoint;
   /**
    * Photo ou capture d'écran jointe par le candidat, en URL de données, déjà
    * réduite côté téléphone. Conservée telle quelle : elle fait partie de la
@@ -106,6 +162,13 @@ db.version(5)
 // candidats déjà installés au lieu de la recréer. Aucune migration de données
 // n'est nécessaire — un message sans photo n'en a simplement pas.
 db.version(6).stores({
+  messages: "++id, createdAt, fil",
+});
+
+// v7 ajoute `fiche`, `quiz`, `reponsesQuiz` et `planning`. Champs non
+// indexés : même raison qu'aux versions 2, 3, 4 et 6, l'incrément est ce qui
+// laisse Dexie rouvrir la base des candidats déjà installés.
+db.version(7).stores({
   messages: "++id, createdAt, fil",
 });
 

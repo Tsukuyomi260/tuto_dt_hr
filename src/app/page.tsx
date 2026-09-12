@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { BoutonInstaller } from "@/components/BoutonInstaller";
 import { useReglages } from "@/lib/store";
 
 /**
@@ -128,9 +129,9 @@ export default function Accueil() {
           <span className="grid size-10 place-items-center rounded-[13px] bg-primary-soft text-primary">
             {IcoFiches}
           </span>
-          <h2 className="mt-3 t-sub font-semibold">Fiches</h2>
+          <h2 className="mt-3 t-sub font-semibold">Réviser</h2>
           <p className="mt-0.5 text-[13px] leading-snug text-ink-2">
-            Le vocabulaire, recto verso
+            Flashcards, fiches, quiz, planning
           </p>
         </article>
       </div>
@@ -155,6 +156,12 @@ export default function Accueil() {
         >
           {onboardingFait ? "Reprendre" : "Commencer"}
         </button>
+        {/* Sous le bouton principal, jamais à sa place : installer est un
+            confort, commencer est la raison d'être de l'écran. Invisible
+            une fois l'application installée. */}
+        <div className="mt-2.5 empty:hidden">
+          <BoutonInstaller />
+        </div>
         <p className="mt-3.5 text-center text-[11.5px] leading-snug text-ink-3">
           Tes conversations restent sur ton téléphone.{" "}
           <a

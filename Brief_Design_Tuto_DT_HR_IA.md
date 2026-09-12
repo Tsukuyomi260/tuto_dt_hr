@@ -126,9 +126,20 @@ Concevoir l'application mobile. Pour chaque écran, prévoir l'état par défaut
 
 ---
 
-## 8. Direction visuelle — **validée**
+## 8. Direction visuelle — **remplacée**
 
-Planche de style complète, avec composants interactifs et contrastes vérifiés : `direction-visuelle.html`.
+> ⚠️ **Cette section décrit la première direction, abandonnée.** Le projet est
+> passé aux deux couleurs de marque **Uniform Blue `#122837`** et **Palesun
+> Yellow `#FBFC09`**. Les valeurs ci-dessous et la planche
+> `direction-visuelle.html` sont conservées comme trace de la décision
+> initiale — elles ne décrivent plus l'application.
+>
+> **La référence vivante est `src/app/globals.css`**, où chaque valeur porte
+> son rapport de contraste vérifié. Ce qui survit de cette section : la police
+> système, l'absence de police téléchargée, le rouge réservé au message non
+> délivré, et le mode sombre construit en parallèle plutôt que par inversion.
+
+Planche de style de la direction initiale : `direction-visuelle.html`.
 
 **Thème clair** — fond `#F7F5F0` · surface `#FFFFFF` · texte `#1C2A2B` (13,62:1) · texte secondaire `#5D6E6F` (4,91:1) · primaire bleu-vert `#0F4F4A` (9,39:1 en aplat) · accent ocre **aplat** `#C07C2C` · accent ocre **texte** `#96601C` (4,83:1) · fond d'accent `#F6EADA` · panne `#8C3A2E`.
 
@@ -137,7 +148,7 @@ Planche de style complète, avec composants interactifs et contrastes vérifiés
 Décisions structurantes :
 
 - **L'ocre est dédoublé.** `#C07C2C` ne passe qu'à 3,13:1 sur le fond : réservé aux aplats, filets et icônes. Dès qu'il porte du texte, utiliser `#96601C`.
-- **Aucune police téléchargée.** Police système (Roboto sur Android, San Francisco sur iOS) : 0 octet sur des données mobiles comptées, aucun risque de repli silencieux. Deux graisses strictement — 400 et 600, jamais de graisse intermédiaire (mal rendue sur Android d'entrée de gamme).
+- **Aucune police téléchargée.** Police système (Roboto sur Android, San Francisco sur iOS) : 0 octet sur des données mobiles comptées, aucun risque de repli silencieux. Trois graisses strictement — 400, 600 et 700, jamais d'intermédiaire (mal rendue sur Android d'entrée de gamme). Le 700 n'est utilisé que par `.t-display`.
 - **Le rouge est réservé au message non délivré.** Jamais une mauvaise réponse — c'est la garantie du principe « aucune sanction visuelle ».
 - **Mode sombre livré**, construit en parallèle sur les mêmes jetons, pas par inversion.
 - **Formes** : rayons 6 (coin pincé) · 12 (bouton) · 14 (carte) · 18 (bulle) · 20 (champ) · 999 (pastille). Espacement 4 · 8 · 12 · 16 · 24 · 32 · 48.
@@ -216,7 +227,7 @@ Contraintes qui décident : téléphone Android d'entrée de gamme, données com
 >
 > Style souhaité : **sobre, chaleureux, fiable**, mobile d'abord, sans couleurs criardes — base neutre, une couleur principale profonde, un seul accent chaud, deux graisses de police, coins arrondis doux, mode sombre prévu.
 >
-> **La direction visuelle est déjà arrêtée : lis `direction-visuelle.html` et reprends ses jetons tels quels** — ne repropose pas de palette. Idem pour la stratégie d'onboarding, tranchée dans `recherche-onboarding-apps-apprentissage.html`. Concevons les écrans restants listés en §11 (banque d'épreuves pleine page, fiche de révision, emploi du temps, retour de lecture photo). Pose-moi des questions si un choix est ambigu.
+> **La direction visuelle est déjà arrêtée : lis `src/app/globals.css` et reprends ses jetons tels quels** — ne repropose pas de palette. N'utilise pas `direction-visuelle.html`, qui décrit la première direction, abandonnée. Idem pour la stratégie d'onboarding, tranchée dans `recherche-onboarding-apps-apprentissage.html`. Concevons les écrans restants listés en §11 (banque d'épreuves pleine page, fiche de révision, emploi du temps, retour de lecture photo). Pose-moi des questions si un choix est ambigu.
 
 ---
 

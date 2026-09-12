@@ -1,7 +1,9 @@
 {
+  "id": "/",
   "name": "Tuto DT HR",
   "short_name": "Tuto DT HR",
-  "description": "Ton tuteur de révision en Technologie Hôtelière.",
+  "description": "Ton tuteur de révision en Technologie Hôtelière : annales, flashcards, fiches, quiz et emploi du temps.",
+  "categories": ["education"],
   "lang": "fr",
   "start_url": "/",
   "scope": "/",

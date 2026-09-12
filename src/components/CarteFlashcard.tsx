@@ -8,8 +8,10 @@ import type { FlashcardJointe } from "@/lib/db";
  * Paquet de fiches recto/verso (§6.6 du brief).
  *
  * Une seule fiche à l'écran : recto le terme, verso la définition, un appui
- * pour retourner, puis la suivante. Le contenu vient mot pour mot de l'annale
- * — le tuteur choisit le paquet, jamais ce qu'il y a dessus.
+ * pour retourner, puis la suivante. Deux origines possibles : mot pour mot de
+ * l'annale (le tuteur choisit la carte, pas son contenu), ou rédigée par le
+ * tuteur d'après l'annale pour une notion que le vocabulaire ne couvre pas —
+ * un calcul, une procédure. La carte le dit, discrètement, au verso.
  *
  * Les deux faces occupent la même cellule de grille : la carte prend donc la
  * hauteur de la plus haute des deux et ne saute pas au retournement.
@@ -32,7 +34,7 @@ export function CarteFlashcard({ fiches }: { fiches: FlashcardJointe[] }) {
       // `shrink-0` : le fil est un conteneur flex en colonne, et tout enfant
       // dont l'`overflow` n'est pas `visible` peut y être écrasé à zéro.
       className="animate-emerge w-full shrink-0 self-start overflow-hidden rounded-[var(--radius-card)] border border-line bg-[var(--surface)] shadow-[var(--shadow-1)]"
-      aria-label="Fiches de révision"
+      aria-label="Flashcards"
     >
       <header className="flex items-center gap-2.5 border-b border-line px-4 py-3">
         <span className="jeton grid size-8 shrink-0 place-items-center rounded-[10px] text-accent">
@@ -43,10 +45,10 @@ export function CarteFlashcard({ fiches }: { fiches: FlashcardJointe[] }) {
         </span>
         <div className="min-w-0 flex-1">
           <h2 className="truncate t-caption leading-tight font-semibold">
-            Fiches de révision
+            Flashcards
           </h2>
           <p className="truncate text-[11px] leading-tight text-ink-2">
-            Vocabulaire de l&apos;annale — appuie pour retourner
+            Cartes de mémorisation — appuie pour retourner
           </p>
         </div>
         <span className="shrink-0 t-caption tabular-nums text-ink-2">
@@ -75,8 +77,11 @@ export function CarteFlashcard({ fiches }: { fiches: FlashcardJointe[] }) {
             </div>
 
             {/* Verso — la définition, retournée pour se lire à l'endroit. */}
-            <div className="col-start-1 row-start-1 grid min-h-[112px] items-center rounded-[14px] border border-line bg-[var(--raised)] px-4 py-5 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            <div className="col-start-1 row-start-1 flex min-h-[112px] flex-col justify-center gap-2 rounded-[14px] border border-line bg-[var(--raised)] px-4 py-5 [backface-visibility:hidden] [transform:rotateY(180deg)]">
               <span className="t-sub">{fiche.definition}</span>
+              <span className="t-caption text-[11px] text-ink-3">
+                {fiche.origine === "tuteur" ? "Rédigée par le tuteur d'après l'annale" : "Mot pour mot de l'annale"}
+              </span>
             </div>
           </div>
         </button>

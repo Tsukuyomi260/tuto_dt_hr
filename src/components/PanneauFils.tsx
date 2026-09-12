@@ -3,6 +3,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { BoutonInstaller } from "@/components/BoutonInstaller";
 import { cn } from "@/lib/cn";
 import { resumeFils } from "@/lib/db";
 import { useReglages } from "@/lib/store";
@@ -170,23 +171,31 @@ export function PanneauFils({ ouvert, onFermer }: Props) {
           </ul>
         </div>
 
-        <div className="flex shrink-0 gap-2 border-t border-line px-5 pt-3 pb-[max(14px,env(safe-area-inset-bottom))]">
-          <button
-            type="button"
-            onClick={() => router.push("/?retour=1")}
-            className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-line px-3 py-2.5 t-caption font-semibold text-ink-2 transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.97]"
-          >
-            {IcoAccueil}
-            Accueil
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/confidentialite")}
-            className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-line px-3 py-2.5 t-caption font-semibold text-ink-2 transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.97]"
-          >
-            {IcoDonnees}
-            Mes données
-          </button>
+        <div className="shrink-0 border-t border-line">
+          {/* Le candidat déjà calibré ne repasse plus par l'accueil : c'est ici
+              qu'il retrouve l'installation. Rien ne s'affiche une fois faite. */}
+          <div className="px-5 pt-3 empty:hidden">
+            <BoutonInstaller compact />
+          </div>
+
+          <div className="flex gap-2 px-5 pt-3 pb-[max(14px,env(safe-area-inset-bottom))]">
+            <button
+              type="button"
+              onClick={() => router.push("/?retour=1")}
+              className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-line px-3 py-2.5 t-caption font-semibold text-ink-2 transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.97]"
+            >
+              {IcoAccueil}
+              Accueil
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/confidentialite")}
+              className="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-line px-3 py-2.5 t-caption font-semibold text-ink-2 transition-transform duration-[160ms] ease-[var(--ease-out)] active:scale-[0.97]"
+            >
+              {IcoDonnees}
+              Mes données
+            </button>
+          </div>
         </div>
       </div>
     </div>

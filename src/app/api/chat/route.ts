@@ -6,6 +6,16 @@ import { TERMES, fichesParTermes, tirerFlashcards } from "@/lib/flashcards";
 import type { Trame } from "@/lib/flux";
 import { MODELE, reglagesModele } from "@/lib/modele";
 import { SYSTEM_PROMPT, consigneNiveau, type Niveau } from "@/lib/prompt";
+import {
+  OUTILS_REVISION,
+  OUTIL_FICHE_REVISION,
+  OUTIL_PLANNING,
+  OUTIL_QUIZ,
+  nettoyerCartes,
+  nettoyerFiche,
+  nettoyerPlanning,
+  nettoyerQuiz,
+} from "@/lib/revision";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -173,12 +183,75 @@ const MOT_FICHES =
 
 function demandeFiches(message: string): boolean {
   if (!MOT_FICHES.test(message)) return false;
+  // « Fiche de révision » désigne la synthèse d'un chapitre, pas un paquet de
+  // cartes : elle a son propre outil.
+  if (MOT_FICHE_REVISION.test(message)) return false;
   return (
     INTENTION_DEMANDE.test(message) ||
     /(?<!\p{L})(pr[ée]pares?|r[ée]vise[rz]?|entra[iî]ne)(?!\p{L})/iu.test(message) ||
     message.trim().split(/\s+/).length <= 5
   );
 }
+
+// Le quiz se demande sans ambiguïté : le mot suffit, avec ou sans thème — sans
+// thème, le tuteur couvre tout le programme.
+const MOT_QUIZ =
+  /(?<!\p{L})(quiz+|qcm|auto[\s-]?[ée]valu(?:ation|er)|teste[sz]?[\s-]moi|questionnaire)(?!\p{L})/iu;
+
+function demandeQuiz(message: string): boolean {
+  return MOT_QUIZ.test(message);
+}
+
+const MOT_FICHE_REVISION =
+  /(?<!\p{L})fiches?\s+(?:de\s+)?(?:r[ée]vision|synth[èe]se|r[ée]sum[ée])(?!\p{L})/iu;
+
+// La fiche n'est imposée que si le thème est donné (« fiche de révision sur
+// la réservation »). Sans thème, le tuteur doit d'abord demander le
+// chapitre : forcer l'outil lui en ferait choisir un au hasard.
+const THEME_DONNE =
+  /fiches?\s+(?:de\s+)?(?:r[ée]vision|synth[èe]se|r[ée]sum[ée])\s+(?:sur|du|des|de|pour|concernant)\s*\S/iu;
+
+function demandeFicheRevision(message: string): boolean {
+  return MOT_FICHE_REVISION.test(message) && THEME_DONNE.test(message);
+}
+
+// Le planning n'est imposé que si le candidat a déjà donné les deux
+// informations nécessaires — une échéance et un temps disponible. Observé :
+// les ayant reçues, le modèle redemandait encore « quelle heure de la
+// journée ? » au lieu de produire le planning.
+const MOT_PLANNING =
+  /(?<!\p{L})(planning|emploi\s+du\s+temps|programme\s+de\s+r[ée]vision|calendrier\s+de\s+r[ée]vision)(?!\p{L})/iu;
+const ECHEANCE =
+  /(?<!\p{L})(dans\s+\d+|\d+\s+(?:jours?|semaines?|mois)|janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[uû]t|septembre|octobre|novembre|d[ée]cembre|\d{1,2}\/\d{1,2})(?!\p{L})/iu;
+const TEMPS_DISPO = /\d+\s*(?:h(?!\p{L})|heures?|min(?:utes?)?)/iu;
+
+function demandePlanning(message: string): boolean {
+  return MOT_PLANNING.test(message) && ECHEANCE.test(message) && TEMPS_DISPO.test(message);
+}
+
+/**
+ * Question de cours posée à froid.
+ *
+ * Les premiers testeurs ont vu le tuteur livrer la réponse d'emblée, surtout
+ * en début de conversation : « définis X » ressemble à une demande
+ * d'information, et le prompt seul ne suffit pas à trancher dans le bon sens.
+ * Quand le message a la forme d'une question de cours, on rappelle la règle
+ * au modèle sur ce tour précis — après le point de cache, donc sans rien
+ * coûter au préfixe partagé.
+ */
+const QUESTION_COURS =
+  /(?<!\p{L})(c'?est\s+quoi|qu'?est[\s-]ce\s+qu|d[ée]finis|d[ée]finir|d[ée]finition|expliques?|explication|pourquoi|diff[ée]rences?|distingue[rz]?|comment\s+(?:on\s+)?(?:calcul|fai[ts]|proc[èe]d|g[èe]re)|calcule[rz]?|[àa]\s+quoi\s+sert|r[ôo]le\s+d|que\s+signifie|signification|veut\s+dire)(?!\p{L})/iu;
+
+/** Demande explicite de la réponse : le prompt accorde alors une relance de plus, pas deux. */
+const REPONSE_DIRECTE =
+  /(?<!\p{L})(donne[- ]moi\s+(?:juste\s+|directement\s+)?la\s+r[ée]ponse|r[ée]ponse\s+directe|sans\s+(?:me\s+)?(?:poser\s+de\s+)?questions?)(?!\p{L})/iu;
+
+function questionDeCours(message: string): boolean {
+  return QUESTION_COURS.test(message) && !REPONSE_DIRECTE.test(message);
+}
+
+const RAPPEL_MAIEUTIQUE =
+  "[Note de l'application, invisible pour le candidat : ce message a la forme d'une question de cours. Sauf s'il s'agit d'une liste à mémoriser, d'un sigle ou d'un document, ne donne pas la réponse : commence par [relance:1] et donne-lui un indice concret pour qu'il tente lui-même. Si le terme ne figure pas dans l'annale, garde le terme qu'il a employé, ne le remplace pas par un autre.]";
 
 /**
  * L'outil ne *produit* pas l'épreuve : il demande au serveur d'en afficher
@@ -210,10 +283,14 @@ const OUTILS: Anthropic.Tool[] = [
   {
     name: OUTIL_FICHES,
     description:
-      "Affiche au candidat un paquet de flashcards recto/verso (terme au recto, " +
-      "définition au verso), tirées mot pour mot du vocabulaire de l'annale. " +
-      "Utilise cet outil dès qu'il demande des flashcards, des fiches, ou de " +
-      "quoi réviser le vocabulaire. N'invente jamais de définition toi-même.",
+      "Affiche au candidat un paquet de flashcards recto/verso (question ou " +
+      "terme au recto, réponse au verso). Utilise cet outil dès qu'il demande " +
+      "des flashcards, des cartes de mémorisation, ou de quoi réviser le " +
+      "vocabulaire. Deux sources, combinables dans un même paquet : `termes`, " +
+      "les fiches tirées mot pour mot de l'annale — toujours à privilégier " +
+      "quand elles couvrent le sujet ; et `cartes`, que tu rédiges d'après " +
+      "l'annale pour ce que ses listes de vocabulaire ne couvrent pas : un " +
+      "calcul, une procédure, une distinction, un chapitre rédigé en prose.",
     input_schema: {
       type: "object",
       properties: {
@@ -221,18 +298,63 @@ const OUTILS: Anthropic.Tool[] = [
           type: "array",
           items: { type: "string", enum: TERMES },
           description:
-            "Termes à réviser, choisis par toi dans la liste. Six font un bon " +
-            "paquet. Si le candidat demande un thème (le paiement, la " +
-            "réservation, l'accueil…), sélectionne les termes qui en relèvent : " +
-            "toi seul sais les rapprocher, une recherche par mot-clé échouerait. " +
-            "Sans thème précis, prends un éventail couvrant tout le programme.",
+            "Termes à réviser, choisis par toi dans la liste. Six à huit cartes " +
+            "au total font un bon paquet. Si le candidat demande un thème (le " +
+            "paiement, la réservation, l'accueil…), sélectionne les termes qui en " +
+            "relèvent : toi seul sais les rapprocher, une recherche par mot-clé " +
+            "échouerait. Sans thème précis, prends un éventail couvrant tout le " +
+            "programme.",
+        },
+        cartes: {
+          type: "array",
+          description:
+            "Cartes rédigées par toi, fidèles à l'annale, pour compléter le paquet " +
+            "quand les termes de la liste ne couvrent pas le sujet demandé. Recto : " +
+            "une question précise (« Formule du taux d'occupation ? »). Verso : la " +
+            "réponse attendue à l'examen, courte.",
+          items: {
+            type: "object",
+            properties: {
+              recto: { type: "string" },
+              verso: { type: "string" },
+            },
+            required: ["recto", "verso"],
+          },
         },
       },
-      required: ["termes"],
+      required: [],
       additionalProperties: false,
     },
   },
+  ...OUTILS_REVISION,
 ];
+
+/**
+ * Nettoie le contenu d'un outil rédigé, l'envoie à l'écran du candidat, et
+ * renvoie l'accusé destiné au modèle — ou `null` si l'appel était inutilisable.
+ */
+function afficherRedige(
+  outil: string,
+  entree: unknown,
+  envoyer: (trame: Trame) => void,
+): string | null {
+  if (outil === OUTIL_FICHE_REVISION) {
+    const v = nettoyerFiche(entree);
+    if (!v) return null;
+    envoyer({ t: "rev", v });
+    return `La fiche de révision « ${v.titre} » vient d'être affichée au candidat. Ne la recopie pas. Propose-lui en une phrase de s'en servir — la relire, puis la réciter de mémoire — ou de passer à un quiz sur ce chapitre.`;
+  }
+  if (outil === OUTIL_QUIZ) {
+    const v = nettoyerQuiz(entree);
+    if (!v) return null;
+    envoyer({ t: "qcm", v });
+    return `Le quiz « ${v.titre} » (${v.questions.length} questions) vient d'être affiché au candidat ; l'application corrige chaque réponse elle-même. Ne recopie ni les questions ni les réponses. Encourage-le en une phrase et laisse-le répondre.`;
+  }
+  const v = nettoyerPlanning(entree);
+  if (!v) return null;
+  envoyer({ t: "pla", v });
+  return `L'emploi du temps « ${v.titre} » vient d'être affiché au candidat. Ne le recopie pas. Dis-lui en une ou deux phrases comment s'en servir et qu'il peut le télécharger, puis propose de commencer la première séance.`;
+}
 
 export async function POST(req: NextRequest) {
   // Le SDK ne résout les identifiants qu'au moment de la requête, c'est-à-dire
@@ -290,22 +412,31 @@ export async function POST(req: NextRequest) {
 
   // Le niveau est spécifique au candidat : il reste hors du prompt système,
   // sinon chaque candidat aurait son propre préfixe et le cache ne servirait
-  // plus à rien. Il est préfixé au premier message du fil.
-  const consigne = consigneNiveau(corps.niveau ?? null);
-  if (consigne) {
-    const entete = `[Contexte pour toi, pas pour le candidat : ${consigne}]`;
-    const premier = messages[0];
-    // Le premier message peut désormais être une liste de blocs — le candidat
-    // peut ouvrir la conversation par une photo. Concaténer une chaîne sur un
-    // tableau produirait « [object Object] » en tête de fil.
-    messages[0] =
-      typeof premier.content === "string"
-        ? { role: "user", content: `${entete}\n\n${premier.content}` }
-        : {
-            role: "user",
-            content: [{ type: "text", text: entete }, ...premier.content],
-          };
-  }
+  // plus à rien. Il est préfixé au premier message du fil, avec la date : le
+  // planning de révision en a besoin pour compter les jours jusqu'à l'examen,
+  // et elle invaliderait le cache tout autant.
+  const aujourdhui = new Date().toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Africa/Porto-Novo",
+  });
+  const consigne = [consigneNiveau(corps.niveau ?? null), `Nous sommes le ${aujourdhui}.`]
+    .filter(Boolean)
+    .join(" ");
+  const entete = `[Contexte pour toi, pas pour le candidat : ${consigne}]`;
+  const premier = messages[0];
+  // Le premier message peut être une liste de blocs — le candidat peut ouvrir
+  // la conversation par une photo. Concaténer une chaîne sur un tableau
+  // produirait « [object Object] » en tête de fil.
+  messages[0] =
+    typeof premier.content === "string"
+      ? { role: "user", content: `${entete}\n\n${premier.content}` }
+      : {
+          role: "user",
+          content: [{ type: "text", text: entete }, ...premier.content],
+        };
 
   // Le dernier message du candidat décide : lui seul exprime l'intention du
   // tour en cours. Sans épreuve chargée, on ne force rien — l'outil ne
@@ -313,9 +444,37 @@ export async function POST(req: NextRequest) {
   const dernierDuCandidat = entrants.filter((m) => m.role === "user").at(-1);
   const tentative = tentativeCourante(entrants);
   const dit = typeof dernierDuCandidat?.content === "string" ? dernierDuCandidat.content : "";
-  const forcerEpreuve = ANNEES.length > 0 && demandeEpreuve(dit);
-  // Un seul outil peut être imposé : l'épreuve prime, elle est plus explicite.
-  const forcerFiches = !forcerEpreuve && TERMES.length > 0 && demandeFiches(dit);
+  // Un seul outil peut être imposé par tour. L'ordre va du plus explicite au
+  // plus vague : une épreuve nommée, puis un quiz, puis une fiche de révision
+  // avec son thème, puis les flashcards.
+  const forcer: string | null =
+    ANNEES.length > 0 && demandeEpreuve(dit)
+      ? OUTIL_EPREUVE
+      : demandeQuiz(dit)
+        ? OUTIL_QUIZ
+        : demandeFicheRevision(dit)
+          ? OUTIL_FICHE_REVISION
+          : demandePlanning(dit)
+            ? OUTIL_PLANNING
+            : TERMES.length > 0 && demandeFiches(dit)
+              ? OUTIL_FICHES
+              : null;
+
+  // Rappel de la maïeutique, seulement sur une question posée à froid : quand
+  // le candidat répond à une relance (tentative > 1), le compteur fait déjà
+  // son travail et le rappel le pousserait à relancer une fois de trop.
+  if (tentative === 1 && !forcer && questionDeCours(dit)) {
+    const dernier = messages.at(-1);
+    if (dernier?.role === "user") {
+      messages[messages.length - 1] =
+        typeof dernier.content === "string"
+          ? { role: "user", content: `${dernier.content}\n\n${RAPPEL_MAIEUTIQUE}` }
+          : {
+              role: "user",
+              content: [...dernier.content, { type: "text", text: RAPPEL_MAIEUTIQUE }],
+            };
+    }
+  }
 
   // Le point de cache est sur le dernier bloc système : il couvre le prompt
   // et l'annale. Le préfixe est identique pour tous les candidats, donc le
@@ -372,11 +531,9 @@ ${CORPUS}`,
               // impose l'outil. Ensuite `auto`, sinon le tuteur ré-afficherait
               // l'épreuve au lieu d'enchaîner sur la question suivante.
               tool_choice:
-                tour === 0 && forcerEpreuve
-                  ? { type: "tool", name: OUTIL_EPREUVE }
-                  : tour === 0 && forcerFiches
-                    ? { type: "tool", name: OUTIL_FICHES }
-                    : { type: "auto" },
+                tour === 0 && forcer
+                  ? { type: "tool", name: forcer }
+                  : { type: "auto" },
               ...reglagesModele(),
               messages,
             });
@@ -505,17 +662,23 @@ ${CORPUS}`,
 
               if (bloc.name === OUTIL_FICHES) {
                 const entree = bloc.input as
-                  | { termes?: string[]; sujet?: string; nombre?: number }
+                  | { termes?: string[]; cartes?: unknown; sujet?: string; nombre?: number }
                   | null;
-                // Les termes choisis par le modèle priment ; le tirage par
-                // mot-clé n'est qu'un repli.
+                // Les fiches de l'annale passent d'abord, les cartes rédigées
+                // par le tuteur complètent jusqu'à dix. Le tirage par mot-clé
+                // n'est qu'un repli, quand le modèle n'a rien fourni du tout.
                 const choisis = Array.isArray(entree?.termes)
-                  ? fichesParTermes(entree.termes)
+                  ? fichesParTermes(entree.termes).map((f) => ({ ...f, origine: "annale" as const }))
                   : [];
+                const redigees = nettoyerCartes(entree?.cartes, 10 - choisis.length);
+                const composees = [...choisis, ...redigees];
                 const paquet =
-                  choisis.length > 0
-                    ? choisis
-                    : tirerFlashcards(entree?.sujet, entree?.nombre ?? 6);
+                  composees.length > 0
+                    ? composees
+                    : tirerFlashcards(entree?.sujet, entree?.nombre ?? 6).map((f) => ({
+                        ...f,
+                        origine: "annale" as const,
+                      }));
 
                 if (paquet.length === 0) {
                   resultats.push({
@@ -535,6 +698,29 @@ ${CORPUS}`,
                     .map((f) => f.terme)
                     .join(", ")}. Ne les recopie pas. Dis-lui en une phrase comment s'en servir, puis laisse-le travailler.`,
                 });
+                continue;
+              }
+
+              if (
+                bloc.name === OUTIL_FICHE_REVISION ||
+                bloc.name === OUTIL_QUIZ ||
+                bloc.name === OUTIL_PLANNING
+              ) {
+                // Contenu rédigé par le modèle : vérifié et borné avant de
+                // partir vers l'écran. Un appel mal formé revient en erreur
+                // au modèle, qui peut le corriger au tour suivant.
+                const accuse = afficherRedige(bloc.name, bloc.input, envoyer);
+                resultats.push(
+                  accuse
+                    ? { type: "tool_result", tool_use_id: bloc.id, content: accuse }
+                    : {
+                        type: "tool_result",
+                        tool_use_id: bloc.id,
+                        is_error: true,
+                        content:
+                          "Contenu incomplet ou mal formé : rien n'a été affiché. Vérifie que chaque champ obligatoire est rempli (et, pour un quiz, que l'index de la bonne réponse désigne bien un des choix), puis rappelle l'outil.",
+                      },
+                );
                 continue;
               }
 

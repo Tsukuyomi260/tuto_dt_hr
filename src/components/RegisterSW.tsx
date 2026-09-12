@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { ecouterInstallation } from "@/lib/installation";
 
 export function RegisterSW() {
   useEffect(() => {
+    // L'invitation d'installation n'est émise qu'une fois, tôt : on l'écoute
+    // ici, dans le seul composant monté sur tous les écrans.
+    ecouterInstallation();
     if (process.env.NODE_ENV !== "production") return;
     if (!("serviceWorker" in navigator)) return;
     navigator.serviceWorker.register("/sw.js").catch(() => {
